@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bruna Rodrigues — Systems in Production</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f7f5fc; color: #1a1a1a; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  main { max-width: 880px; margin: 0 auto; padding: 72px 28px 110px; }
+  header { text-align: center; margin-bottom: 44px; }
+  .role-tag { display: inline-block; background: #ede9f8; color: #7b6db8; font-size: .72rem;
+    font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 5px 14px;
+    border-radius: 20px; margin-bottom: 16px; }
+  header h1 { font-size: 2.7rem; font-weight: 700; letter-spacing: -.03em; }
+  header .since { margin-top: 12px; font-size: .85rem; color: #999; }
+  .intro { font-size: 1.05rem; line-height: 1.75; color: #444; margin: 0 auto 52px;
+    max-width: 700px; text-align: center; }
+  .stats { display: flex; flex-wrap: wrap; border: 1px solid #e0daf0; border-radius: 16px;
+    background: #fff; overflow: hidden; margin-bottom: 56px; }
+  .stat { flex: 1 1 150px; padding: 26px 16px; text-align: center; border-right: 1px solid #e0daf0; }
+  .stat:last-child { border-right: none; }
+  .stat .val { font-size: 1.85rem; font-weight: 700; color: #8b7dc8; letter-spacing: -.02em; line-height: 1; }
+  .stat .label { font-size: .72rem; color: #999; margin-top: 8px; line-height: 1.4; }
+  .section-heading { font-size: .7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .14em; color: #8b7dc8; margin: 0 0 18px; }
+  .sys { background: #fff; border: 1px solid #e0daf0; border-radius: 16px; padding: 30px 30px 26px;
+    margin-bottom: 18px; }
+  .sys-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .pill { background: #ede9f8; color: #7b6db8; font-size: .66rem; font-weight: 700;
+    letter-spacing: .09em; text-transform: uppercase; padding: 4px 11px; border-radius: 20px; }
+  .sys h2 { font-size: 1.32rem; font-weight: 700; letter-spacing: -.02em; }
+  .why { border-left: 3px solid #8b7dc8; background: #faf8ff; border-radius: 0 10px 10px 0;
+    padding: 13px 17px; margin-bottom: 16px; }
+  .why-tag { display: block; font-size: .63rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: #8b7dc8; margin-bottom: 5px; }
+  .why p { font-size: .93rem; color: #3d3d3d; }
+  .what { font-size: .93rem; color: #555; margin-bottom: 18px; }
+  .minis { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 9px;
+    margin-bottom: 20px; }
+  .mini { background: #faf8ff; border: 1px solid #ece7f8; border-radius: 10px; padding: 11px 12px; }
+  .mini b { display: block; font-size: 1.12rem; color: #6f5fb0; letter-spacing: -.01em; }
+  .mini span { display: block; font-size: .68rem; color: #999; margin-top: 3px; line-height: 1.35; }
+  .foot { font-size: .76rem; color: #9a93ab; margin-top: 14px; font-style: italic; }
+  .chart { display: block; margin: 6px 0 4px; }
+  .ev { background: #fff; border: 1px solid #e0daf0; border-radius: 16px; padding: 28px 30px;
+    margin-bottom: 18px; }
+  .ev h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -.02em; }
+  .ev p.lead { font-size: .92rem; color: #555; margin-bottom: 18px; }
+  .sub { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: #b0a8c4; margin: 22px 0 8px; }
+  .callout { display: flex; gap: 18px; align-items: center; background: #f4f0ff;
+    border: 1px solid #ddd4f5; border-radius: 12px; padding: 16px 20px; margin: 18px 0 6px; }
+  .callout .big { font-size: 1.9rem; font-weight: 700; color: #6f5fb0; line-height: 1; white-space: nowrap; }
+  .callout p { font-size: .86rem; color: #4a4459; }
+  table { width: 100%; border-collapse: collapse; font-size: .84rem; margin-top: 6px; }
+  th { text-align: left; font-size: .66rem; text-transform: uppercase; letter-spacing: .09em;
+    color: #b0a8c4; padding: 7px 8px; border-bottom: 1px solid #e0daf0; }
+  td { padding: 7px 8px; border-bottom: 1px solid #f2eefb; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .method { font-size: .79rem; color: #8a849b; line-height: 1.65; }
+  .method li { margin-bottom: 7px; }
+  .method ul { padding-left: 17px; }
+  .method code { background: #f0ecf9; padding: 1px 5px; border-radius: 4px; font-size: .92em; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 2px 0 4px; font-size: .74rem;
+    color: #8a849b; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .nav { margin-top: 14px; font-size: .78rem; color: #b3aec2; }
+  .nav a { text-decoration: none; }
+  .nav a:hover { text-decoration: underline; }
+  .nav span { color: #7b6db8; font-weight: 600; }
+  table td b { color: #6f5fb0; }
+  a { color: #7b6db8; }
+  @media print {
+    body { background: #fff; }
+    main { padding: 0; max-width: none; }
+    .sys, .ev { break-inside: avoid; page-break-inside: avoid; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <span class="role-tag">The case, in numbers</span>
+  <h1>Four systems in production</h1>
+  <div class="since">Measured 2026-08-10 → 2026-09-17 ·
+    interventions 2026-09-04 → 2026-09-22 ·
+    helpdesk pulled 2026-09-22</div>
+</header>
+
+<p class="intro">
+  1,368 students are learning across 42 different apps, and each app
+  only knows its own corner. These four systems are what turns that into something a person
+  can act on: one place that <b>measures</b>, a bot that <b>answers</b>, a log that
+  <b>closes the loop</b>, and a library that stops the same work being done twice.
+  This page states what each one is for, and puts the numbers underneath it.
+</p>
+
+<div class="stats">
+  <div class="stat"><div class="val">16.4M</div><div class="label">questions measured across every Alpha app</div></div>
+  <div class="stat"><div class="val">87.9%</div><div class="label">pooled accuracy, all students all apps</div></div>
+  <div class="stat"><div class="val">613</div><div class="label">intervention touches logged in 18 days</div></div>
+  <div class="stat"><div class="val">17.2h</div><div class="label">median time to close an intervention</div></div>
+  <div class="stat"><div class="val">10,973</div><div class="label">support tickets classified</div></div>
+</div>
+
+<p class="section-heading">The four systems</p>
+
+
+    <section class="sys">
+      <div class="sys-head"><span class="pill">Measure</span><h2>TimeBack Dashboard</h2></div>
+      <div class="why"><span class="why-tag">Why it has to exist</span><p>A student works in up to 42 apps, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> is a question that takes a person a day of tab-switching to answer — per child. At 1,368 students that question simply does not get asked.</p></div>
+      <p class="what">The production platform every Campus DRI monitors through: XP, time, accuracy, tests and grade-level progress, per student per subject, with role-based guide and admin views, daily alerts, doom-loop detection and generated reports.</p>
+      <div class="minis"><div class="mini"><b>106</b><span>campuses configured</span></div><div class="mini"><b>8,606</b><span>students rostered</span></div><div class="mini"><b>12</b><span>public-school districts</span></div><div class="mini"><b>136</b><span>API endpoints</span></div><div class="mini"><b>23</b><span>report generators</span></div><div class="mini"><b>1,179 (49%)</b><span>commits, mine</span></div></div>
+      <p class="foot">Repository since 2026-03-04; 1,179 of 2,389 commits are mine (49%), counted with <code>git shortlog</code> over all branches. The 8,606 rostered students span Alpha campuses and the 12 public-school districts together, and are a wider population than the 1,368 Alpha students in the accuracy figures above — those two numbers count different things and are not comparable.</p>
+    </section>
+
+
+    <section class="sys">
+      <div class="sys-head"><span class="pill">Answer</span><h2>The Deep Dive Bot</h2></div>
+      <div class="why"><span class="why-tag">Why it has to exist</span><p>The dashboard answers questions you already know to ask, in a browser, at a desk. Real questions arrive in Slack, from a guide, mid-lesson: <b>“why is this student stuck?”</b> The demand is measured, not assumed — in the same 18 days, <b>42 deep dives were requested by hand</b> for 29 students, and the hand-built path closed 1 of them. 35 are still open, the oldest waiting 10 days. That queue is the argument for the bot.</p></div>
+      <p class="what">A Slack bot that turns a plain-English question into a rendered report in the thread. The model picks one tool and writes a single framing sentence — it never restates a figure, because the tool result is rendered directly. That division is deliberate: a number cannot drift between the API and the channel, and an uncertain request comes back as a clarifying question instead of a confident answer about the wrong student.</p>
+      <div class="minis"><div class="mini"><b>42</b><span>deep dives requested by hand</span></div><div class="mini"><b>1</b><span>closed by hand</span></div><div class="mini"><b>35</b><span>still waiting</span></div><div class="mini"><b>6</b><span>tools exposed</span></div><div class="mini"><b>2,844</b><span>agent, lines</span></div><div class="mini"><b>3s</b><span>ack budget</span></div></div>
+      <p class="foot">Tools: student_deep_dive, student_lessons, most_concerning, doom_loops, tests_taken, assigned_tests. Slack redelivers on any non-200, so events are de-duplicated on event_id and the work is handed to a background task inside the 3-second window. Demand figures are the 'Deep dive' request type in the intervention log — the manual route the bot replaces.</p>
+    </section>
+
+
+    <section class="sys">
+      <div class="sys-head"><span class="pill">Close the loop</span><h2>The Intervention Log</h2></div>
+      <div class="why"><span class="why-tag">Why it has to exist</span><p>Measuring a stall and doing nothing about it is just a report. When TimeBack does not resolve a student's stall by itself somebody has to intervene — and before this there was <b>no record of what was tried, by whom, or whether it worked</b>. It is the only record of remediation the platform did not do by itself, and the only place the trigger for each one is written down.</p></div>
+      <p class="what">Two independent logs: requests a Campus DRI raises and pushes to a Curriculum DRI, and work the Campus DRI absorbs themselves. In 18 days it captured 613 campus touches over 355 students, with a median close of 17.2 hours.</p>
+      <div class="minis"><div class="mini"><b>613</b><span>campus touches</span></div><div class="mini"><b>490</b><span>distinct cases</span></div><div class="mini"><b>355</b><span>students</span></div><div class="mini"><b>414</b><span>completed</span></div><div class="mini"><b>168</b><span>still open</span></div><div class="mini"><b>160</b><span>hours of effort logged</span></div></div>
+      <p class="foot">A row is a touch, not a failure — the same student can appear more than once, so both the touch count and the folded case count are shown. The two logs are independent and are never totalled together.</p>
+    </section>
+
+
+    <section class="sys">
+      <div class="sys-head"><span class="pill">Reuse</span><h2>The Resource Library</h2></div>
+      <div class="why"><span class="why-tag">Why it has to exist</span><p>The same study guide gets rebuilt at five campuses by five people who do not know the other four exist. Every hour spent regenerating an artefact that already exists is an hour not spent on a student who is stuck.</p></div>
+      <p class="what">A shared library on its own Railway service with Postgres behind it, so a resource added by anyone appears for everyone rather than living in one person's browser. Two roles — staff see everything, students never receive staff-only rows — plus generated study-guide and practice-test pages.</p>
+      <div class="minis"><div class="mini"><b>30</b><span>resources live</span></div><div class="mini"><b>7</b><span>subjects</span></div><div class="mini"><b>13</b><span>grade bands</span></div><div class="mini"><b>8</b><span>resource types</span></div><div class="mini"><b>2</b><span>roles</span></div><div class="mini"><b>75</b><span>in the DRI resource tab</span></div></div>
+      <p class="foot">Counts read live from the service's own /api/health and /api/config. Postgres-backed: Railway wipes container disk on redeploy, so the app refuses to pretend SQLite is safe and warns in the UI instead.</p>
+    </section>
+
+<p class="section-heading">Evidence · what the stack measures</p>
+
+<div class="ev">
+  <h3>Accuracy across every grade, subject and app</h3>
+  <p class="lead">
+    16,369,072 answered questions from 1,368 students between
+    2026-08-10 and 2026-09-17. Pooled accuracy is <b>87.9%</b>; the median
+    student sits at 88.5%. Pooled means every question counts once — it is not an
+    average of averages, so a student who answered 40,000 questions does not weigh the same as one
+    who answered 40.
+  </p>
+
+  <p class="sub">By grade</p>
+  <svg viewBox="0 0 680 390" width="100%" height="390" role="img" class="chart">
+<line x1="52.0" y1="14" x2="52.0" y2="370" stroke="#e0daf0" stroke-width="1"/>
+<text x="52.0" y="382" font-size="9" fill="#999" text-anchor="middle">60%</text>
+<line x1="181.0" y1="14" x2="181.0" y2="370" stroke="#e0daf0" stroke-width="1"/>
+<text x="181.0" y="382" font-size="9" fill="#999" text-anchor="middle">70%</text>
+<line x1="310.0" y1="14" x2="310.0" y2="370" stroke="#e0daf0" stroke-width="1"/>
+<text x="310.0" y="382" font-size="9" fill="#999" text-anchor="middle">80%</text>
+<line x1="439.0" y1="14" x2="439.0" y2="370" stroke="#e0daf0" stroke-width="1"/>
+<text x="439.0" y="382" font-size="9" fill="#999" text-anchor="middle">90%</text>
+<line x1="568.0" y1="14" x2="568.0" y2="370" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="382" font-size="9" fill="#999" text-anchor="middle">100%</text>
+<text x="44" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">PreK</text>
+<rect x="52" y="20" width="202.5" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="261.5" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">75.7%</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">24,839 q</text>
+<text x="44" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">K</text>
+<rect x="52" y="46" width="317.3" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="376.3" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">84.6%</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">324,227 q</text>
+<text x="44" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">G1</text>
+<rect x="52" y="72" width="356.0" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="415.0" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">87.6%</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">637,331 q</text>
+<text x="44" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">G2</text>
+<rect x="52" y="98" width="325.1" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="384.1" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">85.2%</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">1,192,051 q</text>
+<text x="44" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">G3</text>
+<rect x="52" y="124" width="335.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="394.4" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">86%</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">2,243,940 q</text>
+<text x="44" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">G4</text>
+<rect x="52" y="150" width="357.3" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="416.3" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">87.7%</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">2,542,058 q</text>
+<text x="44" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">G5</text>
+<rect x="52" y="176" width="358.6" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="417.6" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">87.8%</text>
+<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">2,384,733 q</text>
+<text x="44" y="212" font-size="11" fill="#1a1a1a" text-anchor="end">G6</text>
+<rect x="52" y="202" width="370.2" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="429.2" y="212" font-size="10.5" font-weight="700" fill="#1a1a1a">88.7%</text>
+<text x="676" y="212" font-size="9.5" fill="#999" text-anchor="end">2,589,776 q</text>
+<text x="44" y="238" font-size="11" fill="#1a1a1a" text-anchor="end">G7</text>
+<rect x="52" y="228" width="368.9" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="427.9" y="238" font-size="10.5" font-weight="700" fill="#1a1a1a">88.6%</text>
+<text x="676" y="238" font-size="9.5" fill="#999" text-anchor="end">2,043,351 q</text>
+<text x="44" y="264" font-size="11" fill="#1a1a1a" text-anchor="end">G8</text>
+<rect x="52" y="254" width="399.9" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="458.9" y="264" font-size="10.5" font-weight="700" fill="#1a1a1a">91%</text>
+<text x="676" y="264" font-size="9.5" fill="#999" text-anchor="end">1,433,682 q</text>
+<text x="44" y="290" font-size="11" fill="#1a1a1a" text-anchor="end">G9</text>
+<rect x="52" y="280" width="394.7" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="453.7" y="290" font-size="10.5" font-weight="700" fill="#1a1a1a">90.6%</text>
+<text x="676" y="290" font-size="9.5" fill="#999" text-anchor="end">505,569 q</text>
+<text x="44" y="316" font-size="11" fill="#1a1a1a" text-anchor="end">G10</text>
+<rect x="52" y="306" width="367.6" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="426.6" y="316" font-size="10.5" font-weight="700" fill="#1a1a1a">88.5%</text>
+<text x="676" y="316" font-size="9.5" fill="#999" text-anchor="end">281,626 q</text>
+<text x="44" y="342" font-size="11" fill="#1a1a1a" text-anchor="end">G11</text>
+<rect x="52" y="332" width="397.3" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="456.3" y="342" font-size="10.5" font-weight="700" fill="#1a1a1a">90.8%</text>
+<text x="676" y="342" font-size="9.5" fill="#999" text-anchor="end">140,334 q</text>
+<text x="44" y="368" font-size="11" fill="#1a1a1a" text-anchor="end">G12</text>
+<rect x="52" y="358" width="393.4" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="452.4" y="368" font-size="10.5" font-weight="700" fill="#1a1a1a">90.5%</text>
+<text x="676" y="368" font-size="9.5" fill="#999" text-anchor="end">25,555 q</text>
+</svg>
+  <p class="foot">Grades with under 20,000 answered questions are omitted. PreK sits lowest at
+    75.7% on the thinnest sample
+    (16 students).</p>
+
+  <p class="sub">By subject</p>
+  <svg viewBox="0 0 680 208" width="100%" height="208" role="img" class="chart">
+<line x1="100.0" y1="14" x2="100.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="100.0" y="200" font-size="9" fill="#999" text-anchor="middle">60%</text>
+<line x1="217.0" y1="14" x2="217.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="217.0" y="200" font-size="9" fill="#999" text-anchor="middle">70%</text>
+<line x1="334.0" y1="14" x2="334.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="334.0" y="200" font-size="9" fill="#999" text-anchor="middle">80%</text>
+<line x1="451.0" y1="14" x2="451.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="451.0" y="200" font-size="9" fill="#999" text-anchor="middle">90%</text>
+<line x1="568.0" y1="14" x2="568.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="200" font-size="9" fill="#999" text-anchor="middle">100%</text>
+<text x="92" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Vocabulary</text>
+<rect x="100" y="20" width="324.1" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="431.1" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">87.7%</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">907 students · 7,162,731 q</text>
+<text x="92" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">FastMath</text>
+<rect x="100" y="46" width="376.7" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="483.7" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">92.2%</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">1269 students · 5,387,742 q</text>
+<text x="92" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Reading</text>
+<rect x="100" y="72" width="291.3" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="398.3" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">84.9%</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">1240 students · 1,897,757 q</text>
+<text x="92" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Language</text>
+<rect x="100" y="98" width="222.3" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="329.3" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">79%</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">1214 students · 797,996 q</text>
+<text x="92" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Math</text>
+<rect x="100" y="124" width="231.7" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="338.7" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">79.8%</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">1317 students · 726,857 q</text>
+<text x="92" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">Science</text>
+<rect x="100" y="150" width="253.9" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="360.9" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">81.7%</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">868 students · 309,747 q</text>
+<text x="92" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">Writing</text>
+<rect x="100" y="176" width="257.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="364.4" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">82%</text>
+<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">559 students · 84,145 q</text>
+</svg>
+
+  <p class="sub">By app — the 16 largest by volume</p>
+  <svg viewBox="0 0 680 442" width="100%" height="442" role="img" class="chart">
+<line x1="150.0" y1="14" x2="150.0" y2="422" stroke="#e0daf0" stroke-width="1"/>
+<text x="150.0" y="434" font-size="9" fill="#999" text-anchor="middle">60%</text>
+<line x1="254.5" y1="14" x2="254.5" y2="422" stroke="#e0daf0" stroke-width="1"/>
+<text x="254.5" y="434" font-size="9" fill="#999" text-anchor="middle">70%</text>
+<line x1="359.0" y1="14" x2="359.0" y2="422" stroke="#e0daf0" stroke-width="1"/>
+<text x="359.0" y="434" font-size="9" fill="#999" text-anchor="middle">80%</text>
+<line x1="463.5" y1="14" x2="463.5" y2="422" stroke="#e0daf0" stroke-width="1"/>
+<text x="463.5" y="434" font-size="9" fill="#999" text-anchor="middle">90%</text>
+<line x1="568.0" y1="14" x2="568.0" y2="422" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="434" font-size="9" fill="#999" text-anchor="middle">100%</text>
+<text x="142" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">VocabLoco</text>
+<rect x="150" y="20" width="288.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="445.4" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">87.6%</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">6,868,491 q</text>
+<text x="142" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Math Raiders</text>
+<rect x="150" y="46" width="335.4" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="492.4" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">92.1%</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">4,833,577 q</text>
+<text x="142" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Alpha Test</text>
+<rect x="150" y="72" width="308.3" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="465.3" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">89.5%</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">1,077,263 q</text>
+<text x="142" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Alpha Phonics</text>
+<rect x="150" y="98" width="333.4" height="16" rx="3" fill="#6fae86" opacity="0.88"/>
+<text x="490.4" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">91.9%</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">700,478 q</text>
+<text x="142" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">AlphaLiteracy</text>
+<rect x="150" y="124" width="264.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="421.4" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">85.3%</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">688,850 q</text>
+<text x="142" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">MobyMax</text>
+<rect x="150" y="150" width="101.4" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="258.4" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">69.7%</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">522,075 q</text>
+<text x="142" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">AlphaMath by SBIncept</text>
+<rect x="150" y="176" width="178.7" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="335.7" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">77.1%</text>
+<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">369,189 q</text>
+<text x="142" y="212" font-size="11" fill="#1a1a1a" text-anchor="end">TimeBack Dash</text>
+<rect x="150" y="202" width="260.2" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="417.2" y="212" font-size="10.5" font-weight="700" fill="#1a1a1a">84.9%</text>
+<text x="676" y="212" font-size="9.5" fill="#999" text-anchor="end">252,586 q</text>
+<text x="142" y="238" font-size="11" fill="#1a1a1a" text-anchor="end">Lalilo</text>
+<rect x="150" y="228" width="274.8" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="431.8" y="238" font-size="10.5" font-weight="700" fill="#1a1a1a">86.3%</text>
+<text x="676" y="238" font-size="9.5" fill="#999" text-anchor="end">213,334 q</text>
+<text x="142" y="264" font-size="11" fill="#1a1a1a" text-anchor="end">Math Academy</text>
+<rect x="150" y="254" width="195.4" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="352.4" y="264" font-size="10.5" font-weight="700" fill="#1a1a1a">78.7%</text>
+<text x="676" y="264" font-size="9.5" fill="#999" text-anchor="end">129,851 q</text>
+<text x="142" y="290" font-size="11" fill="#1a1a1a" text-anchor="end">EGUMPP</text>
+<rect x="150" y="280" width="219.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="376.4" y="290" font-size="10.5" font-weight="700" fill="#1a1a1a">81%</text>
+<text x="676" y="290" font-size="9.5" fill="#999" text-anchor="end">116,739 q</text>
+<text x="142" y="316" font-size="11" fill="#1a1a1a" text-anchor="end">Freckle</text>
+<rect x="150" y="306" width="111.8" height="16" rx="3" fill="#d3736b" opacity="0.88"/>
+<text x="268.8" y="316" font-size="10.5" font-weight="700" fill="#1a1a1a">70.7%</text>
+<text x="676" y="316" font-size="9.5" fill="#999" text-anchor="end">102,141 q</text>
+<text x="142" y="342" font-size="11" fill="#1a1a1a" text-anchor="end">AlphaLearn</text>
+<rect x="150" y="332" width="256.0" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="413.0" y="342" font-size="10.5" font-weight="700" fill="#1a1a1a">84.5%</text>
+<text x="676" y="342" font-size="9.5" fill="#999" text-anchor="end">90,922 q</text>
+<text x="142" y="368" font-size="11" fill="#1a1a1a" text-anchor="end">AlphaMath Fluency</text>
+<rect x="150" y="358" width="243.5" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="400.5" y="368" font-size="10.5" font-weight="700" fill="#1a1a1a">83.3%</text>
+<text x="676" y="368" font-size="9.5" fill="#999" text-anchor="end">61,935 q</text>
+<text x="142" y="394" font-size="11" fill="#1a1a1a" text-anchor="end">Alphawrite</text>
+<rect x="150" y="384" width="242.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="399.4" y="394" font-size="10.5" font-weight="700" fill="#1a1a1a">83.2%</text>
+<text x="676" y="394" font-size="9.5" fill="#999" text-anchor="end">57,786 q</text>
+<text x="142" y="420" font-size="11" fill="#1a1a1a" text-anchor="end">Membean</text>
+<rect x="150" y="410" width="263.3" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="420.3" y="420" font-size="10.5" font-weight="700" fill="#1a1a1a">85.2%</text>
+<text x="676" y="420" font-size="9.5" fill="#999" text-anchor="end">49,782 q</text>
+</svg>
+  <p class="foot">This is the chart that earns the dashboard. The spread between the best and worst
+    app is over 22
+    points, and it is invisible from inside any single app's own console.</p>
+
+  <p class="sub">Where it is weakest — subject inside app</p>
+  <p class="lead">An app-level average hides which subject inside it is dragging. These are the
+    weakest cells carrying at least 40,000 answered questions, which is where a placement or
+    app-swap decision is worth making.</p>
+  <table><tr><th>Subject · app</th><th class="n">Accuracy</th><th class="n">Questions</th><th class="n">Students</th></tr><tr><td>Reading  ·  MobyMax</td><td class="n">65.3%</td><td class="n">257,006</td><td class="n">703</td></tr><tr><td>Language  ·  Freckle</td><td class="n">70.7%</td><td class="n">102,141</td><td class="n">572</td></tr><tr><td>Language  ·  MobyMax</td><td class="n">74.0%</td><td class="n">256,733</td><td class="n">552</td></tr><tr><td>Math  ·  AlphaMath by SBIncept</td><td class="n">77.1%</td><td class="n">369,189</td><td class="n">537</td></tr><tr><td>Science  ·  Alpha Test</td><td class="n">77.8%</td><td class="n">52,529</td><td class="n">601</td></tr><tr><td>Math  ·  Math Academy</td><td class="n">78.7%</td><td class="n">129,851</td><td class="n">369</td></tr><tr><td>Language  ·  EGUMPP</td><td class="n">81.0%</td><td class="n">116,739</td><td class="n">52</td></tr><tr><td>Language  ·  Alpha Test</td><td class="n">82.2%</td><td class="n">102,106</td><td class="n">832</td></tr></table>
+  <p class="sub">And where it is strongest</p>
+  <table><tr><th>Subject · app</th><th class="n">Accuracy</th><th class="n">Questions</th><th class="n">Students</th></tr><tr><td>FastMath  ·  Alpha Test</td><td class="n">94.2%</td><td class="n">492,230</td><td class="n">884</td></tr><tr><td>FastMath  ·  Math Raiders</td><td class="n">92.1%</td><td class="n">4,833,577</td><td class="n">1228</td></tr><tr><td>Reading  ·  Alpha Phonics</td><td class="n">91.9%</td><td class="n">700,478</td><td class="n">376</td></tr><tr><td>Vocabulary  ·  Alpha Test</td><td class="n">91.1%</td><td class="n">243,952</td><td class="n">550</td></tr></table>
+</div>
+
+<p class="section-heading">Evidence · the intervention loop</p>
+
+<div class="ev">
+  <h3>How fast a stall gets answered</h3>
+  <p class="lead">
+    Measured over all 414 completed Campus DRI requests: from the moment a request is raised to
+    the moment it is closed. Median <b>17.2 hours</b>, 90th percentile 74.3 hours.
+  </p>
+  <svg viewBox="0 0 680 170" width="100%" height="170" role="img" class="chart">
+<line x1="38" y1="136.0" x2="674" y2="136.0" stroke="#e0daf0"/>
+<text x="32" y="139.0" font-size="9" fill="#999" text-anchor="end">0%</text>
+<line x1="38" y1="105.5" x2="674" y2="105.5" stroke="#e0daf0"/>
+<text x="32" y="108.5" font-size="9" fill="#999" text-anchor="end">25%</text>
+<line x1="38" y1="75.0" x2="674" y2="75.0" stroke="#e0daf0"/>
+<text x="32" y="78.0" font-size="9" fill="#999" text-anchor="end">50%</text>
+<line x1="38" y1="44.5" x2="674" y2="44.5" stroke="#e0daf0"/>
+<text x="32" y="47.5" font-size="9" fill="#999" text-anchor="end">75%</text>
+<line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
+<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">100%</text>
+<rect x="71.7" y="93.3" width="143.3" height="42.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="143.3" y="89.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">35%</text>
+<text x="143.3" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤8h</text>
+<text x="143.3" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">same day</text>
+<rect x="282.4" y="55.5" width="143.3" height="80.5" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.0" y="51.5" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">66%</text>
+<text x="354.0" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤24h</text>
+<text x="354.0" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">next day</text>
+<rect x="493.0" y="36.0" width="143.3" height="100.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="564.7" y="32.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">82%</text>
+<text x="564.7" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤48h</text>
+<text x="564.7" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">two days</text>
+</svg>
+
+  <p class="sub">Volume by request type</p>
+  <svg viewBox="0 0 680 215" width="100%" height="215" role="img" class="chart">
+<line x1="38" y1="133.0" x2="674" y2="133.0" stroke="#e0daf0"/>
+<text x="32" y="136.0" font-size="9" fill="#999" text-anchor="end">0</text>
+<line x1="38" y1="93.3" x2="674" y2="93.3" stroke="#e0daf0"/>
+<text x="32" y="96.3" font-size="9" fill="#999" text-anchor="end">100</text>
+<line x1="38" y1="53.7" x2="674" y2="53.7" stroke="#e0daf0"/>
+<text x="32" y="56.7" font-size="9" fill="#999" text-anchor="end">200</text>
+<line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
+<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">300</text>
+<rect x="49.2" y="33.8" width="47.8" height="99.2" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="73.1" y="29.8" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">250</text>
+<text x="73.1" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 73.1 144.0)">Custom plan</text>
+<rect x="119.5" y="98.9" width="47.8" height="34.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="143.3" y="94.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">86</text>
+<text x="143.3" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 143.3 144.0)">Other</text>
+<rect x="189.7" y="108.0" width="47.8" height="25.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="213.6" y="104.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">63</text>
+<text x="213.6" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 213.6 144.0)">Scaffolding plan</text>
+<rect x="259.9" y="115.2" width="47.8" height="17.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="283.8" y="111.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">45</text>
+<text x="283.8" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 283.8 144.0)">Test-out approval</text>
+<rect x="330.1" y="116.7" width="47.8" height="16.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.0" y="112.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">41</text>
+<text x="354.0" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 354.0 144.0)">Deep dive</text>
+<rect x="400.3" y="116.7" width="47.8" height="16.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="424.2" y="112.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">41</text>
+<text x="424.2" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 424.2 144.0)">Study guide</text>
+<rect x="470.6" y="122.7" width="47.8" height="10.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="494.4" y="118.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">26</text>
+<text x="494.4" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 494.4 144.0)">App add/remove</text>
+<rect x="540.8" y="125.1" width="47.8" height="7.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="564.7" y="121.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">20</text>
+<text x="564.7" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 564.7 144.0)">Placement change</text>
+<rect x="611.0" y="127.0" width="47.8" height="6.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="634.9" y="123.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">15</text>
+<text x="634.9" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 634.9 144.0)">Assign hole-filling</text>
+</svg>
+
+  <p class="sub">Median hours to close, by type</p>
+  <svg viewBox="0 0 680 234" width="100%" height="234" role="img" class="chart">
+<line x1="136.0" y1="14" x2="136.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
+<text x="136.0" y="226" font-size="9" fill="#999" text-anchor="middle">0h</text>
+<line x1="280.0" y1="14" x2="280.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
+<text x="280.0" y="226" font-size="9" fill="#999" text-anchor="middle">10h</text>
+<line x1="424.0" y1="14" x2="424.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
+<text x="424.0" y="226" font-size="9" fill="#999" text-anchor="middle">20h</text>
+<line x1="568.0" y1="14" x2="568.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="226" font-size="9" fill="#999" text-anchor="middle">30h</text>
+<text x="128" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Practice test</text>
+<rect x="136" y="20" width="31.7" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="174.7" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">2.2h</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">n=13</text>
+<text x="128" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Assign hole-filling</text>
+<rect x="136" y="46" width="149.8" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="292.8" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">10.4h</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=11</text>
+<text x="128" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Placement change</text>
+<rect x="136" y="72" width="210.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="353.2" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">14.6h</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=14</text>
+<text x="128" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Other</text>
+<rect x="136" y="98" width="236.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="379.2" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">16.4h</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=24</text>
+<text x="128" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Study guide</text>
+<rect x="136" y="124" width="249.1" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="392.1" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">17.3h</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">n=39</text>
+<text x="128" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">Custom plan</text>
+<rect x="136" y="150" width="259.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="402.2" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">18h</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">n=231</text>
+<text x="128" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">App add/remove</text>
+<rect x="136" y="176" width="302.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="445.4" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">21h</text>
+<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">n=21</text>
+<text x="128" y="212" font-size="11" fill="#1a1a1a" text-anchor="end">Scaffolding plan</text>
+<rect x="136" y="202" width="308.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="451.2" y="212" font-size="10.5" font-weight="700" fill="#1a1a1a">21.4h</text>
+<text x="676" y="212" font-size="9.5" fill="#999" text-anchor="end">n=56</text>
+</svg>
+  <p class="foot">Types with fewer than five completed requests are omitted. Curriculum DRI rows are
+    excluded from every timing figure on purpose: that log records work retrospectively — the entry is
+    written after the work is done — so elapsed time is not defined for it.</p>
+
+  <div class="callout">
+    <div class="big">160 h</div>
+    <p>of human effort logged against interventions, split by constraint into
+      82&nbsp;h of Campus DRI work absorbed directly
+      (153 entries) and 78&nbsp;h spent by Curriculum
+      DRIs answering requests (252 entries). The two are separate columns and
+      separate people; the schema refuses to let either be written in the other's place, and a check
+      over every row found <b>zero</b> violations.</p>
+  </div>
+  <p class="foot">Effort capture only began on 2026-09-11, so requests completed before that date
+    carry no minutes and are not a gap: 239 of 311 eligible requests since
+    then have a figure (77%).</p>
+</div>
+
+<p class="section-heading">Evidence · the support load around it</p>
+
+<div class="ev">
+  <h3>What comes in through the helpdesk</h3>
+  <p class="lead">
+    10,973 cases on the Alpha / 2hr Learning brands of the Trilogy central helpdesk, pulled
+    from the Kayako API on 2026-09-22 and sorted by ordered rules over subject and last
+    message. 1,345 are still open (12%), with a median open age of
+    5 days.
+  </p>
+  <svg viewBox="0 0 680 42" width="100%" height="42" class="chart">
+<rect x="0.0" y="0" width="209.0" height="20" fill="#8b7dc8"/>
+<text x="104.5" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">31%</text>
+<rect x="209.0" y="0" width="167.5" height="20" fill="#a396d6"/>
+<text x="292.7" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">25%</text>
+<rect x="376.5" y="0" width="161.9" height="20" fill="#bdb2e2"/>
+<text x="457.4" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">24%</text>
+<rect x="538.4" y="0" width="94.7" height="20" fill="#d6cfee"/>
+<text x="585.8" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">14%</text>
+<rect x="633.1" y="0" width="46.9" height="20" fill="#ebe6f7"/>
+<text x="656.6" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">7%</text>
+<text x="104.5" y="34" font-size="9.5" fill="#999" text-anchor="middle">TimeBack / app bug</text>
+<text x="292.7" y="34" font-size="9.5" fill="#999" text-anchor="middle">Technical — on/offboarding</text>
+<text x="457.4" y="34" font-size="9.5" fill="#999" text-anchor="middle">Other</text>
+<text x="585.8" y="34" font-size="9.5" fill="#999" text-anchor="middle">Academic — not learning</text>
+</svg><div class="legend"><span><i style="background:#8b7dc8"></i>TimeBack / app bug — 4,426</span><span><i style="background:#a396d6"></i>Technical — on/offboarding — 3,548</span><span><i style="background:#bdb2e2"></i>Other — 3,430</span><span><i style="background:#d6cfee"></i>Academic — not learning — 2,006</span><span><i style="background:#ebe6f7"></i>Test request — 993</span></div>
+
+  <p class="sub">Opened per week, last 6 full weeks</p>
+  <svg viewBox="0 0 680 180" width="100%" height="180" role="img" class="chart">
+<line x1="38" y1="146.0" x2="674" y2="146.0" stroke="#e0daf0"/>
+<text x="32" y="149.0" font-size="9" fill="#999" text-anchor="end">0</text>
+<line x1="38" y1="113.0" x2="674" y2="113.0" stroke="#e0daf0"/>
+<text x="32" y="116.0" font-size="9" fill="#999" text-anchor="end">500</text>
+<line x1="38" y1="80.0" x2="674" y2="80.0" stroke="#e0daf0"/>
+<text x="32" y="83.0" font-size="9" fill="#999" text-anchor="end">1,000</text>
+<line x1="38" y1="47.0" x2="674" y2="47.0" stroke="#e0daf0"/>
+<text x="32" y="50.0" font-size="9" fill="#999" text-anchor="end">1,500</text>
+<line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
+<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">2,000</text>
+<rect x="54.9" y="51.5" width="71.6" height="94.5" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="90.7" y="47.5" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,432</text>
+<text x="90.7" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">10 Aug</text>
+<text x="90.7" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,152 closed</text>
+<rect x="160.2" y="34.5" width="71.6" height="111.5" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="196.0" y="30.5" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,689</text>
+<text x="196.0" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">17 Aug</text>
+<text x="196.0" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,354 closed</text>
+<rect x="265.5" y="27.3" width="71.6" height="118.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="301.3" y="23.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,799</text>
+<text x="301.3" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">24 Aug</text>
+<text x="301.3" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,725 closed</text>
+<rect x="370.9" y="45.1" width="71.6" height="100.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="406.7" y="41.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,529</text>
+<text x="406.7" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">31 Aug</text>
+<text x="406.7" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,580 closed</text>
+<rect x="476.2" y="45.9" width="71.6" height="100.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="512.0" y="41.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,516</text>
+<text x="512.0" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">07 Sep</text>
+<text x="512.0" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,399 closed</text>
+<rect x="581.5" y="29.3" width="71.6" height="116.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="617.3" y="25.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,768</text>
+<text x="617.3" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">14 Sep</text>
+<text x="617.3" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,590 closed</text>
+</svg>
+
+  <p class="sub">Time to resolution — the distribution, not the median</p>
+  <svg viewBox="0 0 680 180" width="100%" height="180" role="img" class="chart">
+<line x1="38" y1="146.0" x2="674" y2="146.0" stroke="#e0daf0"/>
+<text x="32" y="149.0" font-size="9" fill="#999" text-anchor="end">0%</text>
+<line x1="38" y1="102.0" x2="674" y2="102.0" stroke="#e0daf0"/>
+<text x="32" y="105.0" font-size="9" fill="#999" text-anchor="end">10%</text>
+<line x1="38" y1="58.0" x2="674" y2="58.0" stroke="#e0daf0"/>
+<text x="32" y="61.0" font-size="9" fill="#999" text-anchor="end">20%</text>
+<line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
+<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">30%</text>
+<rect x="50.6" y="42.2" width="53.7" height="103.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="77.5" y="38.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">24%</text>
+<text x="77.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">under 1h</text>
+<text x="77.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,228</text>
+<rect x="129.6" y="131.0" width="53.7" height="15.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="156.5" y="127.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">3%</text>
+<text x="156.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">1-4h</text>
+<text x="156.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">321</text>
+<rect x="208.6" y="115.2" width="53.7" height="30.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="235.5" y="111.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">7%</text>
+<text x="235.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">4-24h</text>
+<text x="235.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">659</text>
+<rect x="287.6" y="121.8" width="53.7" height="24.2" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="314.5" y="117.8" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">6%</text>
+<text x="314.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">1-3d</text>
+<text x="314.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">521</text>
+<rect x="366.6" y="21.9" width="53.7" height="124.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="393.5" y="17.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">28%</text>
+<text x="393.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">3-7d</text>
+<text x="393.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,660</text>
+<rect x="445.6" y="14.9" width="53.7" height="131.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="472.5" y="10.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">30%</text>
+<text x="472.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">1-2w</text>
+<text x="472.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,813</text>
+<rect x="524.6" y="136.3" width="53.7" height="9.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="551.5" y="132.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2%</text>
+<text x="551.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">2w-1m</text>
+<text x="551.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">209</text>
+<rect x="603.6" y="144.2" width="53.7" height="1.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="630.5" y="140.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">0%</text>
+<text x="630.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">over 1m</text>
+<text x="630.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">36</text>
+</svg>
+  <p class="foot">The shape matters more than any single number: 24% of cases close
+    inside an hour by automation and most of the rest take three days to two weeks, so the overall
+    median falls in the empty valley between the two humps and describes almost nothing. For the
+    7,216 cases a human actually worked, the median is
+    6.7 days.</p>
+
+  <p class="sub">Median days to resolution, by ticket type</p>
+  <svg viewBox="0 0 680 130" width="100%" height="130" role="img" class="chart">
+<line x1="180.0" y1="14" x2="180.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
+<text x="180.0" y="122" font-size="9" fill="#999" text-anchor="middle">0d</text>
+<line x1="277.0" y1="14" x2="277.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
+<text x="277.0" y="122" font-size="9" fill="#999" text-anchor="middle">2d</text>
+<line x1="374.0" y1="14" x2="374.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
+<text x="374.0" y="122" font-size="9" fill="#999" text-anchor="middle">4d</text>
+<line x1="471.0" y1="14" x2="471.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
+<text x="471.0" y="122" font-size="9" fill="#999" text-anchor="middle">6d</text>
+<line x1="568.0" y1="14" x2="568.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="122" font-size="9" fill="#999" text-anchor="middle">8d</text>
+<text x="172" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Technical — on/offboarding</text>
+<rect x="180" y="20" width="97.0" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="284.0" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">2d</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">n=3,302</text>
+<text x="172" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Test request</text>
+<rect x="180" y="46" width="310.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="497.4" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">6.4d</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=867</text>
+<text x="172" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">TimeBack / app bug</text>
+<rect x="180" y="72" width="320.1" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="507.1" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=3,620</text>
+<text x="172" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Academic — not learning</text>
+<rect x="180" y="98" width="320.1" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="507.1" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=1,658</text>
+</svg>
+
+  <div class="callout">
+    <div class="big">6.7 d → 17.2 h</div>
+    <p>A platform problem raised through the general helpdesk waits a median of
+      6.7 days for a human resolution. An academic stall raised through the purpose-built
+      intervention loop is closed in 17.2 hours. These are <em>different kinds of work</em> and
+      the comparison is not apples to apples — but it is the same organisation, the same period and
+      largely the same students, and it is the clearest available evidence for what a dedicated loop
+      buys over a general queue.</p>
+  </div>
+</div>
+
+<p class="section-heading">What this adds up to</p>
+<div class="ev">
+  <h3>One loop, built end to end</h3>
+  <p class="lead">
+    These are not four tools that happen to sit near each other. They are the four stages of a
+    single loop, and each one exists because the stage before it produced something nobody could
+    act on.
+  </p>
+  <table>
+    <tr><th>Stage</th><th>Without it</th><th>Evidence on this page</th></tr>
+    <tr><td><b>Measure</b></td>
+        <td>42 apps, 16.4M questions, no shared view</td>
+        <td>a 22-point
+            spread between apps, invisible from inside any one of them</td></tr>
+    <tr><td><b>Answer</b></td>
+        <td>every question needs a person to go and build the answer</td>
+        <td>42 deep dives asked for in 18 days;
+            35 still waiting</td></tr>
+    <tr><td><b>Act</b></td>
+        <td>no record of what was tried, by whom, or whether it worked</td>
+        <td>613 touches over 355 students, median close
+            17.2&nbsp;h</td></tr>
+    <tr><td><b>Reuse</b></td>
+        <td>the same artefact rebuilt at every campus</td>
+        <td>a shared library, 160&nbsp;h of
+            logged effort it can be measured against</td></tr>
+  </table>
+  <div class="callout">
+    <div class="big">49%</div>
+    <p>of the 2,389 commits on the platform repository are mine
+      (1,179), alongside 35 of the 55 commits on the
+      intervention tab, and ownership of the <code>alpha_dri_interventions</code> data source —
+      its dictionary, its published query rules and the judgement layer other teams read it
+      through.</p>
+  </div>
+</div>
+
+<p class="section-heading">Method &amp; provenance</p>
+<div class="ev method">
+  <ul>
+    <li><b>Accuracy</b> — one API call per student over the whole Alpha roster
+      (2,037 resolved students, 1,368 with recorded activity in the window),
+      2026-08-10 to 2026-09-17, pulled 2026-09-18. Cohort key is the student's own OneRoster grade, not a
+      per-subject working grade. Figures are pooled (Σ correct ÷ Σ answered), never an average of
+      per-student averages. The 42 “apps” are the distinct source names the API reports,
+      which includes a few internal surfaces (TimeBack Dash, manual XP assignment) alongside the
+      learning apps proper; the by-app chart shows the 16 largest by volume, all of which are
+      real apps.</li>
+    <li><b>Interventions</b> — read from the <code>alpha_dri_interventions</code> source, scoped to
+      its published rules: the two <code>section</code> values are independent logs and are never
+      totalled; a row is a touch, so folded case counts are given alongside; minutes are read from
+      <code>minutes_spent</code> for Campus DRI manual work and <code>completion_minutes</code> for
+      Curriculum DRI answers, which the store keeps disjoint by constraint.</li>
+    <li><b>Turnaround</b> — <code>completed_at − created_at</code> over completed Campus DRI rows.
+      All 414 qualify. The 172 Curriculum DRI rows are excluded because that log is written
+      retrospectively, which would otherwise produce negative elapsed times.</li>
+    <li><b>Support tickets</b> — the Kayako instance carries 40,593 cases across ~219
+      brands and its API accepts no brand filter, so the pull reads every case and filters locally to
+      the 14,403 Alpha-brand ones, of which 10,973 classify into a named type.
+      Resolution is measured to <code>last_completed_at</code>, the agent's resolving reply — not
+      <code>last_closed_at</code>, which is an auto-close firing days later and reads 72 hours against
+      a real resolution of 0.1.</li>
+    <li><b>Repository figures</b> — counted live from the working copies at build time with
+      <code>git shortlog</code> and <code>grep</code>, not recalled.</li>
+  </ul>
+</div>
+
+</main>
+</body>
+</html>
