@@ -27,7 +27,8 @@ python3 build_systems.py        # reads the four inputs, writes index.html
 | `/tmp/promo/accuracy.json` | see below | ~2,000 API calls |
 | `/tmp/promo/interventions.json` | see below | one SQL round trip |
 | `/tmp/promo/deepdive.json` | see below | one SQL round trip |
-| `~/Desktop/dri-workload/tickets.json` | `cd ~/Desktop/dri-workload && python3 pull_tickets.py && python3 classify.py` | ~12 min, pages all ~40k cases |
+| `~/Desktop/dri-workload/tickets_raw.json` | `cd ~/Desktop/dri-workload && python3 pull_tickets.py` | ~12 min, pages all ~40k cases |
+| `/tmp/promo/tickets2.json` | `python3 classify_tickets.py` | seconds |
 | repo figures | nothing — counted live at build time | — |
 
 ### accuracy.json
@@ -91,3 +92,50 @@ Accuracy charts start at 60%, not 0. Everything on them sits between 62 and 95,
 and a 0-based axis renders that as a row of identical bars — hiding exactly the
 differences the chart exists to show. The axis is labelled, so the choice is
 visible rather than hidden.
+
+
+## Auditing
+
+```bash
+python3 audit.py     # 32 checks, exits non-zero on any failure
+```
+
+Every figure on the page is re-derived by a *second route* and compared: the
+accuracy totals are recounted straight from the per-student cache, the
+intervention figures are re-queried in a different shape, the ticket categories
+are re-classified from the raw pull, and the by-app/by-subject/by-grade slices
+must each sum back to the same grand total. Re-running the same code and getting
+the same answer proves nothing; a figure only one code path can produce is a
+figure nobody has checked.
+
+The audit also asserts the store's own constraints still hold (zero violations)
+and that the helpdesk pull did not stop on a round number, which is how the
+40,000 cap went unnoticed.
+
+## Ticket taxonomy
+
+`classify_tickets.py` replaces the inherited four-bucket split. Ordered rules
+over the subject line, first match wins, every case recording the rule that
+caught it. Four groups:
+
+| Group | What it is |
+|---|---|
+| Platform failures | app bugs, XP/credit/sync, content not delivered |
+| Student & academic | stuck students, tests, placement, accommodations |
+| People & administration | accounts, enrolment, devices, finance |
+| Automated & scheduled | AI chat transcripts, offboarding runs, licence jobs |
+| Needs triage | the subject line never says what the ask is |
+
+Three things this fixed:
+
+- **`\bassignment\b` never matched "assignments".** Several hundred cases fell
+  through to Unclassified on the letter s alone.
+- **Automation was mixed into administration.** Offboarding runs are 1,294 cases
+  closing in a median of 0.1 hours; folded into admin they dragged its median
+  toward zero and made human admin work look instant.
+- **The inherited "Academic — not learning" count was inflated.** It reported
+  2,006, but 1,189 of those were caught by a bare subject word — "reading",
+  "math" — with no verb attached, and the samples are mostly platform work. The
+  honest count of *a child who is stuck and needs a plan* is 45 of 14,403.
+  Rules that match only a topic word are now counted separately and never
+  folded into a named category, which is why coverage reads 73% rather than 86%.

@@ -164,7 +164,7 @@ def stacked(segments, width=680, height=42, colours=None):
     x = 0.0
     for i, (lab, n) in enumerate(segments):
         w = width * n / total
-        if w > 58:
+        if w > 104:
             out.append(f'<text x="{x+w/2:.1f}" y="34" font-size="9.5" fill="{GREY}" '
                        f'text-anchor="middle">{esc(lab)}</text>')
         x += w

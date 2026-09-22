@@ -30,7 +30,7 @@ DRI = pathlib.Path(os.path.expanduser("~/Desktop/dri-workload"))
 acc = json.load(open(PROMO / "accuracy.json"))
 iv = json.load(open(PROMO / "interventions.json"))
 dd = json.load(open(PROMO / "deepdive.json"))
-tk = json.load(open(DRI / "tickets.json"))
+tk = json.load(open(PROMO / "tickets2.json"))
 
 MINE = ("bruna rodrigues", "brunar999", "brunarodrigues-boop")
 
@@ -98,9 +98,16 @@ O = acc["overall"]
 T = iv["turnaround"]
 CA, CU = iv["campus"], iv["curriculum"]
 EF = iv["effort"]
-KP, ST = tk["kpi"], tk["solve_time"]
+GRP, CAT = tk["groups"], tk["categories"]
+TK_TOTAL = tk["alpha_total"]
+TK_OPEN = sum(g["open"] for g in GRP.values())
+# "Student not progressing" is the number the whole helpdesk section turns on,
+# so it is pulled out by name rather than read off a chart.
+STUCK = CAT["Student not progressing"]
+AUTO_N = GRP["Automated & scheduled"]["n"]
+TRIAGE_N = GRP["Needs triage"]["n"]
 
-help_med_d = ST["median_human_h"] / 24.0
+help_med_d = tk["median_human_h"] / 24.0
 iv_med_h = T["median_h"]
 effort_h = EF["campus_own_h"] + EF["curriculum_answer_h"]
 app16 = acc["by_app"][:16]
@@ -177,20 +184,43 @@ cells = [d for d in acc["by_subject_app"] if d["answered"] >= CELL_FLOOR]
 weak = sorted(cells, key=lambda d: d["acc"])[:8]
 strong = sorted(cells, key=lambda d: -d["acc"])[:4]
 
-dist = ST["distribution"]
+dist = tk["distribution"]
 chart_solve = C.vbars([(d["label"], d["pct"], f'{d["n"]:,}') for d in dist],
                       unit="%", height=180)
-cats = sorted(tk["all_categories"].items(), key=lambda x: -x[1])
-CAT_COLS = [C.PURPLE, "#a396d6", "#bdb2e2", "#d6cfee", "#ebe6f7"]
-chart_cats = C.stacked(cats, colours=CAT_COLS) + legend(cats, CAT_COLS)
-wk = [r for r in tk["weekly"]["rows"] if r["week_start"] != tk["weekly"].get("partial_week")]
-chart_weekly = C.vbars([(r["label"], r["opened"], f'{r["resolved"]:,} closed') for r in wk],
-                       height=180)
-by_type_tk = ST["by_type"]
-chart_tk_type = C.hbars(
-    [(k, round(v["median_h"] / 24, 1), f'n={v["n"]:,}') for k, v in
-     sorted(by_type_tk.items(), key=lambda x: x[1]["median_h"])],
-    unit="d", vmin=0, label_w=180, colour=C.AMBER)
+
+GROUP_ORDER = ["Platform failures", "People & administration", "Student & academic",
+               "Automated & scheduled", "Needs triage"]
+GRP_COLS = ["#8b7dc8", "#a396d6", "#6fae86", "#bdb2e2", "#ddd8e8"]
+gseg = [(g, GRP[g]["n"]) for g in GROUP_ORDER if g in GRP]
+chart_groups = C.stacked(gseg, colours=GRP_COLS) + legend(gseg, GRP_COLS)
+
+# One row per category, grouped, so the reader can see what the load is made of.
+def cat_table():
+    out = ['<table><tr><th>Category</th><th class="n">Cases</th><th class="n">Share</th>'
+           '<th class="n">Median</th><th class="n">Closed &lt;1h</th>'
+           '<th class="n">Still open</th></tr>']
+    for g in GROUP_ORDER:
+        if g not in GRP:
+            continue
+        rows = sorted([(k, v) for k, v in CAT.items() if v["group"] == g],
+                      key=lambda x: -x[1]["n"])
+        out.append(f'<tr class="grp"><td colspan="6">{C.esc(g)} — '
+                   f'{GRP[g]["n"]:,} cases, {100*GRP[g]["n"]//TK_TOTAL}%</td></tr>')
+        for k, v in rows:
+            med = f'{v["median_h"]/24:.1f} d' if v["median_h"] and v["median_h"] > 24 \
+                  else (f'{v["median_h"]:.1f} h' if v["median_h"] is not None else "—")
+            out.append(
+                f'<tr><td>{C.esc(k)}</td><td class="n">{v["n"]:,}</td>'
+                f'<td class="n">{100*v["n"]/TK_TOTAL:.1f}%</td><td class="n">{med}</td>'
+                f'<td class="n">{v["auto_pct"] if v["auto_pct"] is not None else "—"}%</td>'
+                f'<td class="n">{v["open"]:,}</td></tr>')
+    return "".join(out) + "</table>"
+
+chart_wk = C.vbars([(w["week"][5:], w["n"], "") for w in tk["weekly"][:-1]], height=180)
+chart_grp_speed = C.hbars(
+    [(g, round(GRP[g]["median_h"] / 24, 1), f'n={GRP[g]["n"]:,}')
+     for g in sorted(GRP, key=lambda x: GRP[x]["median_h"])],
+    unit="d", vmin=0, label_w=178, colour=C.AMBER)
 
 TABS = [("case", "The case"), ("measure", "Dashboard"), ("answer", "Deep dive bot"),
         ("act", "Interventions"), ("reuse", "Resources"), ("accuracy", "Accuracy"),
@@ -206,6 +236,7 @@ HTML = f"""<!DOCTYPE html>
 <title>Bruna Rodrigues — The case, in numbers</title>
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html {{ scroll-padding-top: 64px; }}
   body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     background: #f7f5fc; color: #1a1a1a; line-height: 1.6; -webkit-font-smoothing: antialiased; }}
   main {{ max-width: 900px; margin: 0 auto; padding: 0 28px 110px; }}
@@ -229,7 +260,7 @@ HTML = f"""<!DOCTYPE html>
     white-space: nowrap; }}
   .tab-btn:hover {{ color: #6f5fb0; }}
   .tab-btn.on {{ color: #6f5fb0; border-bottom-color: #8b7dc8; }}
-  .panel {{ display: none; }}
+  .panel {{ display: none; scroll-margin-top: 64px; }}
   .panel.on {{ display: block; animation: fade .18s ease; }}
   @keyframes fade {{ from {{ opacity: 0; transform: translateY(3px); }} to {{ opacity: 1; }} }}
 
@@ -333,6 +364,7 @@ HTML = f"""<!DOCTYPE html>
   {stat(f"{O['pooled_acc']}%", "pooled accuracy, all students all apps")}
   {stat(f"{CA['touches']:,}", f"interventions logged in {iv['window']['days']} days")}
   {stat(f"{iv_med_h:g}h", "median time to close one")}
+  {stat(f"{STUCK['n']}", f"of {TK_TOTAL:,} helpdesk cases are a stuck child")}
   {stat(f"{R['tb_mine']:,}", f"commits on the platform ({R['tb_pct']}% of all)")}
 </div>
 
@@ -367,7 +399,10 @@ HTML = f"""<!DOCTYPE html>
     "remediation the platform did not do by itself.",
     f"{CA['touches']:,} touches over {CA['students']} students in {iv['window']['days']} days, "
     f"median close {iv_med_h:g} hours, {T['within_24h']}% inside a day, and "
-    f"{effort_h:.0f} hours of effort now attributable to a named person.")}
+    f"{effort_h:.0f} hours of effort now attributable to a named person. For scale: "
+    f"classifying all {TK_TOTAL:,} helpdesk cases finds {STUCK['n']} that are a stuck child "
+    f"needing a plan. The log captured {CA['touches']:,} in {iv['window']['days']} days — the "
+    f"work was always happening, it simply was not written down anywhere.")}
 
   {claim(4, "I own a data source other teams read through.",
     "<code>alpha_dri_interventions</code> is published to the data-source-skill contract with a "
@@ -405,7 +440,9 @@ HTML = f"""<!DOCTYPE html>
         <td>every question needs a person to build the answer</td>
         <td>{dd['requests']} deep dives asked for in {iv['window']['days']} days; {dd['open']} still waiting</td></tr>
     <tr><td><b>Act</b></td>
-        <td>no record of what was tried, by whom, or whether it worked</td>
+        <td>no record of what was tried, by whom, or whether it worked — and only
+            {STUCK['n']} of {TK_TOTAL:,} helpdesk cases are a stuck child, so the helpdesk
+            was never carrying it</td>
         <td>{CA['touches']:,} touches, {CA['students']} students, median close {iv_med_h:g} h</td></tr>
     <tr><td><b>Reuse</b></td>
         <td>the same artefact rebuilt at every campus</td>
@@ -588,32 +625,96 @@ HTML = f"""<!DOCTYPE html>
 <!-- ══ 7 · SUPPORT LOAD ══ -->
 <section class="panel" id="support">
 <div class="print-title">Support load</div>
+
 <div class="card">
-  <h3>What comes in through the helpdesk</h3>
-  <p class="lead">{KP['total']:,} cases on the Alpha / 2hr Learning brands of the Trilogy central
-    helpdesk, pulled from the Kayako API on {tk['pulled_at'][:10]} and sorted by ordered rules over
-    subject and last message. {KP['open']:,} are still open ({KP['open_pct']}%), median open age
-    {KP['median_open_age']} days.</p>
-  {chart_cats}
-  <p class="sub">Opened per week, last {len(wk)} full weeks</p>
-  {chart_weekly}
+  <h3>What the helpdesk is actually made of</h3>
+  <p class="lead">
+    {TK_TOTAL:,} cases on the Alpha / 2hr Learning brands of the Trilogy central helpdesk, pulled
+    from the Kayako API on {tk['pulled_at'][:10]}. Sorted into four kinds of work plus an honest
+    fifth for the ones whose subject line never says what the ask is.
+  </p>
+  {chart_groups}
+  <div class="callout">
+    <div class="big">{100*STUCK['n']/TK_TOTAL:.1f}%</div>
+    <p>The single most useful number here. Of {TK_TOTAL:,} support cases, <b>{STUCK['n']}</b> are a
+      child who is stuck and needs a plan — a deep dive, a custom plan, an accuracy investigation.
+      The helpdesk is where the <em>platform</em> gets fixed and where <em>accounts</em> get made.
+      It is not where the academic conversation happens. That work had nowhere to live, which is
+      exactly why the intervention log had to be built: it captured {CA['touches']:,} of those in
+      {iv['window']['days']} days, more in under three weeks than the helpdesk saw all year.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Every category, and how it behaves</h3>
+  <p class="lead">Grouped by what the work is. “Closed &lt;1h” is the automation tell — a category
+    that mostly closes inside an hour is being handled by a machine, not a person.</p>
+  {cat_table()}
+  <p class="foot">
+    Automation is separated out on purpose. Offboarding runs alone are {CAT['Offboarding runs']['n']:,}
+    cases closing in a median of {CAT['Offboarding runs']['median_h']:.1f} hours; left inside
+    “administration” they drag its median toward zero and make human admin work look instant.
+    Together with AI chat transcripts and the scheduled licence jobs, {AUTO_N:,} cases
+    ({100*AUTO_N//TK_TOTAL}%) are work a machine did rather than work a person asked for.
+  </p>
+</div>
+
+<div class="card">
+  <h3>How the work behaves over time</h3>
+  <p class="sub">Median days to resolution, by kind of work</p>
+  {chart_grp_speed}
+  <p class="sub">Opened per week</p>
+  {chart_wk}
   <p class="sub">Time to resolution — the distribution, not the median</p>
   {chart_solve}
-  <p class="foot">The shape matters more than any single number: {ST['automated_pct']}% of cases
-    close inside an hour by automation and most of the rest take three days to two weeks, so the
-    overall median falls in the empty valley between the humps and describes almost nothing. For the
-    {ST['n_human']:,} cases a human actually worked, the median is {help_med_d:.1f} days.</p>
-  <p class="sub">Median days to resolution, by ticket type</p>
-  {chart_tk_type}
+  <p class="foot">The shape matters more than any single number: {tk['auto_pct']}% of cases close
+    inside an hour by automation and most of the rest take three days to two weeks, so the overall
+    median ({tk['median_h']/24:.1f} days) falls in the empty valley between the two humps and
+    describes almost nothing. For the cases a human actually worked, the median is
+    {help_med_d:.1f} days.</p>
   <div class="callout">
     <div class="big">{help_med_d:.1f} d → {iv_med_h:g} h</div>
-    <p>A platform problem raised through the general helpdesk waits a median of {help_med_d:.1f} days
-      for a human resolution. An academic stall raised through the purpose-built intervention loop is
+    <p>A problem raised through the general helpdesk waits a median of {help_med_d:.1f} days for a
+      human resolution. An academic stall raised through the purpose-built intervention loop is
       closed in {iv_med_h:g} hours. These are <em>different kinds of work</em> and the comparison is
       not apples to apples — but it is the same organisation, the same period and largely the same
       students, and it is the clearest available evidence for what a dedicated loop buys over a
       general queue.</p>
   </div>
+</div>
+
+<div class="card">
+  <h3>How honest this classification is</h3>
+  <p class="lead">
+    Rules over the subject line, evaluated in a fixed order, every case recording the rule that
+    caught it. {tk['coverage_pct']}% of cases land in a named category on a rule that matches a verb
+    or a failure signature. The other {TRIAGE_N:,} are held in <b>Needs triage</b> rather than
+    forced somewhere flattering.
+  </p>
+  <table>
+    <tr><th>Bucket</th><th class="n">Cases</th><th>What it means</th></tr>
+    <tr><td><b>Named category</b></td><td class="n">{TK_TOTAL-TRIAGE_N:,}</td>
+      <td>the subject states an ask or a failure — a verb, an error, an app plus a problem</td></tr>
+    <tr><td><b>Topic named, ask unclear</b></td>
+      <td class="n">{CAT['Topic named, ask unclear']['n']:,}</td>
+      <td>names an app, a subject or “test” and nothing else: “eGUMPP”, “language”. Sorted by topic
+        would put it in the right neighbourhood, not the right box</td></tr>
+    <tr><td><b>Chat with a boilerplate subject</b></td>
+      <td class="n">{CAT['Chat with a boilerplate subject']['n']:,}</td>
+      <td>“(Live Chat) Alpha Education issue”, filed by the channel with the same wording every
+        time</td></tr>
+    <tr><td><b>No signal in the subject</b></td>
+      <td class="n">{CAT['No signal in the subject']['n']:,}</td>
+      <td>a bare student name, or a subject line that says nothing at all</td></tr>
+  </table>
+  <p class="foot">
+    The inherited four-bucket taxonomy reported 76% coverage and 2,006 “Academic — not learning”
+    cases. Reading its own rule labels, 1,189 of those 2,006 were caught by a bare subject word —
+    “reading”, “math”, “language” — with no verb attached, and the samples are mostly platform work:
+    “TimeBack PowerPath placement 500s”, “Fix Eitan Barkai reading plan assignment”. A helpdesk that
+    is overwhelmingly platform and administration came to look academic on the strength of the word
+    “reading”. This version reports a lower coverage number and a truer one.
+  </p>
 </div>
 </section>
 
@@ -640,11 +741,17 @@ HTML = f"""<!DOCTYPE html>
       written retrospectively, which would otherwise produce negative elapsed times.</li>
     <li><b>Support tickets</b> — the Kayako instance carries {tk['scanned']:,} cases across ~219
       brands and its API accepts no brand filter, so the pull reads every case and filters locally to
-      the {tk['alpha_total']:,} Alpha-brand ones, of which {KP['total']:,} classify into a named type.
-      Resolution is measured to <code>last_completed_at</code>, the agent's resolving reply — not
-      <code>last_closed_at</code>, an auto-close firing days later that reads 72 hours against a real
-      resolution of 0.1. The pull's page cap was raised from 40,000 to 45,000 for this run: the
-      instance had outgrown it and the previous run truncated silently.</li>
+      the {TK_TOTAL:,} Alpha-brand ones. Resolution is measured to <code>last_completed_at</code>,
+      the agent's resolving reply — not <code>last_closed_at</code>, an auto-close firing days later
+      that reads 72 hours against a real resolution of 0.1. The pull's page cap was raised from
+      40,000 to 45,000 for this run: the instance had outgrown it and the previous run truncated
+      silently at exactly 40,000 without reporting anything.</li>
+    <li><b>Ticket categories</b> — ordered rules over the subject line, first match wins, each case
+      recording the rule that caught it. The preview text is only consulted when the subject is
+      under twelve characters, because the preview is the <em>last</em> message on a case and is
+      usually the agent's closing reply: matching on it classifies a ticket by how it ended rather
+      than what it was. Rules that match only a bare topic word are counted separately and never
+      folded into a named category.</li>
     <li><b>Repository figures</b> — counted live from the working copies at build time with
       <code>git log</code> and <code>grep</code>, not recalled.</li>
   </ul>
@@ -692,6 +799,7 @@ print(f"wrote {OUT}  ({len(HTML):,} bytes, {len(TABS)} tabs)")
 print(f"  accuracy   {O['answered']:,} questions, {O['pooled_acc']}% pooled, {O['n_apps']} apps")
 print(f"  campus log {CA['touches']} touches / {CA['cases']} cases / {CA['students']} students")
 print(f"  turnaround median {iv_med_h}h over n={T['n']}")
-print(f"  helpdesk   {KP['total']:,} classified, human median {help_med_d:.1f}d")
+print(f"  helpdesk   {TK_TOTAL:,} cases, {tk['coverage_pct']}% named, "
+      f"student-stuck {STUCK['n']}, automation {AUTO_N:,}, human median {help_med_d:.1f}d")
 print(f"  repo       {R['tb_mine']}/{R['tb_commits']} commits ({R['tb_pct']}%), "
       f"{R['fixes']} fixes / {R['feats']} features")

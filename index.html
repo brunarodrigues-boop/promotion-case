@@ -6,6 +6,7 @@
 <title>Bruna Rodrigues — The case, in numbers</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-padding-top: 64px; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     background: #f7f5fc; color: #1a1a1a; line-height: 1.6; -webkit-font-smoothing: antialiased; }
   main { max-width: 900px; margin: 0 auto; padding: 0 28px 110px; }
@@ -29,7 +30,7 @@
     white-space: nowrap; }
   .tab-btn:hover { color: #6f5fb0; }
   .tab-btn.on { color: #6f5fb0; border-bottom-color: #8b7dc8; }
-  .panel { display: none; }
+  .panel { display: none; scroll-margin-top: 64px; }
   .panel.on { display: block; animation: fade .18s ease; }
   @keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; } }
 
@@ -133,6 +134,7 @@
   <div class="stat"><div class="val">87.9%</div><div class="label">pooled accuracy, all students all apps</div></div>
   <div class="stat"><div class="val">613</div><div class="label">interventions logged in 18 days</div></div>
   <div class="stat"><div class="val">17.2h</div><div class="label">median time to close one</div></div>
+  <div class="stat"><div class="val">45</div><div class="label">of 14,403 helpdesk cases are a stuck child</div></div>
   <div class="stat"><div class="val">1,179</div><div class="label">commits on the platform (49% of all)</div></div>
 </div>
 
@@ -169,7 +171,7 @@
       <div>
         <h4>I made the work measurable — including my own.</h4>
         <p>Before the intervention log there was no record of what was tried for a stalled student, by whom, or whether it worked. That made the whole function unarguable in both directions: no credit for the work, and no way to find what was not working. It is now the only record of remediation the platform did not do by itself.</p>
-        <p class="claim-ev"><b>Evidence:</b> 613 touches over 355 students in 18 days, median close 17.2 hours, 66% inside a day, and 160 hours of effort now attributable to a named person.</p>
+        <p class="claim-ev"><b>Evidence:</b> 613 touches over 355 students in 18 days, median close 17.2 hours, 66% inside a day, and 160 hours of effort now attributable to a named person. For scale: classifying all 14,403 helpdesk cases finds 45 that are a stuck child needing a plan. The log captured 613 in 18 days — the work was always happening, it simply was not written down anywhere.</p>
       </div>
     </div>
 
@@ -209,7 +211,9 @@
         <td>every question needs a person to build the answer</td>
         <td>42 deep dives asked for in 18 days; 35 still waiting</td></tr>
     <tr><td><b>Act</b></td>
-        <td>no record of what was tried, by whom, or whether it worked</td>
+        <td>no record of what was tried, by whom, or whether it worked — and only
+            45 of 14,403 helpdesk cases are a stuck child, so the helpdesk
+            was never carrying it</td>
         <td>613 touches, 355 students, median close 17.2 h</td></tr>
     <tr><td><b>Reuse</b></td>
         <td>the same artefact rebuilt at every campus</td>
@@ -651,64 +655,120 @@
 <!-- ══ 7 · SUPPORT LOAD ══ -->
 <section class="panel" id="support">
 <div class="print-title">Support load</div>
+
 <div class="card">
-  <h3>What comes in through the helpdesk</h3>
-  <p class="lead">10,973 cases on the Alpha / 2hr Learning brands of the Trilogy central
-    helpdesk, pulled from the Kayako API on 2026-09-22 and sorted by ordered rules over
-    subject and last message. 1,345 are still open (12%), median open age
-    5 days.</p>
+  <h3>What the helpdesk is actually made of</h3>
+  <p class="lead">
+    14,403 cases on the Alpha / 2hr Learning brands of the Trilogy central helpdesk, pulled
+    from the Kayako API on 2026-09-22. Sorted into four kinds of work plus an honest
+    fifth for the ones whose subject line never says what the ask is.
+  </p>
   <svg viewBox="0 0 680 42" width="100%" height="42" class="chart">
-<rect x="0.0" y="0" width="209.0" height="20" fill="#8b7dc8"/>
-<text x="104.5" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">31%</text>
-<rect x="209.0" y="0" width="167.5" height="20" fill="#a396d6"/>
-<text x="292.7" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">25%</text>
-<rect x="376.5" y="0" width="161.9" height="20" fill="#bdb2e2"/>
-<text x="457.4" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">24%</text>
-<rect x="538.4" y="0" width="94.7" height="20" fill="#d6cfee"/>
-<text x="585.8" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">14%</text>
-<rect x="633.1" y="0" width="46.9" height="20" fill="#ebe6f7"/>
-<text x="656.6" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">7%</text>
-<text x="104.5" y="34" font-size="9.5" fill="#999" text-anchor="middle">TimeBack / app bug</text>
-<text x="292.7" y="34" font-size="9.5" fill="#999" text-anchor="middle">Technical — on/offboarding</text>
-<text x="457.4" y="34" font-size="9.5" fill="#999" text-anchor="middle">Other</text>
-<text x="585.8" y="34" font-size="9.5" fill="#999" text-anchor="middle">Academic — not learning</text>
-</svg><div class="legend"><span><i style="background:#8b7dc8"></i>TimeBack / app bug — 4,426</span><span><i style="background:#a396d6"></i>Technical — on/offboarding — 3,548</span><span><i style="background:#bdb2e2"></i>Other — 3,430</span><span><i style="background:#d6cfee"></i>Academic — not learning — 2,006</span><span><i style="background:#ebe6f7"></i>Test request — 993</span></div>
-  <p class="sub">Opened per week, last 6 full weeks</p>
+<rect x="0.0" y="0" width="122.6" height="20" fill="#8b7dc8"/>
+<text x="61.3" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">18%</text>
+<rect x="122.6" y="0" width="179.0" height="20" fill="#a396d6"/>
+<text x="212.1" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">26%</text>
+<rect x="301.6" y="0" width="81.5" height="20" fill="#6fae86"/>
+<text x="342.4" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">12%</text>
+<rect x="383.1" y="0" width="102.1" height="20" fill="#bdb2e2"/>
+<text x="434.2" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">15%</text>
+<rect x="485.2" y="0" width="194.8" height="20" fill="#ddd8e8"/>
+<text x="582.6" y="14" font-size="10" font-weight="700" fill="white" text-anchor="middle">29%</text>
+<text x="61.3" y="34" font-size="9.5" fill="#999" text-anchor="middle">Platform failures</text>
+<text x="212.1" y="34" font-size="9.5" fill="#999" text-anchor="middle">People &amp; administration</text>
+<text x="582.6" y="34" font-size="9.5" fill="#999" text-anchor="middle">Needs triage</text>
+</svg><div class="legend"><span><i style="background:#8b7dc8"></i>Platform failures — 2,596</span><span><i style="background:#a396d6"></i>People &amp; administration — 3,792</span><span><i style="background:#6fae86"></i>Student &amp; academic — 1,727</span><span><i style="background:#bdb2e2"></i>Automated &amp; scheduled — 2,163</span><span><i style="background:#ddd8e8"></i>Needs triage — 4,125</span></div>
+  <div class="callout">
+    <div class="big">0.3%</div>
+    <p>The single most useful number here. Of 14,403 support cases, <b>45</b> are a
+      child who is stuck and needs a plan — a deep dive, a custom plan, an accuracy investigation.
+      The helpdesk is where the <em>platform</em> gets fixed and where <em>accounts</em> get made.
+      It is not where the academic conversation happens. That work had nowhere to live, which is
+      exactly why the intervention log had to be built: it captured 613 of those in
+      18 days, more in under three weeks than the helpdesk saw all year.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Every category, and how it behaves</h3>
+  <p class="lead">Grouped by what the work is. “Closed &lt;1h” is the automation tell — a category
+    that mostly closes inside an hour is being handled by a machine, not a person.</p>
+  <table><tr><th>Category</th><th class="n">Cases</th><th class="n">Share</th><th class="n">Median</th><th class="n">Closed &lt;1h</th><th class="n">Still open</th></tr><tr class="grp"><td colspan="6">Platform failures — 2,596 cases, 18%</td></tr><tr><td>App / platform bug</td><td class="n">1,483</td><td class="n">10.3%</td><td class="n">6.7 d</td><td class="n">11%</td><td class="n">247</td></tr><tr><td>XP, credit &amp; sync</td><td class="n">598</td><td class="n">4.2%</td><td class="n">6.6 d</td><td class="n">16%</td><td class="n">121</td></tr><tr><td>Content not delivered</td><td class="n">515</td><td class="n">3.6%</td><td class="n">6.5 d</td><td class="n">11%</td><td class="n">58</td></tr><tr class="grp"><td colspan="6">People &amp; administration — 3,792 cases, 26%</td></tr><tr><td>Account &amp; access</td><td class="n">2,103</td><td class="n">14.6%</td><td class="n">6.6 d</td><td class="n">9%</td><td class="n">270</td></tr><tr><td>Enrolment &amp; campus setup</td><td class="n">871</td><td class="n">6.0%</td><td class="n">6.4 d</td><td class="n">25%</td><td class="n">56</td></tr><tr><td>Devices &amp; equipment</td><td class="n">449</td><td class="n">3.1%</td><td class="n">6.7 d</td><td class="n">7%</td><td class="n">78</td></tr><tr><td>Finance &amp; procurement</td><td class="n">369</td><td class="n">2.6%</td><td class="n">6.5 d</td><td class="n">11%</td><td class="n">38</td></tr><tr class="grp"><td colspan="6">Student &amp; academic — 1,727 cases, 11%</td></tr><tr><td>Placement &amp; course assignment</td><td class="n">884</td><td class="n">6.1%</td><td class="n">6.5 d</td><td class="n">14%</td><td class="n">123</td></tr><tr><td>Test administration</td><td class="n">717</td><td class="n">5.0%</td><td class="n">5.8 d</td><td class="n">19%</td><td class="n">79</td></tr><tr><td>Accommodations</td><td class="n">81</td><td class="n">0.6%</td><td class="n">7.2 d</td><td class="n">0%</td><td class="n">10</td></tr><tr><td>Student not progressing</td><td class="n">45</td><td class="n">0.3%</td><td class="n">6.6 d</td><td class="n">6%</td><td class="n">12</td></tr><tr class="grp"><td colspan="6">Automated &amp; scheduled — 2,163 cases, 15%</td></tr><tr><td>Offboarding runs</td><td class="n">1,294</td><td class="n">9.0%</td><td class="n">0.1 h</td><td class="n">83%</td><td class="n">3</td></tr><tr><td>AI chat transcript</td><td class="n">745</td><td class="n">5.2%</td><td class="n">0.0 h</td><td class="n">62%</td><td class="n">1</td></tr><tr><td>Licence &amp; seat automation</td><td class="n">124</td><td class="n">0.9%</td><td class="n">11.2 h</td><td class="n">9%</td><td class="n">0</td></tr><tr class="grp"><td colspan="6">Needs triage — 4,125 cases, 28%</td></tr><tr><td>Topic named, ask unclear</td><td class="n">2,179</td><td class="n">15.1%</td><td class="n">6.6 d</td><td class="n">14%</td><td class="n">345</td></tr><tr><td>No signal in the subject</td><td class="n">1,686</td><td class="n">11.7%</td><td class="n">6.7 d</td><td class="n">16%</td><td class="n">266</td></tr><tr><td>Chat with a boilerplate subject</td><td class="n">260</td><td class="n">1.8%</td><td class="n">6.8 d</td><td class="n">8%</td><td class="n">15</td></tr></table>
+  <p class="foot">
+    Automation is separated out on purpose. Offboarding runs alone are 1,294
+    cases closing in a median of 0.1 hours; left inside
+    “administration” they drag its median toward zero and make human admin work look instant.
+    Together with AI chat transcripts and the scheduled licence jobs, 2,163 cases
+    (15%) are work a machine did rather than work a person asked for.
+  </p>
+</div>
+
+<div class="card">
+  <h3>How the work behaves over time</h3>
+  <p class="sub">Median days to resolution, by kind of work</p>
+  <svg viewBox="0 0 680 156" width="100%" height="156" role="img" class="chart">
+<line x1="178.0" y1="14" x2="178.0" y2="136" stroke="#e0daf0" stroke-width="1"/>
+<text x="178.0" y="148" font-size="9" fill="#999" text-anchor="middle">0d</text>
+<line x1="275.5" y1="14" x2="275.5" y2="136" stroke="#e0daf0" stroke-width="1"/>
+<text x="275.5" y="148" font-size="9" fill="#999" text-anchor="middle">2d</text>
+<line x1="373.0" y1="14" x2="373.0" y2="136" stroke="#e0daf0" stroke-width="1"/>
+<text x="373.0" y="148" font-size="9" fill="#999" text-anchor="middle">4d</text>
+<line x1="470.5" y1="14" x2="470.5" y2="136" stroke="#e0daf0" stroke-width="1"/>
+<text x="470.5" y="148" font-size="9" fill="#999" text-anchor="middle">6d</text>
+<line x1="568.0" y1="14" x2="568.0" y2="136" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="148" font-size="9" fill="#999" text-anchor="middle">8d</text>
+<text x="170" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Automated &amp; scheduled</text>
+<rect x="178" y="20" width="1.0" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="186.0" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">0d</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">n=2,163</text>
+<text x="170" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Student &amp; academic</text>
+<rect x="178" y="46" width="316.9" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="501.9" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">6.5d</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=1,727</text>
+<text x="170" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">People &amp; administration</text>
+<rect x="178" y="72" width="321.8" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="506.8" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=3,792</text>
+<text x="170" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Platform failures</text>
+<rect x="178" y="98" width="321.8" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="506.8" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=2,596</text>
+<text x="170" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Needs triage</text>
+<rect x="178" y="124" width="321.8" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
+<text x="506.8" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">n=4,125</text>
+</svg>
+  <p class="sub">Opened per week</p>
   <svg viewBox="0 0 680 180" width="100%" height="180" role="img" class="chart">
 <line x1="38" y1="146.0" x2="674" y2="146.0" stroke="#e0daf0"/>
 <text x="32" y="149.0" font-size="9" fill="#999" text-anchor="end">0</text>
-<line x1="38" y1="113.0" x2="674" y2="113.0" stroke="#e0daf0"/>
-<text x="32" y="116.0" font-size="9" fill="#999" text-anchor="end">500</text>
-<line x1="38" y1="80.0" x2="674" y2="80.0" stroke="#e0daf0"/>
-<text x="32" y="83.0" font-size="9" fill="#999" text-anchor="end">1,000</text>
-<line x1="38" y1="47.0" x2="674" y2="47.0" stroke="#e0daf0"/>
-<text x="32" y="50.0" font-size="9" fill="#999" text-anchor="end">1,500</text>
+<line x1="38" y1="102.0" x2="674" y2="102.0" stroke="#e0daf0"/>
+<text x="32" y="105.0" font-size="9" fill="#999" text-anchor="end">1,000</text>
+<line x1="38" y1="58.0" x2="674" y2="58.0" stroke="#e0daf0"/>
+<text x="32" y="61.0" font-size="9" fill="#999" text-anchor="end">2,000</text>
 <line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
-<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">2,000</text>
-<rect x="54.9" y="51.5" width="71.6" height="94.5" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="90.7" y="47.5" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,432</text>
-<text x="90.7" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">10 Aug</text>
-<text x="90.7" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,152 closed</text>
-<rect x="160.2" y="34.5" width="71.6" height="111.5" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="196.0" y="30.5" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,689</text>
-<text x="196.0" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">17 Aug</text>
-<text x="196.0" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,354 closed</text>
-<rect x="265.5" y="27.3" width="71.6" height="118.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="301.3" y="23.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,799</text>
-<text x="301.3" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">24 Aug</text>
-<text x="301.3" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,725 closed</text>
-<rect x="370.9" y="45.1" width="71.6" height="100.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="406.7" y="41.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,529</text>
-<text x="406.7" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">31 Aug</text>
-<text x="406.7" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,580 closed</text>
-<rect x="476.2" y="45.9" width="71.6" height="100.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="512.0" y="41.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,516</text>
-<text x="512.0" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">07 Sep</text>
-<text x="512.0" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,399 closed</text>
-<rect x="581.5" y="29.3" width="71.6" height="116.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="617.3" y="25.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,768</text>
-<text x="617.3" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">14 Sep</text>
-<text x="617.3" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">1,590 closed</text>
+<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">3,000</text>
+<rect x="52.4" y="114.2" width="61.4" height="31.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="83.1" y="110.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">723</text>
+<text x="83.1" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">08-03</text>
+<rect x="142.7" y="62.4" width="61.4" height="83.6" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="173.4" y="58.4" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">1,900</text>
+<text x="173.4" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">08-10</text>
+<rect x="233.0" y="48.1" width="61.4" height="97.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="263.7" y="44.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2,224</text>
+<text x="263.7" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">08-17</text>
+<rect x="323.3" y="45.1" width="61.4" height="100.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.0" y="41.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2,293</text>
+<text x="354.0" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">08-24</text>
+<rect x="413.6" y="56.1" width="61.4" height="89.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="444.3" y="52.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2,043</text>
+<text x="444.3" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">08-31</text>
+<rect x="503.9" y="55.3" width="61.4" height="90.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="534.6" y="51.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2,062</text>
+<text x="534.6" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">09-07</text>
+<rect x="594.2" y="46.9" width="61.4" height="99.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="624.9" y="42.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2,252</text>
+<text x="624.9" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">09-14</text>
 </svg>
   <p class="sub">Time to resolution — the distribution, not the median</p>
   <svg viewBox="0 0 680 180" width="100%" height="180" role="img" class="chart">
@@ -720,81 +780,87 @@
 <text x="32" y="61.0" font-size="9" fill="#999" text-anchor="end">20%</text>
 <line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
 <text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">30%</text>
-<rect x="50.6" y="42.2" width="53.7" height="103.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="77.5" y="38.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">24%</text>
+<rect x="50.6" y="41.7" width="53.7" height="104.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="77.5" y="37.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">24%</text>
 <text x="77.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">under 1h</text>
-<text x="77.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,228</text>
-<rect x="129.6" y="131.0" width="53.7" height="15.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="156.5" y="127.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">3%</text>
+<text x="77.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,955</text>
+<rect x="129.6" y="122.7" width="53.7" height="23.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="156.5" y="118.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">5%</text>
 <text x="156.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">1-4h</text>
-<text x="156.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">321</text>
-<rect x="208.6" y="115.2" width="53.7" height="30.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="235.5" y="111.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">7%</text>
+<text x="156.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">665</text>
+<rect x="208.6" y="114.8" width="53.7" height="31.2" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="235.5" y="110.8" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">7%</text>
 <text x="235.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">4-24h</text>
-<text x="235.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">659</text>
-<rect x="287.6" y="121.8" width="53.7" height="24.2" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="314.5" y="117.8" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">6%</text>
+<text x="235.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">885</text>
+<rect x="287.6" y="124.0" width="53.7" height="22.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="314.5" y="120.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">5%</text>
 <text x="314.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">1-3d</text>
-<text x="314.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">521</text>
-<rect x="366.6" y="21.9" width="53.7" height="124.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="393.5" y="17.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">28%</text>
+<text x="314.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">627</text>
+<rect x="366.6" y="28.1" width="53.7" height="117.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="393.5" y="24.1" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">27%</text>
 <text x="393.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">3-7d</text>
-<text x="393.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,660</text>
-<rect x="445.6" y="14.9" width="53.7" height="131.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="472.5" y="10.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">30%</text>
+<text x="393.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">3,354</text>
+<rect x="445.6" y="16.6" width="53.7" height="129.4" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="472.5" y="12.6" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">29%</text>
 <text x="472.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">1-2w</text>
-<text x="472.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">2,813</text>
-<rect x="524.6" y="136.3" width="53.7" height="9.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="551.5" y="132.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2%</text>
+<text x="472.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">3,672</text>
+<rect x="524.6" y="135.9" width="53.7" height="10.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="551.5" y="131.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">2%</text>
 <text x="551.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">2w-1m</text>
-<text x="551.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">209</text>
+<text x="551.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">287</text>
 <rect x="603.6" y="144.2" width="53.7" height="1.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="630.5" y="140.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">0%</text>
 <text x="630.5" y="159.0" font-size="9.5" fill="#999" text-anchor="middle">over 1m</text>
-<text x="630.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">36</text>
+<text x="630.5" y="170.0" font-size="8.5" fill="#999" text-anchor="middle">47</text>
 </svg>
-  <p class="foot">The shape matters more than any single number: 24% of cases
-    close inside an hour by automation and most of the rest take three days to two weeks, so the
-    overall median falls in the empty valley between the humps and describes almost nothing. For the
-    7,216 cases a human actually worked, the median is 6.7 days.</p>
-  <p class="sub">Median days to resolution, by ticket type</p>
-  <svg viewBox="0 0 680 130" width="100%" height="130" role="img" class="chart">
-<line x1="180.0" y1="14" x2="180.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
-<text x="180.0" y="122" font-size="9" fill="#999" text-anchor="middle">0d</text>
-<line x1="277.0" y1="14" x2="277.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
-<text x="277.0" y="122" font-size="9" fill="#999" text-anchor="middle">2d</text>
-<line x1="374.0" y1="14" x2="374.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
-<text x="374.0" y="122" font-size="9" fill="#999" text-anchor="middle">4d</text>
-<line x1="471.0" y1="14" x2="471.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
-<text x="471.0" y="122" font-size="9" fill="#999" text-anchor="middle">6d</text>
-<line x1="568.0" y1="14" x2="568.0" y2="110" stroke="#e0daf0" stroke-width="1"/>
-<text x="568.0" y="122" font-size="9" fill="#999" text-anchor="middle">8d</text>
-<text x="172" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Technical — on/offboarding</text>
-<rect x="180" y="20" width="97.0" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
-<text x="284.0" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">2d</text>
-<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">n=3,302</text>
-<text x="172" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Test request</text>
-<rect x="180" y="46" width="310.4" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
-<text x="497.4" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">6.4d</text>
-<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=867</text>
-<text x="172" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">TimeBack / app bug</text>
-<rect x="180" y="72" width="320.1" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
-<text x="507.1" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
-<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=3,620</text>
-<text x="172" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Academic — not learning</text>
-<rect x="180" y="98" width="320.1" height="16" rx="3" fill="#e0a33e" opacity="0.88"/>
-<text x="507.1" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">6.6d</text>
-<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=1,658</text>
-</svg>
+  <p class="foot">The shape matters more than any single number: 24% of cases close
+    inside an hour by automation and most of the rest take three days to two weeks, so the overall
+    median (6.4 days) falls in the empty valley between the two humps and
+    describes almost nothing. For the cases a human actually worked, the median is
+    6.7 days.</p>
   <div class="callout">
     <div class="big">6.7 d → 17.2 h</div>
-    <p>A platform problem raised through the general helpdesk waits a median of 6.7 days
-      for a human resolution. An academic stall raised through the purpose-built intervention loop is
+    <p>A problem raised through the general helpdesk waits a median of 6.7 days for a
+      human resolution. An academic stall raised through the purpose-built intervention loop is
       closed in 17.2 hours. These are <em>different kinds of work</em> and the comparison is
       not apples to apples — but it is the same organisation, the same period and largely the same
       students, and it is the clearest available evidence for what a dedicated loop buys over a
       general queue.</p>
   </div>
+</div>
+
+<div class="card">
+  <h3>How honest this classification is</h3>
+  <p class="lead">
+    Rules over the subject line, evaluated in a fixed order, every case recording the rule that
+    caught it. 73.2% of cases land in a named category on a rule that matches a verb
+    or a failure signature. The other 4,125 are held in <b>Needs triage</b> rather than
+    forced somewhere flattering.
+  </p>
+  <table>
+    <tr><th>Bucket</th><th class="n">Cases</th><th>What it means</th></tr>
+    <tr><td><b>Named category</b></td><td class="n">10,278</td>
+      <td>the subject states an ask or a failure — a verb, an error, an app plus a problem</td></tr>
+    <tr><td><b>Topic named, ask unclear</b></td>
+      <td class="n">2,179</td>
+      <td>names an app, a subject or “test” and nothing else: “eGUMPP”, “language”. Sorted by topic
+        would put it in the right neighbourhood, not the right box</td></tr>
+    <tr><td><b>Chat with a boilerplate subject</b></td>
+      <td class="n">260</td>
+      <td>“(Live Chat) Alpha Education issue”, filed by the channel with the same wording every
+        time</td></tr>
+    <tr><td><b>No signal in the subject</b></td>
+      <td class="n">1,686</td>
+      <td>a bare student name, or a subject line that says nothing at all</td></tr>
+  </table>
+  <p class="foot">
+    The inherited four-bucket taxonomy reported 76% coverage and 2,006 “Academic — not learning”
+    cases. Reading its own rule labels, 1,189 of those 2,006 were caught by a bare subject word —
+    “reading”, “math”, “language” — with no verb attached, and the samples are mostly platform work:
+    “TimeBack PowerPath placement 500s”, “Fix Eitan Barkai reading plan assignment”. A helpdesk that
+    is overwhelmingly platform and administration came to look academic on the strength of the word
+    “reading”. This version reports a lower coverage number and a truer one.
+  </p>
 </div>
 </section>
 
@@ -821,11 +887,17 @@
       written retrospectively, which would otherwise produce negative elapsed times.</li>
     <li><b>Support tickets</b> — the Kayako instance carries 40,593 cases across ~219
       brands and its API accepts no brand filter, so the pull reads every case and filters locally to
-      the 14,403 Alpha-brand ones, of which 10,973 classify into a named type.
-      Resolution is measured to <code>last_completed_at</code>, the agent's resolving reply — not
-      <code>last_closed_at</code>, an auto-close firing days later that reads 72 hours against a real
-      resolution of 0.1. The pull's page cap was raised from 40,000 to 45,000 for this run: the
-      instance had outgrown it and the previous run truncated silently.</li>
+      the 14,403 Alpha-brand ones. Resolution is measured to <code>last_completed_at</code>,
+      the agent's resolving reply — not <code>last_closed_at</code>, an auto-close firing days later
+      that reads 72 hours against a real resolution of 0.1. The pull's page cap was raised from
+      40,000 to 45,000 for this run: the instance had outgrown it and the previous run truncated
+      silently at exactly 40,000 without reporting anything.</li>
+    <li><b>Ticket categories</b> — ordered rules over the subject line, first match wins, each case
+      recording the rule that caught it. The preview text is only consulted when the subject is
+      under twelve characters, because the preview is the <em>last</em> message on a case and is
+      usually the agent's closing reply: matching on it classifies a ticket by how it ended rather
+      than what it was. Rules that match only a bare topic word are counted separately and never
+      folded into a named category.</li>
     <li><b>Repository figures</b> — counted live from the working copies at build time with
       <code>git log</code> and <code>grep</code>, not recalled.</li>
   </ul>
