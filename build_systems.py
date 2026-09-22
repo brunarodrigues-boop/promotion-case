@@ -31,6 +31,7 @@ acc = json.load(open(PROMO / "accuracy.json"))
 iv = json.load(open(PROMO / "interventions.json"))
 dd = json.load(open(PROMO / "deepdive.json"))
 tk = json.load(open(PROMO / "tickets2.json"))
+db = json.load(open(PROMO / "dashboard.json"))
 
 MINE = ("bruna rodrigues", "brunar999", "brunarodrigues-boop")
 
@@ -107,6 +108,9 @@ STUCK = CAT["Student not progressing"]
 AUTO_N = GRP["Automated & scheduled"]["n"]
 TRIAGE_N = GRP["Needs triage"]["n"]
 
+PUB, ROLE, SURF = db["public"], db["roles"], db["surface"]
+ALPHA = db["alpha"]
+
 help_med_d = tk["median_human_h"] / 24.0
 iv_med_h = T["median_h"]
 effort_h = EF["campus_own_h"] + EF["curriculum_answer_h"]
@@ -156,6 +160,38 @@ def legend(items, colours):
         f'<span><i style="background:{colours[i % len(colours)]}"></i>'
         f'{C.esc(k)} — {v:,}</span>' for i, (k, v) in enumerate(items)) + "</div>")
 
+
+# ── public-school tables ─────────────────────────────────────────────────────
+TYPE_LABEL = {"ela": "ELA", "math": "Math"}
+
+
+def _district_rows():
+    rows = sorted(PUB["districts"].items(), key=lambda x: -x[1]["students"])
+    return "".join(
+        f'<tr><td><b>{C.esc(d)}</b></td><td class="n">{v["schools"]}</td>'
+        f'<td class="n">{v["students"]:,}</td>'
+        f'<td class="n">{100*v["students"]/PUB["students"]:.0f}%</td>'
+        f'<td>{" / ".join(TYPE_LABEL.get(t, t) for t in v["types"])}</td></tr>'
+        for d, v in rows)
+
+
+def _school_rows():
+    rows = sorted(PUB["by_school"], key=lambda x: (x["district"], -x["students"]))
+    out = []
+    for sc_ in rows:
+        n = f'{sc_["students"]:,}' if sc_["students"] else "—"
+        out.append(
+            f'<tr><td><b>{C.esc(sc_["short"])}</b></td>'
+            f'<td>{C.esc(sc_["district"])}</td>'
+            f'<td class="n">{n}</td>'
+            f'<td>{TYPE_LABEL.get(sc_["type"], sc_["type"])}</td>'
+            f'<td>{C.esc(", ".join(sc_["subjects"]))}</td>'
+            f'<td>{C.esc(", ".join(sc_["doom_subjects"]))}</td></tr>')
+    return "".join(out)
+
+
+dist_rows = _district_rows()
+school_rows = _school_rows()
 
 # ── charts ───────────────────────────────────────────────────────────────────
 grade_rows = [(d["label"], d["acc"], f'{d["answered"]:,} q') for d in acc["by_grade"]
@@ -476,25 +512,136 @@ HTML = f"""<!DOCTYPE html>
 <!-- ══ 2 · DASHBOARD ══ -->
 <section class="panel" id="measure">
 <div class="print-title">TimeBack Dashboard</div>
+
 <div class="card">
   <span class="pill">Measure</span>
   <h2>TimeBack Dashboard</h2>
   {why(f"A student works in up to {O['n_apps']} apps, each with its own console and its own idea of "
        f"what accuracy means. Without one place that reads all of them, <b>“is this child actually "
        f"learning?”</b> is a question that takes a person a day of tab-switching to answer — per "
-       f"child. At {O['students']:,} students that question simply does not get asked.")}
+       f"child. At {db['total_rostered']:,} rostered students across {db['total_campuses']} campuses "
+       f"that question simply does not get asked.")}
   <p class="lead">The production platform every Campus DRI monitors through: XP, time, accuracy,
-    tests and grade-level progress, per student per subject, with role-based guide and admin views,
+    tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
-  {minis([("campuses configured", R['campuses']), ("students rostered", f"{R['rostered']:,}"),
-          ("public-school districts", R['public']), ("API endpoints", R['endpoints']),
-          ("report generators", R['reports']),
-          ("commits, mine", f"{R['tb_mine']:,} ({R['tb_pct']}%)")])}
+  {minis([("campuses served", db['total_campuses']),
+          ("students rostered", f"{db['total_rostered']:,}"),
+          ("API endpoints", SURF['endpoints']),
+          ("report endpoints", SURF['report_endpoints']),
+          ("PDF generators", SURF['report_generators']),
+          ("scheduled jobs", SURF['scheduled_jobs'])])}
   <p class="foot">Repository since {R['tb_first']}; {R['tb_mine']:,} of {R['tb_commits']:,} commits
-    are mine, counted with <code>git shortlog</code> over all branches. The {R['rostered']:,}
-    rostered students span Alpha campuses and the {R['public']} public-school districts together,
-    and are a wider population than the {O['students']:,} Alpha students in the accuracy figures —
-    those two numbers count different things and are not comparable.</p>
+    are mine ({R['tb_pct']}%), counted with <code>git shortlog</code> over all branches.
+    Every figure on this tab is read out of the running configuration at build time, not recalled.</p>
+</div>
+
+<div class="card">
+  <h3>Two populations, never added together</h3>
+  <p class="lead">
+    The dashboard serves a private campus network and a public-school partnership, and they are not
+    the same kind of thing. Different rostering, different programme design, different reports. The
+    totals are shown separately because summing them would describe a population that does not exist.
+  </p>
+  <table>
+    <tr><th>Population</th><th class="n">Campuses</th><th class="n">Students</th><th>How it is rostered</th></tr>
+    <tr><td><b>Alpha campuses</b></td><td class="n">{ALPHA['campuses']}</td>
+      <td class="n">{ALPHA['students']:,}</td>
+      <td>private network, rostered by email allowlist per campus</td></tr>
+    <tr><td><b>Public schools</b></td><td class="n">{PUB['schools_rostered']}</td>
+      <td class="n">{PUB['students']:,}</td>
+      <td>{len(PUB['districts'])} districts, each school with its own programme type and subject set</td></tr>
+  </table>
+  <p class="foot">
+    {ALPHA['campuses']} + {PUB['schools_rostered']} = {db['total_campuses']}, which is the campus
+    list. The public-school <em>configuration</em> holds {PUB['schools']} entries, not
+    {PUB['schools_rostered']}: “Aldine ISD” is a programme definition with no allowlist of its own,
+    so it is configured but not rostered. The audit asserts that difference is exactly one, because
+    a second unrostered key appearing silently is how a school gets configured and then never
+    looked at.
+  </p>
+</div>
+
+<div class="card">
+  <h3>The public-school partnership</h3>
+  <p class="lead">
+    {PUB['students']:,} students across {PUB['schools']} schools in {len(PUB['districts'])}
+    districts. Each school runs one of two programmes — an <b>ELA</b> track (Language, Reading,
+    FastMath) or a <b>Math</b> track (Math, FastMath) — against a daily target of
+    {PUB['xp_targets'][0]} XP per subject. Which subjects trigger a doom-loop alert is set per
+    school, because a reading school and a maths school fail in different places.
+  </p>
+  <p class="sub">By district</p>
+  <table>
+    <tr><th>District</th><th class="n">Schools</th><th class="n">Students</th><th class="n">Share</th><th>Programme</th></tr>
+    {dist_rows}
+  </table>
+  <p class="sub">Every school, as configured</p>
+  <table>
+    <tr><th>School</th><th>District</th><th class="n">Students</th><th>Programme</th>
+      <th>Subjects tracked</th><th>Doom-loop watch</th></tr>
+    {school_rows}
+  </table>
+  <p class="foot">
+    Student counts are the length of each school's configured email allowlist — the dashboard looks
+    these students up by email, so the allowlist <em>is</em> the roster. District is not a field in
+    the config; the schools are keyed by their own acronyms and I have grouped them from the school
+    names, which is a judgement call rather than data from the source. Aldine ISD carries a
+    twelfth key with no allowlist of its own, which is why it shows five schools and four rosters.
+  </p>
+</div>
+
+<div class="card">
+  <h3>Who can see what</h3>
+  <p class="lead">
+    Access is not a single admin flag. {ROLE['password_roles']} credential roles resolve to
+    {ROLE['distinct_scopes']} distinct scopes, and a scope is one of three shapes: everything, one
+    named campus, or an arbitrary set of campuses composed on the fly.
+  </p>
+  <table>
+    <tr><th>Shape</th><th class="n">Count</th><th>What it means</th></tr>
+    <tr><td><b>Full access</b></td><td class="n">—</td>
+      <td>every campus, both populations, all reports</td></tr>
+    <tr><td><b>Single campus</b></td><td class="n">{ROLE['role_to_school_map']}</td>
+      <td>role→school entries: the login resolves to exactly one campus and cannot see any other</td></tr>
+    <tr><td><b>Composite</b></td><td class="n">{ROLE['composite_roles']}</td>
+      <td>a set joined with <code>+</code>, for a person who owns several campuses —
+        e.g. <code>{C.esc(ROLE['composite_examples'][0]) if ROLE['composite_examples'] else ''}</code></td></tr>
+    <tr><td><b>DRI-scoped</b></td><td class="n">{ROLE['dri_roles']}</td>
+      <td>admin-level API access, but restricted to the campuses that DRI is assigned</td></tr>
+  </table>
+  {minis([("credential roles", ROLE['password_roles']),
+          ("distinct scopes", ROLE['distinct_scopes']),
+          ("role→school entries", ROLE['role_to_school_map']),
+          ("composite roles", ROLE['composite_roles']),
+          ("token lifetime", f"{ROLE['token_ttl_hours']}h"),
+          ("routers", SURF['routers'])])}
+  <p class="foot">
+    On top of the credential roles sit three further mechanisms: per-person accounts with their own
+    role, a multi-persona login for people who hold more than one role at once (the role is signed
+    into the exchange token so the two sign-in paths cannot disagree about who you are), and static
+    API keys for service-to-service calls. Sessions are HMAC-signed and expire in
+    {ROLE['token_ttl_hours']} hours without needing a database round trip.
+  </p>
+</div>
+
+<div class="card">
+  <h3>What runs without anyone asking</h3>
+  <p class="lead">{SURF['scheduled_jobs']} scheduled jobs, plus a rolling cache refresh every
+    {SURF['cache_refresh_minutes']} minutes so a guide opening the dashboard mid-morning is not
+    reading yesterday.</p>
+  <table>
+    <tr><th>Job</th><th>What it does</th></tr>
+    <tr><td><code>_run_scheduled_reports</code></td><td>the nightly report run, 02:00 America/Chicago</td></tr>
+    <tr><td><code>_refresh_all_schools_background</code></td><td>re-pulls every campus every {SURF['cache_refresh_minutes']} minutes</td></tr>
+    <tr><td><code>_run_miami_red_alert</code></td><td>the Miami red-tier alert, 05:00 America/New_York</td></tr>
+    <tr><td><code>_run_refresh_teacher_roster</code></td><td>weekly roster reconciliation, Sunday 02:00</td></tr>
+    <tr><td><code>_run_email_coaching_wednesday</code> · <code>_run_email_coaching_friday</code></td>
+      <td>the two coaching sends</td></tr>
+    <tr><td><code>_run_email_fidelity</code></td><td>the fidelity report send</td></tr>
+  </table>
+  <p class="foot">Guide sends are deliberately <em>not</em> on a timer: leadership reviews and edits
+    each message in the Messaging tab before it goes out, so the automation stops one step short of
+    the person.</p>
 </div>
 </section>
 

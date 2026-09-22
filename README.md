@@ -29,6 +29,7 @@ python3 build_systems.py        # reads the four inputs, writes index.html
 | `/tmp/promo/deepdive.json` | see below | one SQL round trip |
 | `~/Desktop/dri-workload/tickets_raw.json` | `cd ~/Desktop/dri-workload && python3 pull_tickets.py` | ~12 min, pages all ~40k cases |
 | `/tmp/promo/tickets2.json` | `python3 classify_tickets.py` | seconds |
+| `/tmp/promo/dashboard.json` | `python3 pull_dashboard.py` | seconds |
 | repo figures | nothing — counted live at build time | — |
 
 ### accuracy.json
@@ -139,3 +140,24 @@ Three things this fixed:
   honest count of *a child who is stuck and needs a plan* is 45 of 14,403.
   Rules that match only a topic word are now counted separately and never
   folded into a named category, which is why coverage reads 73% rather than 86%.
+
+
+## Dashboard configuration
+
+`pull_dashboard.py` reads the running `school_config.py` and `main.py` rather
+than recalling anything, because the shape changes weekly.
+
+Two populations are kept apart and must never be summed: **95 Alpha campuses /
+6,556 students**, rostered by email allowlist, and **12 public schools / 2,050
+students** across 5 districts, each with its own programme type, subject set and
+doom-loop watch list.
+
+The arithmetic has a trap the audit now guards. 95 + 12 = 107, but the campus
+list holds 106: `aldine isd` is a programme definition with no allowlist of its
+own, so it is *configured but not rostered*. The audit asserts that difference
+is exactly one — a second unrostered key appearing silently is how a school gets
+configured and then never looked at.
+
+District is not a field in the config. The schools are keyed by their own
+acronyms and the grouping here is read off the school names, which is a
+judgement call and is labelled as one on the page.

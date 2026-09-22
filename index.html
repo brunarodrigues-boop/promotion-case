@@ -247,19 +247,122 @@
 <!-- ══ 2 · DASHBOARD ══ -->
 <section class="panel" id="measure">
 <div class="print-title">TimeBack Dashboard</div>
+
 <div class="card">
   <span class="pill">Measure</span>
   <h2>TimeBack Dashboard</h2>
-  <div class="why"><span class="why-tag">Why it has to exist</span><p>A student works in up to 42 apps, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> is a question that takes a person a day of tab-switching to answer — per child. At 1,368 students that question simply does not get asked.</p></div>
+  <div class="why"><span class="why-tag">Why it has to exist</span><p>A student works in up to 42 apps, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> is a question that takes a person a day of tab-switching to answer — per child. At 8,606 rostered students across 106 campuses that question simply does not get asked.</p></div>
   <p class="lead">The production platform every Campus DRI monitors through: XP, time, accuracy,
-    tests and grade-level progress, per student per subject, with role-based guide and admin views,
+    tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
-  <div class="minis"><div class="mini"><b>106</b><span>campuses configured</span></div><div class="mini"><b>8,606</b><span>students rostered</span></div><div class="mini"><b>12</b><span>public-school districts</span></div><div class="mini"><b>136</b><span>API endpoints</span></div><div class="mini"><b>23</b><span>report generators</span></div><div class="mini"><b>1,179 (49%)</b><span>commits, mine</span></div></div>
+  <div class="minis"><div class="mini"><b>106</b><span>campuses served</span></div><div class="mini"><b>8,606</b><span>students rostered</span></div><div class="mini"><b>136</b><span>API endpoints</span></div><div class="mini"><b>45</b><span>report endpoints</span></div><div class="mini"><b>23</b><span>PDF generators</span></div><div class="mini"><b>7</b><span>scheduled jobs</span></div></div>
   <p class="foot">Repository since 2026-03-04; 1,179 of 2,424 commits
-    are mine, counted with <code>git shortlog</code> over all branches. The 8,606
-    rostered students span Alpha campuses and the 12 public-school districts together,
-    and are a wider population than the 1,368 Alpha students in the accuracy figures —
-    those two numbers count different things and are not comparable.</p>
+    are mine (49%), counted with <code>git shortlog</code> over all branches.
+    Every figure on this tab is read out of the running configuration at build time, not recalled.</p>
+</div>
+
+<div class="card">
+  <h3>Two populations, never added together</h3>
+  <p class="lead">
+    The dashboard serves a private campus network and a public-school partnership, and they are not
+    the same kind of thing. Different rostering, different programme design, different reports. The
+    totals are shown separately because summing them would describe a population that does not exist.
+  </p>
+  <table>
+    <tr><th>Population</th><th class="n">Campuses</th><th class="n">Students</th><th>How it is rostered</th></tr>
+    <tr><td><b>Alpha campuses</b></td><td class="n">95</td>
+      <td class="n">6,556</td>
+      <td>private network, rostered by email allowlist per campus</td></tr>
+    <tr><td><b>Public schools</b></td><td class="n">11</td>
+      <td class="n">2,050</td>
+      <td>5 districts, each school with its own programme type and subject set</td></tr>
+  </table>
+  <p class="foot">
+    95 + 11 = 106, which is the campus
+    list. The public-school <em>configuration</em> holds 12 entries, not
+    11: “Aldine ISD” is a programme definition with no allowlist of its own,
+    so it is configured but not rostered. The audit asserts that difference is exactly one, because
+    a second unrostered key appearing silently is how a school gets configured and then never
+    looked at.
+  </p>
+</div>
+
+<div class="card">
+  <h3>The public-school partnership</h3>
+  <p class="lead">
+    2,050 students across 12 schools in 5
+    districts. Each school runs one of two programmes — an <b>ELA</b> track (Language, Reading,
+    FastMath) or a <b>Math</b> track (Math, FastMath) — against a daily target of
+    35 XP per subject. Which subjects trigger a doom-loop alert is set per
+    school, because a reading school and a maths school fail in different places.
+  </p>
+  <p class="sub">By district</p>
+  <table>
+    <tr><th>District</th><th class="n">Schools</th><th class="n">Students</th><th class="n">Share</th><th>Programme</th></tr>
+    <tr><td><b>Jasper County, SC</b></td><td class="n">4</td><td class="n">1,543</td><td class="n">75%</td><td>ELA / Math</td></tr><tr><td><b>Aldine ISD, TX</b></td><td class="n">5</td><td class="n">236</td><td class="n">12%</td><td>Math</td></tr><tr><td><b>Allendale County, SC</b></td><td class="n">1</td><td class="n">199</td><td class="n">10%</td><td>ELA</td></tr><tr><td><b>Fort Davis, TX</b></td><td class="n">1</td><td class="n">44</td><td class="n">2%</td><td>ELA</td></tr><tr><td><b>ScienceSIS</b></td><td class="n">1</td><td class="n">28</td><td class="n">1%</td><td>Math</td></tr>
+  </table>
+  <p class="sub">Every school, as configured</p>
+  <table>
+    <tr><th>School</th><th>District</th><th class="n">Students</th><th>Programme</th>
+      <th>Subjects tracked</th><th>Doom-loop watch</th></tr>
+    <tr><td><b>A-Jones</b></td><td>Aldine ISD, TX</td><td class="n">90</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Lewis</b></td><td>Aldine ISD, TX</td><td class="n">64</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Drew</b></td><td>Aldine ISD, TX</td><td class="n">58</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Hambrick</b></td><td>Aldine ISD, TX</td><td class="n">24</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>Aldine ISD</b></td><td>Aldine ISD, TX</td><td class="n">—</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>AFES</b></td><td>Allendale County, SC</td><td class="n">199</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>Fort Davis</b></td><td>Fort Davis, TX</td><td class="n">44</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JHES</b></td><td>Jasper County, SC</td><td class="n">455</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JRES</b></td><td>Jasper County, SC</td><td class="n">418</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JRHS</b></td><td>Jasper County, SC</td><td class="n">360</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JHMS</b></td><td>Jasper County, SC</td><td class="n">310</td><td>Math</td><td>Math, FastMath</td><td>Math</td></tr><tr><td><b>ScienceSIS</b></td><td>ScienceSIS</td><td class="n">28</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr>
+  </table>
+  <p class="foot">
+    Student counts are the length of each school's configured email allowlist — the dashboard looks
+    these students up by email, so the allowlist <em>is</em> the roster. District is not a field in
+    the config; the schools are keyed by their own acronyms and I have grouped them from the school
+    names, which is a judgement call rather than data from the source. Aldine ISD carries a
+    twelfth key with no allowlist of its own, which is why it shows five schools and four rosters.
+  </p>
+</div>
+
+<div class="card">
+  <h3>Who can see what</h3>
+  <p class="lead">
+    Access is not a single admin flag. 21 credential roles resolve to
+    20 distinct scopes, and a scope is one of three shapes: everything, one
+    named campus, or an arbitrary set of campuses composed on the fly.
+  </p>
+  <table>
+    <tr><th>Shape</th><th class="n">Count</th><th>What it means</th></tr>
+    <tr><td><b>Full access</b></td><td class="n">—</td>
+      <td>every campus, both populations, all reports</td></tr>
+    <tr><td><b>Single campus</b></td><td class="n">114</td>
+      <td>role→school entries: the login resolves to exactly one campus and cannot see any other</td></tr>
+    <tr><td><b>Composite</b></td><td class="n">4</td>
+      <td>a set joined with <code>+</code>, for a person who owns several campuses —
+        e.g. <code>austin_l2+lf+plano+nova_austin</code></td></tr>
+    <tr><td><b>DRI-scoped</b></td><td class="n">1</td>
+      <td>admin-level API access, but restricted to the campuses that DRI is assigned</td></tr>
+  </table>
+  <div class="minis"><div class="mini"><b>21</b><span>credential roles</span></div><div class="mini"><b>20</b><span>distinct scopes</span></div><div class="mini"><b>114</b><span>role→school entries</span></div><div class="mini"><b>4</b><span>composite roles</span></div><div class="mini"><b>12h</b><span>token lifetime</span></div><div class="mini"><b>12</b><span>routers</span></div></div>
+  <p class="foot">
+    On top of the credential roles sit three further mechanisms: per-person accounts with their own
+    role, a multi-persona login for people who hold more than one role at once (the role is signed
+    into the exchange token so the two sign-in paths cannot disagree about who you are), and static
+    API keys for service-to-service calls. Sessions are HMAC-signed and expire in
+    12 hours without needing a database round trip.
+  </p>
+</div>
+
+<div class="card">
+  <h3>What runs without anyone asking</h3>
+  <p class="lead">7 scheduled jobs, plus a rolling cache refresh every
+    30 minutes so a guide opening the dashboard mid-morning is not
+    reading yesterday.</p>
+  <table>
+    <tr><th>Job</th><th>What it does</th></tr>
+    <tr><td><code>_run_scheduled_reports</code></td><td>the nightly report run, 02:00 America/Chicago</td></tr>
+    <tr><td><code>_refresh_all_schools_background</code></td><td>re-pulls every campus every 30 minutes</td></tr>
+    <tr><td><code>_run_miami_red_alert</code></td><td>the Miami red-tier alert, 05:00 America/New_York</td></tr>
+    <tr><td><code>_run_refresh_teacher_roster</code></td><td>weekly roster reconciliation, Sunday 02:00</td></tr>
+    <tr><td><code>_run_email_coaching_wednesday</code> · <code>_run_email_coaching_friday</code></td>
+      <td>the two coaching sends</td></tr>
+    <tr><td><code>_run_email_fidelity</code></td><td>the fidelity report send</td></tr>
+  </table>
+  <p class="foot">Guide sends are deliberately <em>not</em> on a timer: leadership reviews and edits
+    each message in the Messaging tab before it goes out, so the automation stops one step short of
+    the person.</p>
 </div>
 </section>
 

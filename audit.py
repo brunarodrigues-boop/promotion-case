@@ -149,6 +149,54 @@ logcount = len([1 for l in sh("git log --all --format=%an", tb).splitlines()
                 if l.strip().lower() in ("bruna rodrigues", "brunar999", "brunarodrigues-boop")])
 check("my commits: shortlog vs log agree", shortlog, logcount)
 
+print("\n=== 6 · DASHBOARD CONFIG (re-read from school_config, not the json) ===")
+db = json.load(open(f"{PROMO}/dashboard.json"))
+BACKEND = os.path.expanduser("~/Desktop/TimeBack/backend")
+_cwd = os.getcwd()
+sys.path.insert(0, BACKEND)
+os.chdir(BACKEND)
+try:
+    import school_config as SC
+finally:
+    os.chdir(_cwd)
+P, EM = SC.PUBLIC_SCHOOL_CONFIG, SC.SCHOOL_STUDENT_EMAILS
+check("public schools", len(P), db["public"]["schools"])
+check("public students", sum(len(EM.get(k) or []) for k in P), db["public"]["students"])
+check("by_school sums to public total",
+      sum(s["students"] for s in db["public"]["by_school"]), db["public"]["students"])
+check("districts sum to public total",
+      sum(d["students"] for d in db["public"]["districts"].values()), db["public"]["students"])
+check("district school counts sum",
+      sum(d["schools"] for d in db["public"]["districts"].values()), db["public"]["schools"])
+check("alpha + rostered public campuses = all",
+      db["alpha"]["campuses"] + db["public"]["schools_rostered"], db["total_campuses"])
+check("one public school is configured but not rostered",
+      db["public"]["schools"] - db["public"]["schools_rostered"], 1)
+check("alpha + public students = all rostered",
+      db["alpha"]["students"] + db["public"]["students"], db["total_rostered"])
+check("total campuses", len(EM), db["total_campuses"])
+check("total rostered", sum(len(v) for v in EM.values()), db["total_rostered"])
+# every school must declare a programme, subjects and a target
+check("every school has a programme type",
+      sum(1 for s in db["public"]["by_school"] if not s["type"]), 0)
+check("every school has subjects",
+      sum(1 for s in db["public"]["by_school"] if not s["subjects"]), 0)
+check("every school has an xp target",
+      sum(1 for s in db["public"]["by_school"] if not s["xp_target"]), 0)
+# roles, recounted from main.py
+mp = open(os.path.join(BACKEND, "main.py"), encoding="utf-8").read()
+scopes = re.findall(r':\s*"([^"]+)"',
+                    re.search(r"^_ROLES[^=]*= *\{(.*?)^\}", mp, re.S | re.M).group(1))
+check("credential roles", len(scopes), db["roles"]["password_roles"])
+check("distinct scopes", len(set(scopes)), db["roles"]["distinct_scopes"])
+check("composite roles", sum(1 for x in scopes if "+" in x), db["roles"]["composite_roles"])
+# a commented-out job must not be counted as one that runs
+check("scheduled jobs exclude the commented one",
+      len(re.findall(r"^\s*_scheduler\.add_job\(", mp, re.M)),
+      db["surface"]["scheduled_jobs"])
+check("no job counted that is commented out",
+      db["surface"]["scheduled_jobs"] < len(re.findall(r"_scheduler\.add_job\(", mp)), True)
+
 print("\n" + "=" * 78)
 print(f"{len(PASS)} passed, {len(FAIL)} failed")
 for name, got, want in FAIL:
