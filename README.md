@@ -1,8 +1,14 @@
 # The case, in numbers — four systems in production
 
-A single self-contained page: the deep dive bot, the TimeBack dashboard, the
-resource library and the intervention log — what each is for, why it has to
-exist, and the numbers underneath it.
+A tabbed dashboard. Tab one is the case itself — the summary and the argument
+for promotion, five claims each tied to a number on another tab. The rest are
+one tab per system (dashboard, deep dive bot, interventions, resources) and one
+per body of evidence (accuracy, support load, method), so a reader can go
+straight to whichever claim they want to test.
+
+Self-contained: no JavaScript beyond the tab switching, no chart library, no
+network. Printing shows every tab, so the PDF is the whole case rather than
+whichever tab happened to be open — 18 pages.
 
 No figure on the page is typed by hand. Every one comes from a data file
 written by a pull, so the page cannot drift from the source and can be rebuilt
