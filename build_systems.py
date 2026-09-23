@@ -32,6 +32,8 @@ iv = json.load(open(PROMO / "interventions.json"))
 dd = json.load(open(PROMO / "deepdive.json"))
 tk = json.load(open(PROMO / "tickets2.json"))
 db = json.load(open(PROMO / "dashboard.json"))
+rs = json.load(open(PROMO / "resources.json"))
+dr = json.load(open(DRI / "dris.json"))
 
 MINE = ("bruna rodrigues", "brunar999", "brunarodrigues-boop")
 
@@ -107,6 +109,12 @@ TK_OPEN = sum(g["open"] for g in GRP.values())
 STUCK = CAT["Student not progressing"]
 AUTO_N = GRP["Automated & scheduled"]["n"]
 TRIAGE_N = GRP["Needs triage"]["n"]
+
+LIB, RDG = rs["library"], rs["reading"]
+DRIS = sorted(dr["dris"], key=lambda x: -x["students"])
+DRI_TOTAL = sum(x["students"] for x in DRIS)
+ME = next((x for x in DRIS if "bruna" in x["name"].lower()), None)
+MY_RANK = DRIS.index(ME) + 1 if ME else 0
 
 PUB, ROLE, SURF = db["public"], db["roles"], db["surface"]
 ALPHA = db["alpha"]
@@ -193,6 +201,37 @@ def _school_rows():
 dist_rows = _district_rows()
 school_rows = _school_rows()
 
+def _dri_rows():
+    out = []
+    for i, x in enumerate(DRIS, 1):
+        mine = ME and x["name"] == ME["name"]
+        note = []
+        if x["shared_campuses"]:
+            note.append(f'{x["shared_campuses"]} shared')
+        if x.get("no_roster"):
+            note.append(f'{x["no_roster"]} without a roster')
+        out.append(
+            f'<tr{" class=\'me\'" if mine else ""}>'
+            f'<td class="n">{i}</td><td>{"<b>" if mine else ""}{C.esc(x["name"])}'
+            f'{"</b>" if mine else ""}</td>'
+            f'<td class="n">{x["n_campuses"]}</td>'
+            f'<td class="n">{x["students"]:,.0f}</td>'
+            f'<td class="n">{100*x["students"]/DRI_TOTAL:.1f}%</td>'
+            f'<td>{C.esc(", ".join(note))}</td></tr>')
+    return "".join(out)
+
+
+def _reading_rows():
+    return "".join(
+        f'<tr><td><b>{C.esc(g["grade"])}</b></td><td class="n">{g["lessons"]}</td>'
+        f'<td class="n">{g["passages"]}</td><td class="n">{g["words"]:,}</td>'
+        f'<td class="n">{100*g["with_text"]/g["lessons"]:.0f}%</td></tr>'
+        for g in RDG["by_grade"])
+
+
+dri_rows = _dri_rows()
+reading_rows = _reading_rows()
+
 # ── charts ───────────────────────────────────────────────────────────────────
 grade_rows = [(d["label"], d["acc"], f'{d["answered"]:,} q') for d in acc["by_grade"]
               if d["answered"] >= 20000]
@@ -251,6 +290,13 @@ def cat_table():
                 f'<td class="n">{v["auto_pct"] if v["auto_pct"] is not None else "—"}%</td>'
                 f'<td class="n">{v["open"]:,}</td></tr>')
     return "".join(out) + "</table>"
+
+chart_dri = C.hbars(
+    [(x["name"], round(x["students"]), f'{x["n_campuses"]} campuses') for x in DRIS],
+    unit="", vmin=0, label_w=152, colour=C.PURPLE, note_w=84)
+chart_reading = C.vbars(
+    [(g["grade"], g["passages"], f'{g["lessons"]} lessons') for g in RDG["by_grade"]],
+    height=180)
 
 chart_wk = C.vbars([(w["week"][5:], w["n"], "") for w in tk["weekly"][:-1]], height=180)
 chart_grp_speed = C.hbars(
@@ -625,6 +671,32 @@ HTML = f"""<!DOCTYPE html>
 </div>
 
 <div class="card">
+  <h3>Who owns how many students</h3>
+  <p class="lead">
+    Roles say who <em>can see</em> a campus. This says who is <em>responsible</em> for one.
+    {len(DRIS)} Campus DRIs carry {DRI_TOTAL:,.0f} students across {dr['n_campuses']} campuses —
+    and the load is not evenly spread: the top three carry
+    {100*sum(x['students'] for x in DRIS[:3])/DRI_TOTAL:.0f}% of it between them, and the largest
+    caseload is {DRIS[0]['students']/DRIS[-1]['students']:.1f}× the smallest.
+  </p>
+  {chart_dri}
+  <table>
+    <tr><th class="n">#</th><th>Campus DRI</th><th class="n">Campuses</th>
+      <th class="n">Students</th><th class="n">Share</th><th>Notes</th></tr>
+    {dri_rows}
+  </table>
+  <p class="foot">
+    Counts are live enrolled students from OneRoster — an active user record, at least one active
+    role, and that role's end date not yet passed — not the planning sheet's manual figures, which
+    its own note admits drift. This matters: the allowlist disagrees with enrolment on 60 campuses,
+    and GT Anywhere alone reads 510 on the allowlist against 1,259 enrolled. A campus owned jointly
+    is split evenly rather than counted whole for each owner; counting Texas Sport Academy Online
+    three times over would put all three of its owners at the top of this table.
+    Generated {dr['generated']}.
+  </p>
+</div>
+
+<div class="card">
   <h3>What runs without anyone asking</h3>
   <p class="lead">{SURF['scheduled_jobs']} scheduled jobs, plus a rolling cache refresh every
     {SURF['cache_refresh_minutes']} minutes so a guide opening the dashboard mid-morning is not
@@ -719,22 +791,79 @@ HTML = f"""<!DOCTYPE html>
 
 <!-- ══ 5 · RESOURCES ══ -->
 <section class="panel" id="reuse">
-<div class="print-title">The Resource Library</div>
+<div class="print-title">Resources</div>
+
 <div class="card">
   <span class="pill">Reuse</span>
-  <h2>The Resource Library</h2>
+  <h2>The Resource Estate</h2>
   {why("The same study guide gets rebuilt at five campuses by five people who do not know the other "
        "four exist. Every hour spent regenerating an artefact that already exists is an hour not "
-       "spent on a student who is stuck.")}
-  <p class="lead">A shared library on its own Railway service with Postgres behind it, so a resource
-    added by anyone appears for everyone rather than living in one person's browser. Two roles —
-    staff see everything, students never receive staff-only rows — plus generated study-guide and
-    practice-test pages.</p>
-  {minis([("resources live", 30), ("subjects", 7), ("grade bands", 13),
-          ("resource types", 8), ("roles", 2), ("in the DRI resource tab", 75)])}
-  <p class="foot">Counts read live from the service's own /api/health and /api/config. Postgres-backed:
-    Railway wipes container disk on redeploy, so the app refuses to pretend SQLite is safe and warns
-    in the UI instead.</p>
+       "spent on a student who is stuck — and when the artefact is a reading passage, rebuilding it "
+       "badly is worse than not having it.")}
+  <p class="lead">Two things, built for two different problems: a shared library so a resource
+    anyone adds is a resource everyone has, and a standalone reading site because the texts guides
+    needed were locked inside a vendor console one lesson at a time.</p>
+</div>
+
+<div class="card">
+  <h3>Reading Texts — {RDG['passages']} passages, free of the console</h3>
+  <p class="lead">
+    <a href="{RDG['url']}">{RDG['url'].replace('https://','')}</a> ·
+    Every reading passage across grades 3–8, in one page a guide can search, print and mark up.
+    The source is a vendor console that shows one passage at a time behind a login; a guide
+    preparing a lesson could not see what the next text was, could not print it, and could not hand
+    it to a student on paper. {RDG['passages']} passages and {RDG['words']:,} words now sit in a
+    single file that works offline.
+  </p>
+  {minis([("passages", RDG['passages']), ("lessons", RDG['lessons']),
+          ("words of text", f"{RDG['words']:,}"), ("grades", f"3–8"),
+          ("topics", RDG['topics']), ("one file", f"{RDG['page_kb']} KB")])}
+  <p class="sub">By grade</p>
+  {chart_reading}
+  <table>
+    <tr><th>Grade</th><th class="n">Lessons</th><th class="n">Passages</th>
+      <th class="n">Words</th><th class="n">Lessons with a text</th></tr>
+    {reading_rows}
+  </table>
+  <p class="sub">What it does that the console does not</p>
+  <table>
+    <tr><td style="width:24%"><b>Search</b></td>
+      <td>across every grade at once, on title, lesson, topic and body text — so “find me a text
+        about weather” is one query rather than eight menus</td></tr>
+    <tr><td><b>Underlining</b></td>
+      <td>select to mark, tap a mark to remove it. Stored as character offsets into each paragraph
+        rather than as wrapped nodes, so marks survive a reload, print black, and do not nest when
+        two overlap</td></tr>
+    <tr><td><b>Print</b></td>
+      <td>a clean single-page handout: buttons and hints hidden, the student's underlining carried
+        through to paper</td></tr>
+    <tr><td><b>Text splitting</b></td>
+      <td>a lesson drawing on several sources becomes one entry per source rather than a wall of
+        prose. One G5 lesson uses five, which is what forced the splitter to stop assuming a pair</td></tr>
+  </table>
+  <p class="foot">
+    Checked live at build time: {sum(1 for v in RDG['features'].values() if v)} of
+    {len(RDG['features'])} named features present in the published page, and the passage count read
+    out of the page's own data structure rather than remembered. A rebuild that silently dropped a
+    feature or a passage would fail this.
+  </p>
+</div>
+
+<div class="card">
+  <h3>The shared library</h3>
+  <p class="lead">A library on its own service with Postgres behind it, so a resource added by
+    anyone appears for everyone rather than living in one person's browser. Two roles: staff see
+    everything, students never receive staff-only rows.</p>
+  {minis([("resources live", LIB['resources']), ("subjects", len(LIB['subjects'])),
+          ("resource types", len(LIB['types'])), ("grade bands", len(LIB['grades'])),
+          ("roles", len(LIB['visibilities'])), ("in the DRI tab", 75)])}
+  <p class="foot">
+    Counts read live from the service's own <code>/api/health</code> and <code>/api/config</code>.
+    Postgres-backed and it checks: Railway wipes container disk on every redeploy, so a SQLite
+    fallback would quietly lose every resource the team added. The app reports
+    <code>ephemeral: {str(LIB['ephemeral']).lower()}</code> and shows a banner in the UI rather than
+    failing silently. Subjects: {C.esc(", ".join(LIB['subjects']))}.
+  </p>
 </div>
 </section>
 

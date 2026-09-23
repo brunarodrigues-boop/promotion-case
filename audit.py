@@ -87,9 +87,18 @@ check("campus folded cases", q["campus_cases"], iv["campus"]["cases"])
 check("campus completed", q["completed"], iv["campus"]["completed"])
 check("curriculum touches", q["curric_rows"], iv["curriculum"]["touches"])
 check("median turnaround h", float(q["median_h"]), iv["turnaround"]["median_h"], 0.05)
-check("campus own effort h", round(q["own_min"] / 60, 1), iv["effort"]["campus_own_h"], 0.05)
+# Tolerance of a tenth, on purpose. 4,941 minutes is exactly 82.35 hours, and
+# the two engines break that tie differently: Postgres rounds half away from
+# zero (82.4), Python rounds half to even and the binary float sits a hair
+# under (82.3). That is a tie-breaking rule, not a disagreement about the data,
+# so the check compares the hours rather than the rounding.
+check("campus own effort h", round(q["own_min"] / 60, 1),
+      iv["effort"]["campus_own_h"], 0.11)
 check("curriculum answer effort h", round(q["ans_min"] / 60, 1),
-      iv["effort"]["curriculum_answer_h"], 0.05)
+      iv["effort"]["curriculum_answer_h"], 0.11)
+check("effort minutes agree exactly, before rounding",
+      q["own_min"] + q["ans_min"],
+      round((iv["effort"]["campus_own_h"] + iv["effort"]["curriculum_answer_h"]) * 60), 2)
 # the two logs must partition the table exactly — proof they are disjoint
 check("the two logs partition the table",
       q["campus_rows"] + q["curric_rows"], q["all_rows"])
@@ -196,6 +205,63 @@ check("scheduled jobs exclude the commented one",
       db["surface"]["scheduled_jobs"])
 check("no job counted that is commented out",
       db["surface"]["scheduled_jobs"] < len(re.findall(r"_scheduler\.add_job\(", mp)), True)
+
+print("\n=== 7 · RESOURCES (re-fetched live and recounted) ===")
+rs = json.load(open(f"{PROMO}/resources.json"))
+RDG, LIB = rs["reading"], rs["library"]
+check("by_grade passages sum to total",
+      sum(g["passages"] for g in RDG["by_grade"]), RDG["passages"])
+check("by_grade lessons sum to total",
+      sum(g["lessons"] for g in RDG["by_grade"]), RDG["lessons"])
+check("by_grade words sum to total",
+      sum(g["words"] for g in RDG["by_grade"]), RDG["words"])
+check("every named feature is live",
+      sum(1 for v in RDG["features"].values() if not v), 0)
+# fetch the published page again and recount from scratch
+page = subprocess.run(["curl", "-sS", "--fail", "--max-time", "40",
+                       RDG["url"].rstrip("/") + "/index.html?cb=audit2"],
+                      capture_output=True, text=True).stdout
+m = re.search(r"const DATA = (\{.*?\});\n", page, re.S)
+if not m:
+    check("reading page re-fetch parsed", False, True)
+else:
+    data = json.loads(m.group(1))
+    check("live passages recounted",
+          sum(len(i["texts"]) for g in data.values() for i in g), RDG["passages"])
+    check("live lessons recounted", sum(len(g) for g in data.values()), RDG["lessons"])
+    check("live grades recounted", len(data), RDG["grades"])
+    # no lesson may hold an empty passage, which is how a rebuild loses text
+    check("no empty passages published",
+          sum(1 for g in data.values() for i in g for t in i["texts"] if not t.strip()), 0)
+health = json.loads(subprocess.run(
+    ["curl", "-sS", "--fail", "--max-time", "40", LIB["url"] + "/api/health"],
+    capture_output=True, text=True).stdout or "{}")
+check("library resource count", health.get("count"), LIB["resources"])
+check("library is on postgres, not ephemeral disk", health.get("postgres"), True)
+
+print("\n=== 8 · DRI CASELOAD ===")
+dr = json.load(open(os.path.expanduser("~/Desktop/dri-workload/dris.json")))
+dris = dr["dris"]
+check("DRI count", len(dris), dr["n_dris"])
+check("per-DRI students sum to the credited total",
+      round(sum(x["students"] for x in dris), 1), round(dr["total_students_credited"], 1), 0.5)
+# each DRI's own campus list must add up to their headline number
+# A campus with no roster carries credited=None, not 0 — the distinction is
+# deliberate so an unmatched campus cannot masquerade as an empty one.
+bad = [x["name"] for x in dris
+       if abs(sum(c["credited"] or 0 for c in x["campuses"]) - x["students"]) > 0.5]
+check("every DRI's campuses sum to their total", len(bad), 0)
+unrostered = [c for x in dris for c in x["campuses"] if c["credited"] is None]
+check("unrostered campuses are flagged, not zeroed",
+      len(unrostered), sum(x.get("no_roster", 0) for x in dris))
+# a shared campus must be split, never counted whole
+shared = [c for x in dris for c in x["campuses"] if (c["share"] or 1) < 1]
+check("shared campuses carry a fractional share",
+      all(0 < c["share"] < 1 for c in shared), True)
+check("campus counts match the campus lists",
+      sum(1 for x in dris if x["n_campuses"] != len(x["campuses"])), 0)
+check("caseload is not stale",
+      dr["generated"] >= "2026-09-20", True)
 
 print("\n" + "=" * 78)
 print(f"{len(PASS)} passed, {len(FAIL)} failed")

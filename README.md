@@ -30,6 +30,8 @@ python3 build_systems.py        # reads the four inputs, writes index.html
 | `~/Desktop/dri-workload/tickets_raw.json` | `cd ~/Desktop/dri-workload && python3 pull_tickets.py` | ~12 min, pages all ~40k cases |
 | `/tmp/promo/tickets2.json` | `python3 classify_tickets.py` | seconds |
 | `/tmp/promo/dashboard.json` | `python3 pull_dashboard.py` | seconds |
+| `/tmp/promo/resources.json` | `python3 pull_resources.py` | seconds, fetches both sites live |
+| `~/Desktop/dri-workload/dris.json` | `python3 pull_oneroster_cache.py` then `cd ~/Desktop/dri-workload && python3 pull_dris.py` | ~3 min |
 | repo figures | nothing — counted live at build time | — |
 
 ### accuracy.json
@@ -161,3 +163,43 @@ configured and then never looked at.
 District is not a field in the config. The schools are keyed by their own
 acronyms and the grouping here is read off the school names, which is a
 judgement call and is labelled as one on the page.
+
+
+## Keep this repository private
+
+The DRI caseload table names 16 colleagues alongside their student load. There
+is no student PII anywhere in the build, but a table of named people and their
+workloads is not something to put behind a public URL without asking them. The
+Accuracy tab also names third-party vendors against unflattering numbers
+(MobyMax at 69.7%, Freckle at 70.7%).
+
+## DRI caseload
+
+`pull_dris.py` in `dri-workload` needs three OneRoster caches that live in
+`/tmp`, and nothing in that repo builds them — when the machine clears `/tmp`
+the refresh dies on a `FileNotFoundError` that says nothing about what should
+have produced the file. `pull_oneroster_cache.py` here builds all three.
+
+It pages 34,347 students at 1,000 per request; 3,000 returns a 502. It retries,
+and it **refuses to write a short file** — the first version silently wrote zero
+students when the API 502'd, which is the same failure mode as the mid-week
+report bug on the case tab, reproduced by me, in a script written to document it.
+
+Counts are live enrolled students — an active user record, at least one active
+role, that role's end date not yet passed — not the planning sheet's manual
+figures. The difference is large: the allowlist disagrees with enrolment on 60
+campuses, and GT Anywhere reads 510 on the allowlist against 1,259 enrolled.
+Jointly-owned campuses are split evenly; counting Texas Sport Academy Online
+whole for each of its three owners would put all three at the top of the table.
+
+## Reading Texts
+
+`pull_resources.py` fetches the published page and parses its data structure,
+so the passage count is read from what is actually live rather than remembered.
+The audit fetches it a second time and recounts independently, and asserts that
+all five named features (search, underlining, print, text splitting, offline)
+are still present — a rebuild that silently dropped one would fail.
+
+Note `fetch()` uses curl, not urllib: urllib cannot complete the TLS handshake
+from here because the outbound proxy presents its own certificate. The Kayako
+client in `dri-workload` works around the same thing the same way.
