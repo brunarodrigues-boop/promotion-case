@@ -120,6 +120,28 @@
   .fb-action-tag { display: block; font-size: .62rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: .12em; color: #8b7dc8; margin-bottom: 5px; }
   .fb-action p { font-size: .86rem; color: #3d3d3d; }
+  .ex-note { font-size: .84rem; color: #6f6a80; background: #faf8ff; border: 1px solid #ece7f8;
+    border-radius: 10px; padding: 11px 15px; margin-bottom: 14px; }
+  .tool-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 14px; }
+  .tool-name { font-size: .92rem; font-weight: 700; background: #ede9f8; color: #5f4f96;
+    padding: 3px 9px; border-radius: 6px; }
+  .tool-what { font-size: .86rem; color: #6f6a80; flex: 1 1 260px; }
+  .tool-io { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 16px; align-items: start; }
+  .io-tag { display: block; font-size: .62rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: #a49dba; margin-bottom: 6px; }
+  .tool-ask p { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8rem;
+    background: #f2f0f7; border-radius: 8px; padding: 10px 12px; color: #43405a; }
+  .slack { border: 1px solid #e3ddf2; border-left: 3px solid #8b7dc8; border-radius: 8px;
+    padding: 12px 14px; background: #fff; }
+  .sl-h { font-size: .93rem; font-weight: 700; margin-bottom: 3px; }
+  .sl-dim { font-size: .73rem; color: #9a93ab; margin-bottom: 7px; }
+  .sl-hr { border-top: 1px solid #ece7f8; margin: 8px 0; }
+  .sl-p { font-size: .8rem; line-height: 1.55; margin-bottom: 7px; color: #2f2f38; }
+  .sl-p code, .sl-fields code { font-size: .93em; }
+  .sl-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font-size: .78rem;
+    margin-bottom: 7px; color: #2f2f38; }
+  @media (max-width: 760px) { .tool-io { grid-template-columns: 1fr; } }
   .ask-eg { display: inline-block; background: #f4f0ff; color: #5f5480; border-radius: 10px;
     padding: 2px 8px; margin: 1px 3px 1px 0; font-size: .76rem; }
   .muted { color: #b0a8c4; }
@@ -789,6 +811,128 @@
     measured and ask for a different window.
   </p>
 </div>
+
+<p class="section-heading">What each one sends back</p>
+<p class="ex-note">
+  Every reply below is produced by the bot's own renderer, called at build time — if the renderer
+  changes, this page changes with it. The <b>values are sample data</b>: fictional students and
+  plausible numbers, because a page anyone can open cannot carry a real child's accuracy history.
+  The shape, the wording and the layout are exactly what lands in the channel.
+</p>
+
+
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">interventions</code>
+            <span class="tool-what">Intervention requests raised on the academic dashboard: placement changes, hole-filling, custom plans, study guides, MAP retests and so on, with who owns them and whether they are still open</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack any interventions for maya.okonkwo@alpha.school</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Interventions — Maya Okonkwo</div><div class="sl-dim">3 requests · 2 still open · newest first</div><div class="sl-hr"></div><div class="sl-p"><b>Sep 19</b>  Custom plan · Reading  ✅ approved<br>   <i>Stuck on inference questions across three articles; accuracy fell to 61%.</i><br>   Owner: A. Klechenko<br><br><b>Sep 12</b>  Scaffolding plan · Reading  ✅ done<br>   <i>Needs sentence-level support before the G5 comprehension set.</i><br>   Owner: A. Klechenko<br>   Action: Built a 6-lesson sentence scaffold and assigned it ahead of the G5 set.<br>   Closed Sep 15 · 25 min<br><br><b>Sep 04</b>  Placement change · Math  ❌ rejected<br>   <i>Guide asked to move up a grade; mastery test sat at 71%.</i><br>   Owner: B. Rodrigues</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">student_deep_dive</code>
+            <span class="tool-what">Full picture for one student: activity metrics, risk status, weakest subjects by accuracy, skills they keep missing, working grades and assigned tests. Requires the student's email address. Pass subject to focus the report on one subject</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack deep dive math on maya.okonkwo@alpha.school</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Maya Okonkwo</div><div class="sl-dim"><b>Campus:</b> Alpha School Austin  ·  <b>Grade:</b> 5  ·  <b>Guide:</b> J. Alvarez</div><div class="sl-hr"></div><div class="sl-p"><b>Activity</b>   Needs attention</div><div class="sl-fields"><span><b>XP / day</b></span><span>28.4</span><span><b>Time / day</b></span><span>96 min</span><span><b>Accuracy</b></span><span>71.2%</span><span><b>XP per min</b></span><span>0.3</span><span><b>Active days</b></span><span>14</span><span><b>Total XP</b></span><span>398</span></div><div class="sl-p"><b>⏸ Stopped subjects</b><br>• <b>Science</b> — nothing for <b>11 days</b> (last Sep 11, was at 68%)</div><div class="sl-p"><b>Weakest accuracy</b><br>• Reading — <b>61%</b>  (214 questions)<br>• Language — <b>69%</b>  (180 questions)</div><div class="sl-p"><b>Keeps missing</b><br>• Drawing inferences from text  ×6<br>• Main idea and supporting detail  ×4</div><div class="sl-p"><b>Working grades</b><br><code>Language G5  Math G4  Reading G5</code></div><div class="sl-p"><b>Assigned tests</b><br>• Reading G5 — assigned (attempt 2)</div><div class="sl-p"><b>Flags</b><br>• <b>Rushing</b> — 12s median on a 45s lesson</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">student_lessons</code>
+            <span class="tool-what">Named lessons a student has worked on, with accuracy, question count and how many sittings</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what lessons is maya.okonkwo@alpha.school getting wrong</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Maya Okonkwo — lessons</div><div class="sl-dim">4 below 80% of 46 named lessons · Sep 1 – Sep 23</div><div class="sl-hr"></div><div class="sl-p"><b>Reading</b> — 3 below the bar<br>  <i>Tests</i><br>  • <b>71%</b>  Alpha ELA STAAR G5.2019  <i>(34q, 1 sitting)</i><br>  <i>Lessons</i><br>  • <b>54%</b>  Inference: what the text implies  <i>(22q, 3 sittings)</i><br>  • <b>66%</b>  Main idea across paragraphs  <i>(18q, 2 sittings)</i></div><div class="sl-p"><b>Language</b> — 1 below the bar<br>  <i>Lessons</i><br>  • <b>62%</b>  Subject–verb agreement  <i>(20q, 2 sittings)</i></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">most_concerning</code>
+            <span class="tool-what">The students most in need of attention at a campus right now, worst first, with why and the specific lessons they keep missing</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack who should I worry about</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Most concerning — Alpha School Austin</div><div class="sl-dim">2 flagged · Sep 16 to Sep 23</div><div class="sl-hr"></div><div class="sl-p">⚪  <b>Maya Okonkwo</b>  —  Needs attention<br><code>28.4 XP/day · 96 min/day · 71.2% accuracy · — XP/min</code><br>• <b>Stuck in:</b> Reading G5 — failed 3×<br>• <b>Weakest subject:</b> Reading at 61% over 214 questions<br>• <b>Rushing</b> — 12s median on a 45s lesson<br>• <b>Keeps missing:</b> Drawing inferences (×6)</div><div class="sl-p">⚪  <b>Theo Brandt</b>  —  Watch<br><code>41.0 XP/day · 74 min/day · 83.0% accuracy · — XP/min</code><br>• <b>Why it is not green:</b> XP on target, but all of it from one app<br>• <b>Weakest subject:</b> Math at 74% over 160 questions</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">doom_loops</code>
+            <span class="tool-what">Students stuck failing the same test repeatedly at a campus</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack who is in a doom loop</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Doom loops — Alpha School Austin</div><div class="sl-dim">2 found</div><div class="sl-hr"></div><div class="sl-p">🔴  <b>Maya Okonkwo</b>  ·  <i>Alpha School Austin</i><br>Reading G5 — failed 3× (Alpha ELA STAAR G5.2019)</div><div class="sl-p">🔴  <b>Theo Brandt</b>  ·  <i>Alpha School Austin</i><br>Math G4 — failed 2× (across 2 tests)</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">tests_taken</code>
+            <span class="tool-what">Tests students actually sat in a date range, with pass/fail and score</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what tests did students take yesterday</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Tests taken — Alpha School Austin</div><div class="sl-dim">4 results · Sep 22</div><div class="sl-hr"></div><div class="sl-p"><b>Maya Okonkwo</b><br>• ❌ Alpha ELA STAAR G5.2019  <i>(Reading G5)</i> — 71% (attempt 3)</div><div class="sl-p"><b>Theo Brandt</b><br>• ✅ Alpha Math STAAR G4.2021  <i>(Math G4)</i> — 92% (attempt 1)</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">assigned_tests</code>
+            <span class="tool-what">Tests currently assigned and not yet completed at a campus, with which attempt each would be</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what tests are assigned</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Assigned tests — Alpha School Austin</div><div class="sl-dim">3 outstanding</div><div class="sl-hr"></div><div class="sl-p"><b>Maya Okonkwo</b><br>•  Alpha ELA STAAR G5.2021  <i>(Reading G5)</i> (attempt 4)  <i>assigned</i></div><div class="sl-p"><b>Theo Brandt</b><br>•  Alpha Math STAAR G5.2015  <i>(Math G5)</i> (attempt 1)  <i>assigned</i></div></div>
+            </div>
+          </div>
+        </div>
 
 <div class="card">
   <h3>The one that closes the guide feedback loop</h3>

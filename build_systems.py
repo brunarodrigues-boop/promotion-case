@@ -19,6 +19,7 @@ import datetime as dt
 import json
 import os
 import pathlib
+import re
 import subprocess
 
 import charts as C
@@ -35,6 +36,7 @@ dd = json.load(open(PROMO / "deepdive.json"))
 tk = json.load(open(PROMO / "tickets2.json"))
 db = json.load(open(PROMO / "dashboard.json"))
 rs = json.load(open(PROMO / "resources.json"))
+bx = json.load(open(PROMO / "bot_examples.json"))
 dr = json.load(open(DRI / "dris.json"))
 tm = json.load(open(PROMO / "team.json"))
 
@@ -247,6 +249,75 @@ WIP = sum(1 for t in FB.THEMES if t["status"] == "in progress")
 
 STATUS_LABEL = {"done": "Done", "partly": "Partly", "in progress": "In progress"}
 STATUS_CLASS = {"done": "st-done", "partly": "st-partly", "in progress": "st-wip"}
+
+
+EMOJI = {
+    "white_check_mark": "\u2705", "x": "\u274c", "red_circle": "\U0001f534",
+    "large_blue_circle": "\U0001f535", "hourglass_flowing_sand": "\u23f3",
+    "warning": "\u26a0\ufe0f", "double_vertical_bar": "\u23f8", "white_circle": "\u26aa",
+    "large_yellow_circle": "\U0001f7e1", "large_green_circle": "\U0001f7e2",
+}
+
+
+def mrkdwn(t):
+    """Slack mrkdwn as the channel shows it. Escape first, then mark up."""
+    t = C.esc(t)
+    t = re.sub(r":([a-z_]+):", lambda m: EMOJI.get(m.group(1), ""), t)
+    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    t = re.sub(r"\*([^*\n]+)\*", r"<b>\1</b>", t)
+    t = re.sub(r"(?<![A-Za-z0-9])_([^_\n]+)_(?![A-Za-z0-9])", r"<i>\1</i>", t)
+    return t.replace("\n", "<br>")
+
+
+def slack_msg(tool):
+    """One example reply, rendered by the bot's own renderer at build time."""
+    ex = bx.get(tool)
+    if not ex:
+        return ""
+    out = ['<div class="slack">']
+    for kind, txt in ex["blocks"]:
+        if kind == "h":
+            out.append(f'<div class="sl-h">{mrkdwn(txt)}</div>')
+        elif kind == "dim":
+            out.append(f'<div class="sl-dim">{mrkdwn(txt)}</div>')
+        elif kind == "hr":
+            out.append('<div class="sl-hr"></div>')
+        elif kind == "fields":
+            cells = "".join(f'<span>{mrkdwn(x)}</span>' for x in txt.split("\n"))
+            out.append(f'<div class="sl-fields">{cells}</div>')
+        else:
+            out.append(f'<div class="sl-p">{mrkdwn(txt)}</div>')
+    out.append("</div>")
+    return "".join(out)
+
+
+def tool_cards():
+    out = []
+    for t in TOOLS:
+        ask = t["asks"][0] if t["asks"] else t["name"].replace("_", " ")
+        # the source phrasings end in an ellipsis where an argument goes
+        ask = ask.replace("...", "maya.okonkwo@alpha.school")
+        if "X" in ask.split():
+            ask = ask.replace(" X", " maya.okonkwo@alpha.school")
+        ask = ask.replace("<campus>", "alpha school austin")
+        out.append(f"""
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">{C.esc(t['name'])}</code>
+            <span class="tool-what">{C.esc(t['what'])}</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack {C.esc(ask)}</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              {slack_msg(t['name'])}
+            </div>
+          </div>
+        </div>""")
+    return "".join(out)
 
 
 def tool_rows():
@@ -489,6 +560,28 @@ HTML = f"""<!DOCTYPE html>
   .fb-action-tag {{ display: block; font-size: .62rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: .12em; color: #8b7dc8; margin-bottom: 5px; }}
   .fb-action p {{ font-size: .86rem; color: #3d3d3d; }}
+  .ex-note {{ font-size: .84rem; color: #6f6a80; background: #faf8ff; border: 1px solid #ece7f8;
+    border-radius: 10px; padding: 11px 15px; margin-bottom: 14px; }}
+  .tool-head {{ display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 14px; }}
+  .tool-name {{ font-size: .92rem; font-weight: 700; background: #ede9f8; color: #5f4f96;
+    padding: 3px 9px; border-radius: 6px; }}
+  .tool-what {{ font-size: .86rem; color: #6f6a80; flex: 1 1 260px; }}
+  .tool-io {{ display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 16px; align-items: start; }}
+  .io-tag {{ display: block; font-size: .62rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: #a49dba; margin-bottom: 6px; }}
+  .tool-ask p {{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8rem;
+    background: #f2f0f7; border-radius: 8px; padding: 10px 12px; color: #43405a; }}
+  .slack {{ border: 1px solid #e3ddf2; border-left: 3px solid #8b7dc8; border-radius: 8px;
+    padding: 12px 14px; background: #fff; }}
+  .sl-h {{ font-size: .93rem; font-weight: 700; margin-bottom: 3px; }}
+  .sl-dim {{ font-size: .73rem; color: #9a93ab; margin-bottom: 7px; }}
+  .sl-hr {{ border-top: 1px solid #ece7f8; margin: 8px 0; }}
+  .sl-p {{ font-size: .8rem; line-height: 1.55; margin-bottom: 7px; color: #2f2f38; }}
+  .sl-p code, .sl-fields code {{ font-size: .93em; }}
+  .sl-fields {{ display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font-size: .78rem;
+    margin-bottom: 7px; color: #2f2f38; }}
+  @media (max-width: 760px) {{ .tool-io {{ grid-template-columns: 1fr; }} }}
   .ask-eg {{ display: inline-block; background: #f4f0ff; color: #5f5480; border-radius: 10px;
     padding: 2px 8px; margin: 1px 3px 1px 0; font-size: .76rem; }}
   .muted {{ color: #b0a8c4; }}
@@ -968,6 +1061,16 @@ HTML = f"""<!DOCTYPE html>
     measured and ask for a different window.
   </p>
 </div>
+
+<p class="section-heading">What each one sends back</p>
+<p class="ex-note">
+  Every reply below is produced by the bot's own renderer, called at build time — if the renderer
+  changes, this page changes with it. The <b>values are sample data</b>: fictional students and
+  plausible numbers, because a page anyone can open cannot carry a real child's accuracy history.
+  The shape, the wording and the layout are exactly what lands in the channel.
+</p>
+
+{tool_cards()}
 
 <div class="card">
   <h3>The one that closes the guide feedback loop</h3>

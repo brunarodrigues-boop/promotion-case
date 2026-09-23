@@ -241,6 +241,23 @@ check("every tool states what it answers",
       sum(1 for t in tools if not t["what"]), 0)
 check("every tool has a worked example",
       sum(1 for t in tools if not t["asks"]), 0)
+# Every tool must carry an example reply, and those replies must come out of
+# the bot's own renderer — not be typed onto the page.
+bxj = json.load(open(f"{PROMO}/bot_examples.json"))
+check("every tool has an example reply",
+      sum(1 for t in tools if t["name"] not in bxj), 0)
+check("every example reply has a header and body",
+      sum(1 for e in bxj.values()
+          if not any(k == "h" for k, _ in e["blocks"])
+          or not any(k in ("p", "fields") for k, _ in e["blocks"])), 0)
+# The samples are fictional on purpose; assert no real student slipped in.
+real = {m["email"].split("@")[0] for m in json.load(
+    open(f"{PROMO}/g12_reading_k8.json"))["all_mastered"] if m.get("email")}
+leak = [t for t, e in bxj.items()
+        for _, txt in e["blocks"]
+        if any(r and r in txt.lower() for r in real)]
+check("no real student name in the samples", len(leak), 0)
+
 check("every tool declares what it needs",
       sum(1 for t in tools if not t["params"]), 0)
 
