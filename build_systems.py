@@ -120,6 +120,7 @@ ME = next((x for x in DRIS if "bruna" in x["name"].lower()), None)
 MY_RANK = DRIS.index(ME) + 1 if ME else 0
 
 PUB, ROLE, SURF = db["public"], db["roles"], db["surface"]
+TOOLS = db["slack_tools"]
 ALPHA = db["alpha"]
 
 help_med_d = tk["median_human_h"] / 24.0
@@ -246,6 +247,20 @@ WIP = sum(1 for t in FB.THEMES if t["status"] == "in progress")
 
 STATUS_LABEL = {"done": "Done", "partly": "Partly", "in progress": "In progress"}
 STATUS_CLASS = {"done": "st-done", "partly": "st-partly", "in progress": "st-wip"}
+
+
+def tool_rows():
+    out = []
+    for t in TOOLS:
+        asks = "".join(f'<span class="ask-eg">“{C.esc(a)}”</span>' for a in t["asks"])
+        scope = "one student" if "email" in t["required"] else (
+                "a campus" if "school" in t["required"] else "flexible")
+        out.append(
+            f'<tr><td><code>{C.esc(t["name"])}</code></td>'
+            f'<td>{C.esc(t["what"])}</td>'
+            f'<td class="n">{scope}</td>'
+            f'<td>{asks or "<span class=\'muted\'>—</span>"}</td></tr>')
+    return "".join(out)
 
 
 def feedback_blocks():
@@ -474,6 +489,10 @@ HTML = f"""<!DOCTYPE html>
   .fb-action-tag {{ display: block; font-size: .62rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: .12em; color: #8b7dc8; margin-bottom: 5px; }}
   .fb-action p {{ font-size: .86rem; color: #3d3d3d; }}
+  .ask-eg {{ display: inline-block; background: #f4f0ff; color: #5f5480; border-radius: 10px;
+    padding: 2px 8px; margin: 1px 3px 1px 0; font-size: .76rem; }}
+  .muted {{ color: #b0a8c4; }}
+  .callout .big {{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.15rem; }}
   @media (max-width: 720px) {{ .fb-body {{ grid-template-columns: 1fr; }} }}
   tr.me td {{ background: #f4f0ff; }}
   .method {{ font-size: .8rem; color: #8a849b; line-height: 1.65; }}
@@ -906,10 +925,11 @@ HTML = f"""<!DOCTYPE html>
 
 <!-- ══ 3 · DEEP DIVE BOT ══ -->
 <section class="panel" id="answer">
-<div class="print-title">The Deep Dive Bot</div>
+<div class="print-title">The Slack Bot</div>
+
 <div class="card">
   <span class="pill">Answer</span>
-  <h2>The Deep Dive Bot</h2>
+  <h2>The Slack Bot</h2>
   {why(f"The dashboard answers questions you already know to ask, in a browser, at a desk. Real "
        f"questions arrive in Slack, from a guide, mid-lesson: <b>“why is this student stuck?”</b> "
        f"The demand is measured, not assumed — in {iv['window']['days']} days <b>{dd['requests']} "
@@ -921,13 +941,70 @@ HTML = f"""<!DOCTYPE html>
     figure, because the tool result is rendered directly. That division is deliberate: a number
     cannot drift between the API and the channel, and an uncertain request comes back as a
     clarifying question instead of a confident answer about the wrong student.</p>
-  {minis([("deep dives requested by hand", dd['requests']), ("closed by hand", dd['completed']),
-          ("still waiting", dd['open']), ("tools exposed", 6),
-          ("agent, lines", f"{R['agent_loc']:,}"), ("ack budget", "3s")])}
-  <p class="foot">Tools: student_deep_dive, student_lessons, most_concerning, doom_loops,
-    tests_taken, assigned_tests. Slack redelivers on any non-200, so events are de-duplicated on
-    event_id and the work is handed to a background task inside the 3-second window. Demand figures
-    are the ‘Deep dive’ request type in the intervention log — the manual route the bot replaces.</p>
+  {minis([("tools", len(TOOLS)),
+          ("deep dives requested by hand", dd['requests']),
+          ("closed by hand", dd['completed']),
+          ("still waiting", dd['open']),
+          ("agent, lines", f"{R['agent_loc']:,}"),
+          ("ack budget", "3s")])}
+</div>
+
+<div class="card">
+  <h3>Everything you can ask it</h3>
+  <p class="lead">
+    {len(TOOLS)} tools, read out of the agent at build time rather than typed here — the list grew
+    from six to seven while this page was being written. Nobody has to learn a command syntax:
+    the question is asked in English and the model picks the tool.
+  </p>
+  <table>
+    <tr><th style="width:17%">Tool</th><th style="width:38%">What it answers</th>
+      <th class="n" style="width:11%">Scope</th><th>Ask it like this</th></tr>
+    {tool_rows()}
+  </table>
+  <p class="foot">
+    Scope is what the tool needs to answer at all — a student's email, or a campus. The two that
+    take either will narrow to one student if you name one. Every tool accepts a date range; leave
+    it out and it uses the school year to date, which is shown in the reply so you can see what was
+    measured and ask for a different window.
+  </p>
+</div>
+
+<div class="card">
+  <h3>The one that closes the guide feedback loop</h3>
+  <div class="callout">
+    <div class="big">interventions</div>
+    <p>The newest tool, and the one that answers the loudest complaint in the guide survey —
+      <em>“it's been escalated to the appropriate team, with no follow up”</em> and
+      <em>“guides have to escalate 10+ times before anything is done”</em>. A guide can now ask what
+      happened to the thing they raised and get the answer themselves: which interventions exist for
+      a student, who owns each one, and whether it is still open. The status became something a
+      guide can pull rather than something they have to chase.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>How it holds up</h3>
+  <table>
+    <tr><td style="width:30%"><b>3-second ack</b></td>
+      <td>Slack kills any request that has not responded within three seconds, so the route
+        verifies, hands the work to a background task, and returns immediately. Real answers are
+        posted back into the thread afterwards.</td></tr>
+    <tr><td><b>De-duplicated on event_id</b></td>
+      <td>Slack redelivers on any non-200 and occasionally duplicates outright. Answering the same
+        question three times in a thread is worse than answering it late.</td></tr>
+    <tr><td><b>The model never retypes a figure</b></td>
+      <td>It picks the tool and writes one framing sentence. The tool returns structured data and
+        the renderer lays it out, so identical data produces an identical message and a number
+        cannot drift between the API and the channel.</td></tr>
+    <tr><td><b>It asks rather than guesses</b></td>
+      <td>No email and none in the thread, or a campus that could be one of several — it comes back
+        with a question. Answering the wrong student's deep dive confidently is worse than asking
+        which campus was meant.</td></tr>
+    <tr><td><b>It reads the thread</b></td>
+      <td>An email given in the first message and a date given in the fifth are both available;
+        the facts are pulled out with a regular expression rather than left to the model to
+        remember, because it kept re-asking for what it had already been told.</td></tr>
+  </table>
 </div>
 </section>
 

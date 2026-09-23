@@ -231,6 +231,19 @@ check("composite roles", sum(1 for x in scopes if "+" in x), db["roles"]["compos
 check("scheduled jobs exclude the commented one",
       len(re.findall(r"^\s*_scheduler\.add_job\(", mp, re.M)),
       db["surface"]["scheduled_jobs"])
+# The bot's tool list is read from the agent, not typed on the page — it went
+# from six to seven mid-build and a hand-written list would still say six.
+tools = db["slack_tools"]
+agent = open(os.path.join(BACKEND, "slack_agent.py"), encoding="utf-8").read()
+check("slack tools reproduce from source",
+      len(re.findall(r'\{\s*"name":\s*"[a-z_]+",\s*"description"', agent)), len(tools))
+check("every tool states what it answers",
+      sum(1 for t in tools if not t["what"]), 0)
+check("every tool has a worked example",
+      sum(1 for t in tools if not t["asks"]), 0)
+check("every tool declares what it needs",
+      sum(1 for t in tools if not t["params"]), 0)
+
 check("no job counted that is commented out",
       db["surface"]["scheduled_jobs"] < len(re.findall(r"_scheduler\.add_job\(", mp)), True)
 

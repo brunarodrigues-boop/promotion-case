@@ -45,6 +45,42 @@ def sh(cmd):
                           text=True, timeout=90).stdout.strip()
 
 
+def slack_tools(backend):
+    """The bot's tools, read from the agent rather than remembered.
+
+    Read from source on purpose: this list grew from six to seven while the
+    page was being written, and a hand-typed list would still say six.
+    """
+    src = open(os.path.join(backend, "slack_agent.py"), encoding="utf-8").read()
+    blocks = re.findall(
+        r'\{\s*"name":\s*"([a-z_]+)",\s*"description":\s*\((.*?)\),\s*"input_schema"(.*?)\n    \},',
+        src, re.S)
+    # Some tools carry their own worked phrasings ("Use for 'X'"); the deep
+    # dive's examples live in the system prompt instead. Both are lifted from
+    # source rather than invented, so a row with no example shows none.
+    sysm = re.search(r'SYSTEM = """(.*?)"""', src, re.S)
+    sys_examples = re.findall(r'"([^"]{8,60})"', sysm.group(1)) if sysm else []
+    extra = {"student_deep_dive": [e for e in sys_examples if "deep dive" in e.lower()]}
+
+    out = []
+    for name, desc, schema in blocks:
+        text = " ".join(re.findall(r'"([^"]*)"', desc))
+        text = re.sub(r"\s+", " ", text).strip()
+        # the descriptions carry their own worked phrasings: "Use for 'X', 'Y'"
+        asks = re.findall(r"'([^']{6,70})'", text)
+        what = re.split(r"\s*Use for\b", text)[0].strip().rstrip(".")
+        props = re.findall(r'"([a-z_]+)":\s*\{"type"', schema)
+        req = re.search(r'"required":\s*\[([^\]]*)\]', schema)
+        out.append({
+            "name": name,
+            "what": what,
+            "asks": (asks or extra.get(name, []))[:3],
+            "params": props,
+            "required": [x.strip().strip('"') for x in (req.group(1).split(",") if req else []) if x.strip()],
+        })
+    return out
+
+
 def main():
     sys.path.insert(0, BACKEND)
     cwd = os.getcwd()
@@ -138,6 +174,7 @@ def main():
                 r"_scheduler\.add_job\(\s*\n\s+(_[a-z_]+),", main_py))),
             "cache_refresh_minutes": 30,
         },
+        "slack_tools": slack_tools(BACKEND),
     }
     os.makedirs("/tmp/promo", exist_ok=True)
     json.dump(out, open(OUT, "w"), indent=1)
@@ -154,6 +191,8 @@ def main():
           f"{out['roles']['distinct_scopes']} distinct scopes, "
           f"{out['roles']['composite_roles']} composite, "
           f"{out['roles']['role_to_school_map']} role→school entries")
+    print(f"slack bot: {len(out['slack_tools'])} tools — "
+          f"{', '.join(t['name'] for t in out['slack_tools'])}")
     print(f"surface: {out['surface']['endpoints']} endpoints, "
           f"{out['surface']['report_endpoints']} report endpoints, "
           f"{out['surface']['routers']} routers, "
