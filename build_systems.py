@@ -34,6 +34,7 @@ tk = json.load(open(PROMO / "tickets2.json"))
 db = json.load(open(PROMO / "dashboard.json"))
 rs = json.load(open(PROMO / "resources.json"))
 dr = json.load(open(DRI / "dris.json"))
+tm = json.load(open(PROMO / "team.json"))
 
 MINE = ("bruna rodrigues", "brunar999", "brunarodrigues-boop")
 
@@ -127,6 +128,10 @@ app_spread = max(d["acc"] for d in app16) - min(d["acc"] for d in app16)
 
 
 # ── building blocks ──────────────────────────────────────────────────────────
+def ordinal(n):
+    return f"{n}{'th' if 11 <= n % 100 <= 13 else {1:'st',2:'nd',3:'rd'}.get(n % 10, 'th')}"
+
+
 def stat(v, label):
     return f'<div class="stat"><div class="val">{v}</div><div class="label">{label}</div></div>'
 
@@ -404,6 +409,16 @@ HTML = f"""<!DOCTYPE html>
     color: #8a849b; }}
   .legend span {{ display: inline-flex; align-items: center; gap: 6px; }}
   .legend i {{ width: 9px; height: 9px; border-radius: 2px; display: inline-block; }}
+  .ask {{ background: linear-gradient(135deg,#6f5fb0,#8b7dc8); color: #fff; border-radius: 16px;
+    padding: 26px 30px 24px; margin-bottom: 20px; }}
+  .ask-tag {{ display: inline-block; background: rgba(255,255,255,.22); font-size: .64rem;
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 11px;
+    border-radius: 20px; margin-bottom: 10px; }}
+  .ask h2 {{ font-size: 1.85rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px;
+    color: #fff; }}
+  .ask p {{ font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px; }}
+  .ask code {{ background: rgba(255,255,255,.22); color: #fff; }}
+  tr.me td {{ background: #f4f0ff; }}
   .method {{ font-size: .8rem; color: #8a849b; line-height: 1.65; }}
   .method li {{ margin-bottom: 8px; }}
   .method ul {{ padding-left: 17px; }}
@@ -426,7 +441,7 @@ HTML = f"""<!DOCTYPE html>
 <body>
 
 <header>
-  <span class="role-tag">The case, in numbers</span>
+  <span class="role-tag">The case for Head of Campus DRI</span>
   <h1>Bruna Rodrigues</h1>
   <div class="since">Accuracy {O['window'].replace(' to ', ' → ')} ·
     interventions {iv['window']['first']} → {iv['window']['last']} ·
@@ -441,77 +456,143 @@ HTML = f"""<!DOCTYPE html>
 <section class="panel" id="case">
 <div class="print-title">The case</div>
 
+<div class="ask">
+  <span class="ask-tag">The ask</span>
+  <h2>Head of Campus DRI</h2>
+  <p>Leading the {tm['n_dris']} Campus DRIs — {tm['n_dris']-1} people and myself — across
+     {tm['team_campuses']} campuses and {tm['team_students']:,} students. I already carry the
+     {ordinal(tm['my_caseload_rank'])}-largest caseload on that team, and every one of the
+     {tm['dri_filers']} DRIs already works through systems I built. This page is the evidence for
+     both halves of that sentence, and a plan for what I would do with the job.</p>
+</div>
+
 <div class="stats">
-  {stat(f"{O['answered']/1e6:.1f}M", "questions measured across every Alpha app")}
-  {stat(f"{O['pooled_acc']}%", "pooled accuracy, all students all apps")}
-  {stat(f"{CA['touches']:,}", f"interventions logged in {iv['window']['days']} days")}
-  {stat(f"{iv_med_h:g}h", "median time to close one")}
-  {stat(f"{STUCK['n']}", f"of {TK_TOTAL:,} helpdesk cases are a stuck child")}
-  {stat(f"{R['tb_mine']:,}", f"commits on the platform ({R['tb_pct']}% of all)")}
+  {stat(f"{tm['team_students']:,}", "students the team is responsible for")}
+  {stat(tm['team_campuses'], "campuses")}
+  {stat(f"{tm['dri_filers']}/{tm['n_dris']}", "Campus DRIs already using what I built")}
+  {stat(f"{tm['my_students']:,}", f"students I carry today ({ordinal(tm['my_caseload_rank'])} of {tm['n_dris']})")}
+  {stat(f"{iv_med_h:g}h", "median time to close an intervention")}
 </div>
 
 <div class="card">
-  <h2>Why promote me</h2>
+  <h2>Why me</h2>
   <p class="lead">
-    Five claims. Each one is a number on another tab, not an adjective — so each one can be
-    checked, and each one can be argued with.
+    Five claims. Each one is a number on another tab, not an adjective — so each can be checked,
+    and each can be argued with.
   </p>
 
-  {claim(1, "I own the layer the role runs on.",
-    "The TimeBack dashboard is the platform every Campus DRI monitors students through. It is not "
-    "a side project I contributed to; it is the thing I have been building, and the playbook's "
-    "monitoring routine was written on top of it because the tool and the process were designed "
-    "together.",
-    f"{R['tb_mine']:,} of {R['tb_commits']:,} commits ({R['tb_pct']}%), "
-    f"{R['campuses']} campuses, {R['rostered']:,} rostered students, {R['endpoints']} API "
-    f"endpoints, {R['reports']} report generators.")}
+  {claim(1, "The team already runs on what I built.",
+    "The intervention log was not rolled out to anyone. It was built, and the team moved onto it "
+    "because it was the only place the work could be written down. That is the strongest evidence "
+    "I can offer that I already do this job: the practice the whole function follows is one I "
+    "designed, and it stuck without a mandate.",
+    f"All <b>{tm['dri_filers']} of {tm['n_dris']}</b> Campus DRIs file into it, alongside "
+    f"{tm['curriculum_filers']} Curriculum DRIs — {tm['creators']} people writing, "
+    f"{tm['completers']} closing, across <b>{tm['campuses_covered']} campuses</b>, since "
+    f"{tm['first_entry']}.")}
 
-  {claim(2, "I build what is missing, not what is asked for.",
-    "Nobody filed a ticket asking for a Slack bot. The queue asked for it: deep dives were being "
-    "requested faster than anyone could hand-build them, and a request that waits ten days is a "
-    "student who went ten days without the answer. I read the backlog as a specification.",
-    f"{dd['requests']} deep dives requested by hand in {iv['window']['days']} days for "
-    f"{dd['students']} students; the manual path closed {dd['completed']}, "
-    f"{dd['open']} are still open, the oldest waiting {dd['oldest_open_days']:.0f} days.")}
-
-  {claim(3, "I made the work measurable — including my own.",
-    "Before the intervention log there was no record of what was tried for a stalled student, by "
-    "whom, or whether it worked. That made the whole function unarguable in both directions: no "
-    "credit for the work, and no way to find what was not working. It is now the only record of "
-    "remediation the platform did not do by itself.",
-    f"{CA['touches']:,} touches over {CA['students']} students in {iv['window']['days']} days, "
-    f"median close {iv_med_h:g} hours, {T['within_24h']}% inside a day, and "
-    f"{effort_h:.0f} hours of effort now attributable to a named person. For scale: "
-    f"classifying all {TK_TOTAL:,} helpdesk cases finds {STUCK['n']} that are a stuck child "
-    f"needing a plan. The log captured {CA['touches']:,} in {iv['window']['days']} days — the "
-    f"work was always happening, it simply was not written down anywhere.")}
-
-  {claim(4, "I own a data source other teams read through.",
+  {claim(2, "I set the standard other teams read us through.",
     "<code>alpha_dri_interventions</code> is published to the data-source-skill contract with a "
-    "dictionary, query rules and a hand-written judgement layer saying what the values mean — "
+    "dictionary, query rules, and a hand-written judgement layer saying what the values mean — "
     "which interventions signal a platform failure, which are routine, and what good looks like. "
-    "Credentials are issued per person, by me.",
-    "Source owner and key issuer. The rules are binding enough that this page obeys them: the two "
-    "logs are never totalled, a row is reported as a touch rather than a failure, and the two "
-    "minutes columns are scoped separately. A check over every row found zero violations.")}
+    "When another team asks how the DRI function is performing, they get the answer through a "
+    "definition I wrote. A Head of Campus DRI has to own what the role means to the rest of the "
+    "org; I already do.",
+    "Source owner and key issuer — credentials are minted per person, by me. The rules bind hard "
+    "enough that this page obeys them: the two logs are never totalled, a row is reported as a "
+    "touch rather than a failure, and the two minutes columns are scoped separately. A check over "
+    "every row found zero violations.")}
+
+  {claim(3, "I already carry near-top scope, while building for everyone else.",
+    "The caseload is not evenly shared, and I am at the heavy end of it — while also being the "
+    "person maintaining the platform the other fifteen monitor through. Doing both is the closest "
+    "thing to a trial run for the role.",
+    f"{tm['my_students']:,} students across {tm['my_campuses']} campuses, "
+    f"{ordinal(tm['my_caseload_rank'])} of {tm['n_dris']} — "
+    f"{100*tm['my_students']//tm['team_students']}% of the network. On the platform itself, "
+    f"{R['tb_mine']:,} of {R['tb_commits']:,} commits ({R['tb_pct']}%).")}
+
+  {claim(4, "I made the role measurable — including my own work.",
+    "Before the log there was no record of what was tried for a stalled student, by whom, or "
+    "whether it worked. That made the function unarguable in both directions: no credit for the "
+    "work, and no way to find what was not working. A Head cannot manage this function on "
+    "anecdote. I built the evidence layer the job needs, and I am inside it like everyone else.",
+    f"{CA['touches']:,} touches over {CA['students']} students in {iv['window']['days']} days, "
+    f"median close {iv_med_h:g} hours, {T['within_24h']}% inside a day, and {effort_h:.0f} hours "
+    f"of effort now attributable to a named person. For scale: of all {TK_TOTAL:,} helpdesk cases, "
+    f"only {STUCK['n']} are a stuck child — the academic conversation was never in the ticket "
+    f"queue, and now it has somewhere to live.")}
 
   {claim(5, "I find what is failing silently.",
     "The failures that matter are the ones nothing reports. Mid-week reports were putting working "
     "students in the RED tier at 0.0 XP/day — on one report, seven of the nine students listed as "
     "having little to no engagement had earned XP every single day. The cause was a fetch that "
     "returned empty instead of raising when the API answered 503, so an outage read as a child "
-    "doing no work. I fixed the fetch and added a guard so an unloadable student is shown as "
-    "unknown rather than as a zero.",
-    f"{R['fixes']} of my {R['tb_mine']:,} commits are fixes ({R['feats']} are features). The same "
-    f"instinct caught a silent cap in the helpdesk pull behind this page — it stopped at exactly "
-    f"40,000 cases against an instance of {tk['scanned']:,} and reported nothing.")}
+    "doing no work. Fifteen DRIs acting on a report like that is fifteen wasted conversations and "
+    "nine children mislabelled.",
+    f"{R['fixes']} of my {R['tb_mine']:,} commits are fixes. The same instinct caught a silent cap "
+    f"in the helpdesk pull behind this page — it stopped at exactly 40,000 cases against an "
+    f"instance of {tk['scanned']:,} and reported nothing.")}
+</div>
+
+<div class="card">
+  <h2>What I would do with the job</h2>
+  <p class="lead">
+    Four problems visible in the team's own data. None of these are guesses; each is a number on
+    another tab, and each is why the role needs someone who reads them.
+  </p>
+  <table>
+    <tr><th style="width:27%">Problem</th><th style="width:30%">What the data shows</th><th>What I would do</th></tr>
+    <tr><td><b>The caseload is lopsided</b></td>
+      <td>The top three DRIs carry {tm['top3_share']}% of all students between them, and the
+        largest caseload is {tm['spread']:g}× the smallest.</td>
+      <td>Rebalance against live enrolment rather than campus count. A DRI with two campuses can
+        be carrying more children than one with ten.</td></tr>
+    <tr><td><b>Logging is not yet uniform</b></td>
+      <td>Filings range from {tm['top_filer']} to {tm['min_filer']} across the
+        {tm['dri_filers']} DRIs in the same {iv['window']['days']} days.</td>
+      <td>That spread is either real workload difference or inconsistent practice, and right now
+        nobody can tell which. Make the log a standard, then use it to spot who needs support —
+        not to rank people.</td></tr>
+    <tr><td><b>Requests outrun the answer</b></td>
+      <td>{dd['requests']} deep dives asked for in {iv['window']['days']} days; the hand-built
+        route closed {dd['completed']}. {dd['open']} are still open, the oldest
+        {dd['oldest_open_days']:.0f} days.</td>
+      <td>This is the queue the bot exists for. Finish the rollout, measure it, and hold the
+        answer time to the same {iv_med_h:g}-hour standard the rest of the log meets.</td></tr>
+    <tr><td><b>The data under us is not clean</b></td>
+      <td>The email allowlist disagrees with live enrolment on 60 campuses — GT Anywhere reads 510
+        against 1,259 enrolled.</td>
+      <td>A team measured on student outcomes cannot run on a roster that is wrong by a factor of
+        two. Reconcile to enrolment, and keep it reconciled.</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>The honest caveats</h3>
+  <p class="lead">Stated here rather than buried, because a case a reviewer can puncture is worth
+    less than one that punctures itself first.</p>
+  <table>
+    <tr><td style="width:34%"><b>I am not the heaviest user of my own log</b></td>
+      <td>{tm['my_filings']} filings puts me {ordinal(tm['my_rank'])} of {tm['dri_filers']}, not
+        first. The claim is that the team adopted it, not that I use it most.</td></tr>
+    <tr><td><b>This is outputs, not outcomes</b></td>
+      <td>Everything here measures work done and work made visible. It does not yet show a child
+        who learned more because of it — the log is {iv['window']['days']} days old and there is
+        no before to compare against, because nothing was recorded before it.</td></tr>
+    <tr><td><b>The window is short</b></td>
+      <td>{iv['window']['days']} days. Long enough to show a rate, not long enough to show a trend.</td></tr>
+    <tr><td><b>The platform is not solo work</b></td>
+      <td>{R['tb_pct']}% of commits are mine, which means {100-R['tb_pct']}% are not. On the
+        intervention tab specifically it is {R['tab_mine']} of {R['tab_all']}.</td></tr>
+  </table>
 </div>
 
 <div class="card">
   <h3>One loop, built end to end</h3>
   <p class="lead">
-    These are not four tools that happen to sit near each other. They are four stages of one loop,
-    and each exists because the stage before it produced something nobody could act on.
+    The four systems are not separate tools. They are four stages of the loop this role owns, and
+    each exists because the stage before it produced something nobody could act on.
   </p>
   <table>
     <tr><th>Stage</th><th>Without it</th><th>The evidence</th></tr>
@@ -522,35 +603,11 @@ HTML = f"""<!DOCTYPE html>
         <td>every question needs a person to build the answer</td>
         <td>{dd['requests']} deep dives asked for in {iv['window']['days']} days; {dd['open']} still waiting</td></tr>
     <tr><td><b>Act</b></td>
-        <td>no record of what was tried, by whom, or whether it worked — and only
-            {STUCK['n']} of {TK_TOTAL:,} helpdesk cases are a stuck child, so the helpdesk
-            was never carrying it</td>
+        <td>no record of what was tried, by whom, or whether it worked</td>
         <td>{CA['touches']:,} touches, {CA['students']} students, median close {iv_med_h:g} h</td></tr>
     <tr><td><b>Reuse</b></td>
         <td>the same artefact rebuilt at every campus</td>
-        <td>a shared library, {effort_h:.0f} h of logged effort to measure it against</td></tr>
-  </table>
-</div>
-
-<div class="card">
-  <h3>The honest caveats</h3>
-  <p class="lead">Stated here rather than buried, because a case a reviewer can puncture is worth less
-    than one that punctures itself first.</p>
-  <table>
-    <tr><td style="width:38%"><b>The helpdesk comparison</b></td>
-        <td>{help_med_d:.1f} days against {iv_med_h:g} hours is <em>not</em> like for like — a support
-        ticket and an academic stall are different work. It is the same organisation, period and
-        largely the same students, which is why it is worth showing, but it is not a controlled
-        comparison.</td></tr>
-    <tr><td><b>The intervention window is short</b></td>
-        <td>{iv['window']['days']} days. Long enough to show a rate, not long enough to show a trend.</td></tr>
-    <tr><td><b>Effort capture is partial</b></td>
-        <td>The form only began asking on 2026-09-11, so {EF['cm_have']} of {EF['cm_eligible']}
-        eligible requests since then carry minutes ({round(100*EF['cm_have']/EF['cm_eligible'])}%),
-        and anything completed earlier carries none.</td></tr>
-    <tr><td><b>The dashboard is not solo work</b></td>
-        <td>{R['tb_pct']}% of commits are mine, which means {100-R['tb_pct']}% are not. On the
-        intervention tab specifically it is {R['tab_mine']} of {R['tab_all']}.</td></tr>
+        <td>{RDG['passages']} reading passages freed from a vendor console; a shared library</td></tr>
   </table>
 </div>
 </section>

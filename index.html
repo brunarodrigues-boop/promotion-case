@@ -92,6 +92,16 @@
     color: #8a849b; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .ask { background: linear-gradient(135deg,#6f5fb0,#8b7dc8); color: #fff; border-radius: 16px;
+    padding: 26px 30px 24px; margin-bottom: 20px; }
+  .ask-tag { display: inline-block; background: rgba(255,255,255,.22); font-size: .64rem;
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 11px;
+    border-radius: 20px; margin-bottom: 10px; }
+  .ask h2 { font-size: 1.85rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px;
+    color: #fff; }
+  .ask p { font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px; }
+  .ask code { background: rgba(255,255,255,.22); color: #fff; }
+  tr.me td { background: #f4f0ff; }
   .method { font-size: .8rem; color: #8a849b; line-height: 1.65; }
   .method li { margin-bottom: 8px; }
   .method ul { padding-left: 17px; }
@@ -114,7 +124,7 @@
 <body>
 
 <header>
-  <span class="role-tag">The case, in numbers</span>
+  <span class="role-tag">The case for Head of Campus DRI</span>
   <h1>Bruna Rodrigues</h1>
   <div class="since">Accuracy 2026-08-10 → 2026-09-17 ·
     interventions 2026-09-04 → 2026-09-23 ·
@@ -129,29 +139,38 @@
 <section class="panel" id="case">
 <div class="print-title">The case</div>
 
+<div class="ask">
+  <span class="ask-tag">The ask</span>
+  <h2>Head of Campus DRI</h2>
+  <p>Leading the 16 Campus DRIs — 15 people and myself — across
+     84 campuses and 9,456 students. I already carry the
+     3rd-largest caseload on that team, and every one of the
+     16 DRIs already works through systems I built. This page is the evidence for
+     both halves of that sentence, and a plan for what I would do with the job.</p>
+</div>
+
 <div class="stats">
-  <div class="stat"><div class="val">16.4M</div><div class="label">questions measured across every Alpha app</div></div>
-  <div class="stat"><div class="val">87.9%</div><div class="label">pooled accuracy, all students all apps</div></div>
-  <div class="stat"><div class="val">631</div><div class="label">interventions logged in 19 days</div></div>
-  <div class="stat"><div class="val">17.1h</div><div class="label">median time to close one</div></div>
-  <div class="stat"><div class="val">45</div><div class="label">of 14,403 helpdesk cases are a stuck child</div></div>
-  <div class="stat"><div class="val">1,179</div><div class="label">commits on the platform (49% of all)</div></div>
+  <div class="stat"><div class="val">9,456</div><div class="label">students the team is responsible for</div></div>
+  <div class="stat"><div class="val">84</div><div class="label">campuses</div></div>
+  <div class="stat"><div class="val">16/16</div><div class="label">Campus DRIs already using what I built</div></div>
+  <div class="stat"><div class="val">1,249</div><div class="label">students I carry today (3rd of 16)</div></div>
+  <div class="stat"><div class="val">17h</div><div class="label">median time to close an intervention</div></div>
 </div>
 
 <div class="card">
-  <h2>Why promote me</h2>
+  <h2>Why me</h2>
   <p class="lead">
-    Five claims. Each one is a number on another tab, not an adjective — so each one can be
-    checked, and each one can be argued with.
+    Five claims. Each one is a number on another tab, not an adjective — so each can be checked,
+    and each can be argued with.
   </p>
 
   
     <div class="claim">
       <div class="claim-n">1</div>
       <div>
-        <h4>I own the layer the role runs on.</h4>
-        <p>The TimeBack dashboard is the platform every Campus DRI monitors students through. It is not a side project I contributed to; it is the thing I have been building, and the playbook's monitoring routine was written on top of it because the tool and the process were designed together.</p>
-        <p class="claim-ev"><b>Evidence:</b> 1,179 of 2,424 commits (49%), 106 campuses, 8,606 rostered students, 136 API endpoints, 23 report generators.</p>
+        <h4>The team already runs on what I built.</h4>
+        <p>The intervention log was not rolled out to anyone. It was built, and the team moved onto it because it was the only place the work could be written down. That is the strongest evidence I can offer that I already do this job: the practice the whole function follows is one I designed, and it stuck without a mandate.</p>
+        <p class="claim-ev"><b>Evidence:</b> All <b>16 of 16</b> Campus DRIs file into it, alongside 8 Curriculum DRIs — 18 people writing, 10 closing, across <b>52 campuses</b>, since 2026-09-04.</p>
       </div>
     </div>
 
@@ -159,9 +178,9 @@
     <div class="claim">
       <div class="claim-n">2</div>
       <div>
-        <h4>I build what is missing, not what is asked for.</h4>
-        <p>Nobody filed a ticket asking for a Slack bot. The queue asked for it: deep dives were being requested faster than anyone could hand-build them, and a request that waits ten days is a student who went ten days without the answer. I read the backlog as a specification.</p>
-        <p class="claim-ev"><b>Evidence:</b> 43 deep dives requested by hand in 19 days for 30 students; the manual path closed 1, 36 are still open, the oldest waiting 11 days.</p>
+        <h4>I set the standard other teams read us through.</h4>
+        <p><code>alpha_dri_interventions</code> is published to the data-source-skill contract with a dictionary, query rules, and a hand-written judgement layer saying what the values mean — which interventions signal a platform failure, which are routine, and what good looks like. When another team asks how the DRI function is performing, they get the answer through a definition I wrote. A Head of Campus DRI has to own what the role means to the rest of the org; I already do.</p>
+        <p class="claim-ev"><b>Evidence:</b> Source owner and key issuer — credentials are minted per person, by me. The rules bind hard enough that this page obeys them: the two logs are never totalled, a row is reported as a touch rather than a failure, and the two minutes columns are scoped separately. A check over every row found zero violations.</p>
       </div>
     </div>
 
@@ -169,9 +188,9 @@
     <div class="claim">
       <div class="claim-n">3</div>
       <div>
-        <h4>I made the work measurable — including my own.</h4>
-        <p>Before the intervention log there was no record of what was tried for a stalled student, by whom, or whether it worked. That made the whole function unarguable in both directions: no credit for the work, and no way to find what was not working. It is now the only record of remediation the platform did not do by itself.</p>
-        <p class="claim-ev"><b>Evidence:</b> 631 touches over 360 students in 19 days, median close 17.1 hours, 66% inside a day, and 162 hours of effort now attributable to a named person. For scale: classifying all 14,403 helpdesk cases finds 45 that are a stuck child needing a plan. The log captured 631 in 19 days — the work was always happening, it simply was not written down anywhere.</p>
+        <h4>I already carry near-top scope, while building for everyone else.</h4>
+        <p>The caseload is not evenly shared, and I am at the heavy end of it — while also being the person maintaining the platform the other fifteen monitor through. Doing both is the closest thing to a trial run for the role.</p>
+        <p class="claim-ev"><b>Evidence:</b> 1,249 students across 8 campuses, 3rd of 16 — 13% of the network. On the platform itself, 1,182 of 2,442 commits (48%).</p>
       </div>
     </div>
 
@@ -179,9 +198,9 @@
     <div class="claim">
       <div class="claim-n">4</div>
       <div>
-        <h4>I own a data source other teams read through.</h4>
-        <p><code>alpha_dri_interventions</code> is published to the data-source-skill contract with a dictionary, query rules and a hand-written judgement layer saying what the values mean — which interventions signal a platform failure, which are routine, and what good looks like. Credentials are issued per person, by me.</p>
-        <p class="claim-ev"><b>Evidence:</b> Source owner and key issuer. The rules are binding enough that this page obeys them: the two logs are never totalled, a row is reported as a touch rather than a failure, and the two minutes columns are scoped separately. A check over every row found zero violations.</p>
+        <h4>I made the role measurable — including my own work.</h4>
+        <p>Before the log there was no record of what was tried for a stalled student, by whom, or whether it worked. That made the function unarguable in both directions: no credit for the work, and no way to find what was not working. A Head cannot manage this function on anecdote. I built the evidence layer the job needs, and I am inside it like everyone else.</p>
+        <p class="claim-ev"><b>Evidence:</b> 636 touches over 365 students in 19 days, median close 17 hours, 67% inside a day, and 163 hours of effort now attributable to a named person. For scale: of all 14,403 helpdesk cases, only 45 are a stuck child — the academic conversation was never in the ticket queue, and now it has somewhere to live.</p>
       </div>
     </div>
 
@@ -190,17 +209,70 @@
       <div class="claim-n">5</div>
       <div>
         <h4>I find what is failing silently.</h4>
-        <p>The failures that matter are the ones nothing reports. Mid-week reports were putting working students in the RED tier at 0.0 XP/day — on one report, seven of the nine students listed as having little to no engagement had earned XP every single day. The cause was a fetch that returned empty instead of raising when the API answered 503, so an outage read as a child doing no work. I fixed the fetch and added a guard so an unloadable student is shown as unknown rather than as a zero.</p>
-        <p class="claim-ev"><b>Evidence:</b> 547 of my 1,179 commits are fixes (317 are features). The same instinct caught a silent cap in the helpdesk pull behind this page — it stopped at exactly 40,000 cases against an instance of 40,593 and reported nothing.</p>
+        <p>The failures that matter are the ones nothing reports. Mid-week reports were putting working students in the RED tier at 0.0 XP/day — on one report, seven of the nine students listed as having little to no engagement had earned XP every single day. The cause was a fetch that returned empty instead of raising when the API answered 503, so an outage read as a child doing no work. Fifteen DRIs acting on a report like that is fifteen wasted conversations and nine children mislabelled.</p>
+        <p class="claim-ev"><b>Evidence:</b> 547 of my 1,182 commits are fixes. The same instinct caught a silent cap in the helpdesk pull behind this page — it stopped at exactly 40,000 cases against an instance of 40,593 and reported nothing.</p>
       </div>
     </div>
 </div>
 
 <div class="card">
+  <h2>What I would do with the job</h2>
+  <p class="lead">
+    Four problems visible in the team's own data. None of these are guesses; each is a number on
+    another tab, and each is why the role needs someone who reads them.
+  </p>
+  <table>
+    <tr><th style="width:27%">Problem</th><th style="width:30%">What the data shows</th><th>What I would do</th></tr>
+    <tr><td><b>The caseload is lopsided</b></td>
+      <td>The top three DRIs carry 42% of all students between them, and the
+        largest caseload is 9.9× the smallest.</td>
+      <td>Rebalance against live enrolment rather than campus count. A DRI with two campuses can
+        be carrying more children than one with ten.</td></tr>
+    <tr><td><b>Logging is not yet uniform</b></td>
+      <td>Filings range from 162 to 3 across the
+        16 DRIs in the same 19 days.</td>
+      <td>That spread is either real workload difference or inconsistent practice, and right now
+        nobody can tell which. Make the log a standard, then use it to spot who needs support —
+        not to rank people.</td></tr>
+    <tr><td><b>Requests outrun the answer</b></td>
+      <td>43 deep dives asked for in 19 days; the hand-built
+        route closed 1. 36 are still open, the oldest
+        11 days.</td>
+      <td>This is the queue the bot exists for. Finish the rollout, measure it, and hold the
+        answer time to the same 17-hour standard the rest of the log meets.</td></tr>
+    <tr><td><b>The data under us is not clean</b></td>
+      <td>The email allowlist disagrees with live enrolment on 60 campuses — GT Anywhere reads 510
+        against 1,259 enrolled.</td>
+      <td>A team measured on student outcomes cannot run on a roster that is wrong by a factor of
+        two. Reconcile to enrolment, and keep it reconciled.</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>The honest caveats</h3>
+  <p class="lead">Stated here rather than buried, because a case a reviewer can puncture is worth
+    less than one that punctures itself first.</p>
+  <table>
+    <tr><td style="width:34%"><b>I am not the heaviest user of my own log</b></td>
+      <td>59 filings puts me 5th of 16, not
+        first. The claim is that the team adopted it, not that I use it most.</td></tr>
+    <tr><td><b>This is outputs, not outcomes</b></td>
+      <td>Everything here measures work done and work made visible. It does not yet show a child
+        who learned more because of it — the log is 19 days old and there is
+        no before to compare against, because nothing was recorded before it.</td></tr>
+    <tr><td><b>The window is short</b></td>
+      <td>19 days. Long enough to show a rate, not long enough to show a trend.</td></tr>
+    <tr><td><b>The platform is not solo work</b></td>
+      <td>48% of commits are mine, which means 52% are not. On the
+        intervention tab specifically it is 35 of 55.</td></tr>
+  </table>
+</div>
+
+<div class="card">
   <h3>One loop, built end to end</h3>
   <p class="lead">
-    These are not four tools that happen to sit near each other. They are four stages of one loop,
-    and each exists because the stage before it produced something nobody could act on.
+    The four systems are not separate tools. They are four stages of the loop this role owns, and
+    each exists because the stage before it produced something nobody could act on.
   </p>
   <table>
     <tr><th>Stage</th><th>Without it</th><th>The evidence</th></tr>
@@ -211,35 +283,11 @@
         <td>every question needs a person to build the answer</td>
         <td>43 deep dives asked for in 19 days; 36 still waiting</td></tr>
     <tr><td><b>Act</b></td>
-        <td>no record of what was tried, by whom, or whether it worked — and only
-            45 of 14,403 helpdesk cases are a stuck child, so the helpdesk
-            was never carrying it</td>
-        <td>631 touches, 360 students, median close 17.1 h</td></tr>
+        <td>no record of what was tried, by whom, or whether it worked</td>
+        <td>636 touches, 365 students, median close 17 h</td></tr>
     <tr><td><b>Reuse</b></td>
         <td>the same artefact rebuilt at every campus</td>
-        <td>a shared library, 162 h of logged effort to measure it against</td></tr>
-  </table>
-</div>
-
-<div class="card">
-  <h3>The honest caveats</h3>
-  <p class="lead">Stated here rather than buried, because a case a reviewer can puncture is worth less
-    than one that punctures itself first.</p>
-  <table>
-    <tr><td style="width:38%"><b>The helpdesk comparison</b></td>
-        <td>6.7 days against 17.1 hours is <em>not</em> like for like — a support
-        ticket and an academic stall are different work. It is the same organisation, period and
-        largely the same students, which is why it is worth showing, but it is not a controlled
-        comparison.</td></tr>
-    <tr><td><b>The intervention window is short</b></td>
-        <td>19 days. Long enough to show a rate, not long enough to show a trend.</td></tr>
-    <tr><td><b>Effort capture is partial</b></td>
-        <td>The form only began asking on 2026-09-11, so 247 of 319
-        eligible requests since then carry minutes (77%),
-        and anything completed earlier carries none.</td></tr>
-    <tr><td><b>The dashboard is not solo work</b></td>
-        <td>49% of commits are mine, which means 51% are not. On the
-        intervention tab specifically it is 35 of 55.</td></tr>
+        <td>219 reading passages freed from a vendor console; a shared library</td></tr>
   </table>
 </div>
 </section>
@@ -256,8 +304,8 @@
     tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
   <div class="minis"><div class="mini"><b>106</b><span>campuses served</span></div><div class="mini"><b>8,606</b><span>students rostered</span></div><div class="mini"><b>136</b><span>API endpoints</span></div><div class="mini"><b>45</b><span>report endpoints</span></div><div class="mini"><b>23</b><span>PDF generators</span></div><div class="mini"><b>7</b><span>scheduled jobs</span></div></div>
-  <p class="foot">Repository since 2026-03-04; 1,179 of 2,424 commits
-    are mine (49%), counted with <code>git shortlog</code> over all branches.
+  <p class="foot">Repository since 2026-03-04; 1,182 of 2,442 commits
+    are mine (48%), counted with <code>git shortlog</code> over all branches.
     Every figure on this tab is read out of the running configuration at build time, not recalled.</p>
 </div>
 
@@ -477,7 +525,7 @@
     figure, because the tool result is rendered directly. That division is deliberate: a number
     cannot drift between the API and the channel, and an uncertain request comes back as a
     clarifying question instead of a confident answer about the wrong student.</p>
-  <div class="minis"><div class="mini"><b>43</b><span>deep dives requested by hand</span></div><div class="mini"><b>1</b><span>closed by hand</span></div><div class="mini"><b>36</b><span>still waiting</span></div><div class="mini"><b>6</b><span>tools exposed</span></div><div class="mini"><b>2,844</b><span>agent, lines</span></div><div class="mini"><b>3s</b><span>ack budget</span></div></div>
+  <div class="minis"><div class="mini"><b>43</b><span>deep dives requested by hand</span></div><div class="mini"><b>1</b><span>closed by hand</span></div><div class="mini"><b>36</b><span>still waiting</span></div><div class="mini"><b>6</b><span>tools exposed</span></div><div class="mini"><b>2,993</b><span>agent, lines</span></div><div class="mini"><b>3s</b><span>ack budget</span></div></div>
   <p class="foot">Tools: student_deep_dive, student_lessons, most_concerning, doom_loops,
     tests_taken, assigned_tests. Slack redelivers on any non-200, so events are de-duplicated on
     event_id and the work is handed to a background task inside the 3-second window. Demand figures
@@ -494,17 +542,17 @@
   <div class="why"><span class="why-tag">Why it has to exist</span><p>Measuring a stall and doing nothing about it is just a report. When TimeBack does not resolve a student's stall by itself somebody has to intervene — and before this there was <b>no record of what was tried, by whom, or whether it worked</b>. It is the only record of remediation the platform did not do by itself, and the only place the trigger for each one is written down.</p></div>
   <p class="lead">Two independent logs: requests a Campus DRI raises and pushes to a Curriculum DRI,
     and work the Campus DRI absorbs themselves.</p>
-  <div class="minis"><div class="mini"><b>631</b><span>campus touches</span></div><div class="mini"><b>500</b><span>distinct cases</span></div><div class="mini"><b>360</b><span>students</span></div><div class="mini"><b>422</b><span>completed</span></div><div class="mini"><b>175</b><span>still open</span></div><div class="mini"><b>162</b><span>hours of effort</span></div></div>
+  <div class="minis"><div class="mini"><b>636</b><span>campus touches</span></div><div class="mini"><b>505</b><span>distinct cases</span></div><div class="mini"><b>365</b><span>students</span></div><div class="mini"><b>427</b><span>completed</span></div><div class="mini"><b>173</b><span>still open</span></div><div class="mini"><b>163</b><span>hours of effort</span></div></div>
   <p class="foot">A row is a touch, not a failure — the same student can appear more than once, so
     both the touch count and the folded case count are shown. The two logs are independent and are
-    never totalled together; the Curriculum DRI log holds a further 173 touches over
-    148 students.</p>
+    never totalled together; the Curriculum DRI log holds a further 174 touches over
+    149 students.</p>
 </div>
 
 <div class="card">
   <h3>How fast a stall gets answered</h3>
-  <p class="lead">All 422 completed Campus DRI requests, from raised to closed. Median
-    <b>17.1 hours</b>, 90th percentile 74.3 hours.</p>
+  <p class="lead">All 427 completed Campus DRI requests, from raised to closed. Median
+    <b>17 hours</b>, 90th percentile 74.3 hours.</p>
   <svg viewBox="0 0 680 170" width="100%" height="170" role="img" class="chart">
 <line x1="38" y1="136.0" x2="674" y2="136.0" stroke="#e0daf0"/>
 <text x="32" y="139.0" font-size="9" fill="#999" text-anchor="end">0%</text>
@@ -520,8 +568,8 @@
 <text x="143.3" y="89.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">35%</text>
 <text x="143.3" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤8h</text>
 <text x="143.3" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">same day</text>
-<rect x="282.4" y="55.5" width="143.3" height="80.5" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="354.0" y="51.5" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">66%</text>
+<rect x="282.4" y="54.3" width="143.3" height="81.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.0" y="50.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">67%</text>
 <text x="354.0" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤24h</text>
 <text x="354.0" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">next day</text>
 <rect x="493.0" y="36.0" width="143.3" height="100.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
@@ -539,8 +587,8 @@
 <text x="32" y="56.7" font-size="9" fill="#999" text-anchor="end">200</text>
 <line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
 <text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">300</text>
-<rect x="49.2" y="28.7" width="47.8" height="104.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="73.1" y="24.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">263</text>
+<rect x="49.2" y="28.3" width="47.8" height="104.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="73.1" y="24.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">264</text>
 <text x="73.1" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 73.1 144.0)">Custom plan</text>
 <rect x="119.5" y="98.9" width="47.8" height="34.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="143.3" y="94.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">86</text>
@@ -551,17 +599,17 @@
 <rect x="259.9" y="115.2" width="47.8" height="17.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="283.8" y="111.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">45</text>
 <text x="283.8" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 283.8 144.0)">Test-out approval</text>
-<rect x="330.1" y="116.3" width="47.8" height="16.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="354.0" y="112.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">42</text>
-<text x="354.0" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 354.0 144.0)">Deep dive</text>
+<rect x="330.1" y="115.2" width="47.8" height="17.9" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.0" y="111.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">45</text>
+<text x="354.0" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 354.0 144.0)">Study guide</text>
 <rect x="400.3" y="116.3" width="47.8" height="16.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="424.2" y="112.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">42</text>
-<text x="424.2" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 424.2 144.0)">Study guide</text>
+<text x="424.2" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 424.2 144.0)">Deep dive</text>
 <rect x="470.6" y="122.3" width="47.8" height="10.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="494.4" y="118.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">27</text>
 <text x="494.4" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 494.4 144.0)">App add/remove</text>
-<rect x="540.8" y="124.7" width="47.8" height="8.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="564.7" y="120.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">21</text>
+<rect x="540.8" y="124.3" width="47.8" height="8.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="564.7" y="120.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">22</text>
 <text x="564.7" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 564.7 144.0)">Placement change</text>
 <rect x="611.0" y="127.0" width="47.8" height="6.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="634.9" y="123.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">15</text>
@@ -582,25 +630,25 @@
 <text x="174.7" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">2.2h</text>
 <text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">n=13</text>
 <text x="128" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Assign hole-filling</text>
-<rect x="136" y="46" width="149.8" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="292.8" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">10.4h</text>
-<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=11</text>
+<rect x="136" y="46" width="171.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="314.4" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">11.9h</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=12</text>
 <text x="128" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Placement change</text>
 <rect x="136" y="72" width="210.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="353.2" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">14.6h</text>
 <text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=14</text>
-<text x="128" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Other</text>
-<rect x="136" y="98" width="236.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="379.2" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">16.4h</text>
-<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=24</text>
-<text x="128" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Study guide</text>
-<rect x="136" y="124" width="240.5" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="383.5" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">16.7h</text>
-<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">n=40</text>
+<text x="128" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Study guide</text>
+<rect x="136" y="98" width="221.8" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="364.8" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">15.4h</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=42</text>
+<text x="128" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Other</text>
+<rect x="136" y="124" width="236.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="379.2" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">16.4h</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">n=24</text>
 <text x="128" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">Custom plan</text>
-<rect x="136" y="150" width="257.8" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="400.8" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">17.9h</text>
-<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">n=238</text>
+<rect x="136" y="150" width="253.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="396.4" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">17.6h</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">n=240</text>
 <text x="128" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">App add/remove</text>
 <rect x="136" y="176" width="302.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="445.4" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">21h</text>
@@ -614,10 +662,10 @@
     excluded from every timing figure on purpose: that log records work retrospectively — the entry
     is written after the work is done — so elapsed time is not defined for it.</p>
   <div class="callout">
-    <div class="big">162 h</div>
+    <div class="big">163 h</div>
     <p>of human effort logged, split by constraint into 82&nbsp;h of Campus DRI
       work absorbed directly (154 entries) and 80&nbsp;h
-      spent by Curriculum DRIs answering requests (263 entries). Separate
+      spent by Curriculum DRIs answering requests (269 entries). Separate
       columns, separate people; the schema refuses either in the other's place, and a check over
       every row found <b>zero</b> violations.</p>
   </div>
@@ -972,7 +1020,7 @@
       child who is stuck and needs a plan — a deep dive, a custom plan, an accuracy investigation.
       The helpdesk is where the <em>platform</em> gets fixed and where <em>accounts</em> get made.
       It is not where the academic conversation happens. That work had nowhere to live, which is
-      exactly why the intervention log had to be built: it captured 631 of those in
+      exactly why the intervention log had to be built: it captured 636 of those in
       19 days, more in under three weeks than the helpdesk saw all year.</p>
   </div>
 </div>
@@ -1107,10 +1155,10 @@
     describes almost nothing. For the cases a human actually worked, the median is
     6.7 days.</p>
   <div class="callout">
-    <div class="big">6.7 d → 17.1 h</div>
+    <div class="big">6.7 d → 17 h</div>
     <p>A problem raised through the general helpdesk waits a median of 6.7 days for a
       human resolution. An academic stall raised through the purpose-built intervention loop is
-      closed in 17.1 hours. These are <em>different kinds of work</em> and the comparison is
+      closed in 17 hours. These are <em>different kinds of work</em> and the comparison is
       not apples to apples — but it is the same organisation, the same period and largely the same
       students, and it is the clearest available evidence for what a dedicated loop buys over a
       general queue.</p>
@@ -1171,7 +1219,7 @@
       <code>minutes_spent</code> for Campus DRI manual work and <code>completion_minutes</code> for
       Curriculum DRI answers, which the store keeps disjoint by constraint.</li>
     <li><b>Turnaround</b> — <code>completed_at − created_at</code> over completed Campus DRI rows.
-      All 422 qualify. The 173 Curriculum DRI rows are excluded because that log is
+      All 427 qualify. The 174 Curriculum DRI rows are excluded because that log is
       written retrospectively, which would otherwise produce negative elapsed times.</li>
     <li><b>Support tickets</b> — the Kayako instance carries 40,593 cases across ~219
       brands and its API accepts no brand filter, so the pull reads every case and filters locally to
