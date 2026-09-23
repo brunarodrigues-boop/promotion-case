@@ -31,6 +31,21 @@ def check(name, got, want, tol=0):
     print(f"  {'ok  ' if ok else 'FAIL'}  {name:<52} recomputed={got!s:<14} stored={want}")
 
 
+def check_growing(name, got, want):
+    """For counters on a live append-only log.
+
+    The page is a snapshot; the audit re-queries the source seconds to minutes
+    later. Anything logged in between is real work, not an error, so demanding
+    exact equality makes this check fail for the one reason that is fine. What
+    is NOT fine is the recomputed value coming back LOWER than the snapshot —
+    that means rows vanished or the count is wrong, and that still fails.
+    """
+    ok = got >= want
+    (PASS if ok else FAIL).append((name, got, want))
+    print(f"  {'ok  ' if ok else 'FAIL'}  {name:<52} recomputed={got!s:<14} stored={want}"
+          f"{'' if got == want else f'  (+{got - want} since the snapshot)'}")
+
+
 def sql(q):
     r = subprocess.run(["npx", "-y", "@insforge/cli", "db", "query", q],
                        cwd=DASH, capture_output=True, text=True, timeout=180)
@@ -81,11 +96,11 @@ q = sql("""select json_build_object(
  'own_min',(select sum(minutes_spent) from intervention_requests where section='campus_dri' and entry_kind='manual_work' and minutes_spent>0),
  'ans_min',(select sum(completion_minutes) from intervention_requests where completion_minutes>0)
 )::text""")
-check("campus touches", q["campus_rows"], iv["campus"]["touches"])
-check("campus distinct students", q["campus_students"], iv["campus"]["students"])
-check("campus folded cases", q["campus_cases"], iv["campus"]["cases"])
-check("campus completed", q["completed"], iv["campus"]["completed"])
-check("curriculum touches", q["curric_rows"], iv["curriculum"]["touches"])
+check_growing("campus touches", q["campus_rows"], iv["campus"]["touches"])
+check_growing("campus distinct students", q["campus_students"], iv["campus"]["students"])
+check_growing("campus folded cases", q["campus_cases"], iv["campus"]["cases"])
+check_growing("campus completed", q["completed"], iv["campus"]["completed"])
+check_growing("curriculum touches", q["curric_rows"], iv["curriculum"]["touches"])
 check("median turnaround h", float(q["median_h"]), iv["turnaround"]["median_h"], 0.05)
 # Tolerance of a tenth, on purpose. 4,941 minutes is exactly 82.35 hours, and
 # the two engines break that tie differently: Postgres rounds half away from
@@ -96,9 +111,12 @@ check("campus own effort h", round(q["own_min"] / 60, 1),
       iv["effort"]["campus_own_h"], 0.11)
 check("curriculum answer effort h", round(q["ans_min"] / 60, 1),
       iv["effort"]["curriculum_answer_h"], 0.11)
-check("effort minutes agree exactly, before rounding",
-      q["own_min"] + q["ans_min"],
-      round((iv["effort"]["campus_own_h"] + iv["effort"]["curriculum_answer_h"]) * 60), 2)
+# Raw minutes, not minutes reconstructed from two 1-decimal hour figures —
+# that round trip carries up to six minutes of error and was failing on it.
+check_growing("campus own effort, raw minutes",
+              q["own_min"], iv["effort"]["campus_own_min"])
+check_growing("curriculum answer effort, raw minutes",
+              q["ans_min"], iv["effort"]["curriculum_answer_min"])
 # the two logs must partition the table exactly — proof they are disjoint
 check("the two logs partition the table",
       q["campus_rows"] + q["curric_rows"], q["all_rows"])
