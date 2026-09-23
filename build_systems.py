@@ -666,7 +666,8 @@ HTML = f"""<!DOCTYPE html>
   <table>
     <tr><th>Stage</th><th>Without it</th><th>The evidence</th></tr>
     <tr><td><b>Measure</b></td>
-        <td>{O['n_apps']} apps, {O['answered']/1e6:.1f}M questions, no shared view</td>
+        <td>{O['n_apps']} apps across the network, {O['answered']/1e6:.1f}M questions,
+            no shared view</td>
         <td>a {app_spread:.0f}-point spread between apps, invisible from inside any one</td></tr>
     <tr><td><b>Answer</b></td>
         <td>every question needs a person to build the answer</td>
@@ -746,11 +747,13 @@ HTML = f"""<!DOCTYPE html>
 <div class="card">
   <span class="pill">Measure</span>
   <h2>TimeBack Dashboard</h2>
-  {why(f"A student works in up to {O['n_apps']} apps, each with its own console and its own idea of "
-       f"what accuracy means. Without one place that reads all of them, <b>“is this child actually "
-       f"learning?”</b> is a question that takes a person a day of tab-switching to answer — per "
-       f"child. At {db['total_rostered']:,} rostered students across {db['total_campuses']} campuses "
-       f"that question simply does not get asked.")}
+  {why(f"A typical student works across {O['apps_per_student_median']} different apps and some "
+       f"are in {O['apps_per_student_max']}; the network runs {O['n_apps']} in total, each with its "
+       f"own console and its own idea of what accuracy means. Without one place that reads all of "
+       f"them, <b>“is this child actually learning?”</b> means opening "
+       f"{O['apps_per_student_median']} consoles and reconciling them by hand — per child. At "
+       f"{db['total_rostered']:,} rostered students across {db['total_campuses']} campuses that "
+       f"question simply does not get asked.")}
   <p class="lead">The production platform every Campus DRI monitors through: XP, time, accuracy,
     tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
@@ -1188,7 +1191,10 @@ HTML = f"""<!DOCTYPE html>
       ({O['roster']:,} resolved, {O['students']:,} with recorded activity in the window),
       {O['window']}, pulled {O['pulled']}. Cohort key is the student's own OneRoster grade, not a
       per-subject working grade. Figures are pooled (Σ correct ÷ Σ answered), never an average of
-      per-student averages. The {O['n_apps']} “apps” are the distinct source names the API reports,
+      per-student averages. The {O['n_apps']} is the number of distinct apps across the whole
+      roster, not per student — a typical student is in {O['apps_per_student_median']} and the
+      most any one student uses is {O['apps_per_student_max']}. Those “apps” are the distinct
+      source names the API reports,
       which includes a few internal surfaces (TimeBack Dash, manual XP assignment) alongside the
       learning apps proper; the by-app chart shows the 16 largest by volume, all real apps.</li>
     <li><b>Interventions</b> — read from the <code>alpha_dri_interventions</code> source, scoped to

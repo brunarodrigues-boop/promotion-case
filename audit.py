@@ -81,6 +81,16 @@ check("by_grade answered sums to total",
 bad = [d["key"] for d in acc["by_app"]
        if abs(round(100 * d["correct"] / d["answered"], 1) - d["acc"]) > 0.05]
 check("every by_app % matches its own counts", len(bad), 0)
+# The page once claimed "a student works in up to 42 apps". 42 is the count
+# across the whole roster; no student is in more than 14. These two numbers are
+# easy to conflate and the conflation reads as a much bigger claim than the
+# data supports, so both are pinned here.
+per_student = [len({k.split("||")[1] for k in r["per"]}) for r in have]
+check("apps per student, max", max(per_student), acc["overall"]["apps_per_student_max"])
+check("apps per student, median", int(statistics.median(per_student)),
+      acc["overall"]["apps_per_student_median"])
+check("roster-wide app count exceeds any one student's",
+      acc["overall"]["n_apps"] > acc["overall"]["apps_per_student_max"], True)
 
 print("\n=== 2 · INTERVENTIONS (re-queried from the source, different shape) ===")
 iv = json.load(open(f"{PROMO}/interventions.json"))

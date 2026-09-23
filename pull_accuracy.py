@@ -64,6 +64,11 @@ def main():
          for d in agg(lambda r, k: list(r.get("grades") or ["?"]))],
         key=lambda d: sort_key(d["key"]))
 
+    # Apps PER STUDENT, which is not the same as apps across the roster. The
+    # page previously said "a student works in up to 42 apps"; 42 is the
+    # network-wide count of distinct app names and no student is in more than 14.
+    apps_per_student = [len({k.split("||")[1] for k in r["per"]}) for r in have]
+
     correct = sum(d["correct"] for d in by_subject)
     answered = sum(d["answered"] for d in by_subject)
     per_student = []
@@ -81,6 +86,8 @@ def main():
             "median_student_acc": round(statistics.median(per_student), 1),
             "window": WINDOW, "pulled": PULLED,
             "n_apps": len(by_app), "n_subjects": len(by_subject),
+            "apps_per_student_max": max(apps_per_student),
+            "apps_per_student_median": int(statistics.median(apps_per_student)),
         },
         "by_subject": by_subject, "by_app": by_app,
         "by_grade": by_grade, "by_subject_app": by_subject_app,

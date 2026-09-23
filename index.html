@@ -307,7 +307,8 @@
   <table>
     <tr><th>Stage</th><th>Without it</th><th>The evidence</th></tr>
     <tr><td><b>Measure</b></td>
-        <td>42 apps, 16.4M questions, no shared view</td>
+        <td>42 apps across the network, 16.4M questions,
+            no shared view</td>
         <td>a 22-point spread between apps, invisible from inside any one</td></tr>
     <tr><td><b>Answer</b></td>
         <td>every question needs a person to build the answer</td>
@@ -535,7 +536,7 @@
 <div class="card">
   <span class="pill">Measure</span>
   <h2>TimeBack Dashboard</h2>
-  <div class="why"><span class="why-tag">Why it has to exist</span><p>A student works in up to 42 apps, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> is a question that takes a person a day of tab-switching to answer — per child. At 8,606 rostered students across 106 campuses that question simply does not get asked.</p></div>
+  <div class="why"><span class="why-tag">Why it has to exist</span><p>A typical student works across 7 different apps and some are in 14; the network runs 42 in total, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> means opening 7 consoles and reconciling them by hand — per child. At 8,606 rostered students across 106 campuses that question simply does not get asked.</p></div>
   <p class="lead">The production platform every Campus DRI monitors through: XP, time, accuracy,
     tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
@@ -1446,7 +1447,10 @@
       (2,037 resolved, 1,368 with recorded activity in the window),
       2026-08-10 to 2026-09-17, pulled 2026-09-18. Cohort key is the student's own OneRoster grade, not a
       per-subject working grade. Figures are pooled (Σ correct ÷ Σ answered), never an average of
-      per-student averages. The 42 “apps” are the distinct source names the API reports,
+      per-student averages. The 42 is the number of distinct apps across the whole
+      roster, not per student — a typical student is in 7 and the
+      most any one student uses is 14. Those “apps” are the distinct
+      source names the API reports,
       which includes a few internal surfaces (TimeBack Dash, manual XP assignment) alongside the
       learning apps proper; the by-app chart shows the 16 largest by volume, all real apps.</li>
     <li><b>Interventions</b> — read from the <code>alpha_dri_interventions</code> source, scoped to
