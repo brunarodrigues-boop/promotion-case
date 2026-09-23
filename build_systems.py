@@ -15,12 +15,14 @@ Inputs
   ~/Desktop/dri-workload/tickets.json   pull_tickets.py + classify.py
   repo figures                    counted live from the working copies
 """
+import datetime as dt
 import json
 import os
 import pathlib
 import subprocess
 
 import charts as C
+import feedback as FB
 
 HERE = pathlib.Path(__file__).parent
 OUT = HERE / "index.html"
@@ -237,6 +239,40 @@ def _reading_rows():
 dri_rows = _dri_rows()
 reading_rows = _reading_rows()
 
+SURVEY = FB.SURVEY
+DONE = sum(1 for t in FB.THEMES if t["status"] == "done")
+PARTLY = sum(1 for t in FB.THEMES if t["status"] == "partly")
+WIP = sum(1 for t in FB.THEMES if t["status"] == "in progress")
+
+STATUS_LABEL = {"done": "Done", "partly": "Partly", "in progress": "In progress"}
+STATUS_CLASS = {"done": "st-done", "partly": "st-partly", "in progress": "st-wip"}
+
+
+def feedback_blocks():
+    out = []
+    for t in FB.THEMES:
+        quotes = "".join(
+            f'<blockquote><p>{C.esc(q)}</p><cite>{C.esc(who)}</cite></blockquote>'
+            for who, q in t["quotes"])
+        out.append(f"""
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">{t['n']}</span>
+            <h4>{C.esc(t['title'])}</h4>
+            <span class="pill {STATUS_CLASS[t['status']]}">{STATUS_LABEL[t['status']]}</span>
+            <span class="fb-kind">{t['kind']}</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes">{quotes}</div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>{t['action']}</p>
+            </div>
+          </div>
+        </div>""")
+    return "".join(out)
+
+
 # ── charts ───────────────────────────────────────────────────────────────────
 grade_rows = [(d["label"], d["acc"], f'{d["answered"]:,} q') for d in acc["by_grade"]
               if d["answered"] >= 20000]
@@ -309,7 +345,8 @@ chart_grp_speed = C.hbars(
      for g in sorted(GRP, key=lambda x: GRP[x]["median_h"])],
     unit="d", vmin=0, label_w=178, colour=C.AMBER)
 
-TABS = [("case", "The case"), ("measure", "Dashboard"), ("answer", "Deep dive bot"),
+TABS = [("case", "The case"), ("fb", "Guide feedback"), ("measure", "Dashboard"),
+        ("answer", "Deep dive bot"),
         ("act", "Interventions"), ("reuse", "Resources"), ("accuracy", "Accuracy"),
         ("support", "Support load"), ("method", "Method")]
 
@@ -418,6 +455,26 @@ HTML = f"""<!DOCTYPE html>
     color: #fff; }}
   .ask p {{ font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px; }}
   .ask code {{ background: rgba(255,255,255,.22); color: #fff; }}
+  .fb {{ background: #fff; border: 1px solid #e0daf0; border-radius: 14px; padding: 18px 22px 16px;
+    margin-bottom: 12px; }}
+  .fb-head {{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }}
+  .fb-n {{ flex: 0 0 24px; height: 24px; border-radius: 50%; background: #ede9f8; color: #6f5fb0;
+    font-weight: 700; font-size: .78rem; display: flex; align-items: center; justify-content: center; }}
+  .fb-head h4 {{ font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; flex: 1 1 320px; }}
+  .fb-kind {{ font-size: .66rem; color: #a49dba; text-transform: uppercase; letter-spacing: .1em; }}
+  .st-done {{ background: #e3f3e9; color: #2f7a4f; }}
+  .st-partly {{ background: #fdf1dd; color: #9a6d1f; }}
+  .st-wip {{ background: #eceaf4; color: #6f6a80; }}
+  .fb-body {{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }}
+  .fb-quotes blockquote {{ border-left: 2.5px solid #ddd6ee; padding-left: 11px; margin-bottom: 10px; }}
+  .fb-quotes p {{ font-size: .86rem; color: #4a4a52; font-style: italic; }}
+  .fb-quotes cite {{ display: block; font-size: .7rem; color: #a49dba; font-style: normal;
+    margin-top: 3px; letter-spacing: .02em; }}
+  .fb-action {{ background: #f7f5fc; border-radius: 10px; padding: 12px 14px; }}
+  .fb-action-tag {{ display: block; font-size: .62rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: #8b7dc8; margin-bottom: 5px; }}
+  .fb-action p {{ font-size: .86rem; color: #3d3d3d; }}
+  @media (max-width: 720px) {{ .fb-body {{ grid-template-columns: 1fr; }} }}
   tr.me td {{ background: #f4f0ff; }}
   .method {{ font-size: .8rem; color: #8a849b; line-height: 1.65; }}
   .method li {{ margin-bottom: 8px; }}
@@ -523,7 +580,19 @@ HTML = f"""<!DOCTYPE html>
     f"only {STUCK['n']} are a stuck child — the academic conversation was never in the ticket "
     f"queue, and now it has somewhere to live.")}
 
-  {claim(5, "I find what is failing silently.",
+  {claim(5, "I ask the people I serve, and then I change things.",
+    f"Before the year I surveyed the guides the role exists to serve — {SURVEY['responses']} "
+    f"responses from {SURVEY['campuses']} campuses. Ten themes of criticism came back. Seven are "
+    f"done, two partly, one is a correction: guides were blaming DRIs for a delay an automation "
+    f"was causing. Two of the ten traced to a single Campus DRI, and the answer there was a "
+    f"personnel decision — move them off the campus, hand the feedback to their replacement, "
+    f"coach them. They are doing the job well now. That is the part of this role that cannot be "
+    f"solved by building something.",
+    f"Every theme, in the guides' own words, with what was done about it, on the Guide feedback "
+    f"tab. {DONE} done, {PARTLY} partly, {WIP} in progress — and three of the ten were answered "
+    f"by tooling, three by a personnel decision, and four by changing how the role is coached.")}
+
+  {claim(6, "I find what is failing silently.",
     "The failures that matter are the ones nothing reports. Mid-week reports were putting working "
     "students in the RED tier at 0.0 XP/day — on one report, seven of the nine students listed as "
     "having little to no engagement had earned XP every single day. The cause was a fetch that "
@@ -608,6 +677,64 @@ HTML = f"""<!DOCTYPE html>
     <tr><td><b>Reuse</b></td>
         <td>the same artefact rebuilt at every campus</td>
         <td>{RDG['passages']} reading passages freed from a vendor console; a shared library</td></tr>
+  </table>
+</div>
+</section>
+
+<!-- ══ 1b · GUIDE FEEDBACK ══ -->
+<section class="panel" id="fb">
+<div class="print-title">Guide feedback, and what was done</div>
+
+<div class="card">
+  <h2>We asked the guides, and then we changed things</h2>
+  <p class="lead">
+    Before the school year I surveyed the people the Campus DRI role exists to serve —
+    <b>{SURVEY['responses']} responses from {SURVEY['campuses']} campuses</b>, collected
+    {SURVEY['from']} to {SURVEY['to']}. Two open questions carried the criticism: what a Campus
+    DRI could do to make your job easier ({SURVEY['q_easier']} answers), and what you wish your
+    DRI had done more or less of ({SURVEY['q_more_less']} answers).
+  </p>
+  <p class="lead">
+    Below is every theme of criticism in that survey — in the guides' own words — and what was
+    actually done about it in the {(dt.date.fromisoformat(iv['window']['last']) - dt.date.fromisoformat(SURVEY['to'])).days // 7}
+    weeks since. Praise is not listed. A page of compliments proves nothing; the test of whether
+    feedback was heard is what changed after it.
+  </p>
+  {minis([("themes of criticism", SURVEY['themes']), ("done", DONE),
+          ("partly done", PARTLY), ("in progress", WIP),
+          ("responses", SURVEY['responses']), ("campuses", SURVEY['campuses'])])}
+  <p class="foot">
+    Three of the ten were answered by tooling, three by a personnel decision, and four by changing
+    how the role is practised and coached. That split matters: a Head of Campus DRI who can only
+    fix things by building something can only fix a third of this list.
+  </p>
+</div>
+
+{feedback_blocks()}
+
+<div class="card">
+  <h3>What this cost, and what it did not fix</h3>
+  <table>
+    <tr><td style="width:32%"><b>Two themes were one person</b></td>
+      <td>The message-volume complaint and the blaming-the-guide complaint traced to the same
+        Campus DRI. The answer was to move them off the campus, hand the feedback to their
+        replacement, and coach them — not to write a process. They are doing the job well now,
+        which is the outcome worth having; the alternative was a policy that punished fifteen
+        people for one person's habit.</td></tr>
+    <tr><td><b>One theme was a misattribution</b></td>
+      <td>Guides experienced slow deep dives and slow skill plans as the same problem. Only the
+        first is a DRI queue. The skill plans come from an automation, so no amount of DRI
+        responsiveness would have moved them — and telling guides that is more useful than
+        absorbing a complaint we cannot act on.</td></tr>
+    <tr><td><b>Two are not finished</b></td>
+      <td>Standardising how every DRI writes deep dives and reports is convention, not yet
+        standard. And the timezone gap needs a hire, not a rule — the request is in, asking that
+        core hours be allowed to run to 2pm CT so West Coast campuses are covered by someone
+        whose day overlaps theirs.</td></tr>
+    <tr><td><b>The coaching programme is separate</b></td>
+      <td>The same survey carried 54 responses about the coaching programme — consistency between
+        coaches, availability, and reporting back to guides after a call. That is a different
+        function and is not claimed here.</td></tr>
   </table>
 </div>
 </section>
