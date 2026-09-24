@@ -12,6 +12,7 @@ Inputs
   /tmp/promo/accuracy.json        pull_accuracy.py
   /tmp/promo/interventions.json   pull_interventions.sh
   /tmp/promo/deepdive.json        pull_interventions.sh
+  /tmp/promo/team.json            pull_team.py
   ~/Desktop/dri-workload/tickets.json   pull_tickets.py + classify.py
   repo figures                    counted live from the working copies
 """
@@ -646,7 +647,7 @@ HTML = f"""<!DOCTYPE html>
 <div class="card">
   <h2>Why me</h2>
   <p class="lead">
-    Five claims. Each one is a number on another tab, not an adjective — so each can be checked,
+    Six claims. Each one is a number on another tab, not an adjective — so each can be checked,
     and each can be argued with.
   </p>
 
@@ -655,7 +656,7 @@ HTML = f"""<!DOCTYPE html>
     "because it was the only place the work could be written down. That is the strongest evidence "
     "I can offer that I already do this job: the practice the whole function follows is one I "
     "designed, and it stuck without a mandate.",
-    f"All <b>{tm['dri_filers']} of {tm['n_dris']}</b> Campus DRIs file into it, alongside "
+    f"<b>{tm['dri_filers']} of the {tm['n_dris']}</b> Campus DRIs file into it, alongside "
     f"{tm['curriculum_filers']} Curriculum DRIs — {tm['creators']} people writing, "
     f"{tm['completers']} closing, across <b>{tm['campuses_covered']} campuses</b>, since "
     f"{tm['first_entry']}.")}
@@ -731,7 +732,10 @@ HTML = f"""<!DOCTYPE html>
         be carrying more children than one with ten.</td></tr>
     <tr><td><b>Logging is not yet uniform</b></td>
       <td>Filings range from {tm['top_filer']} to {tm['min_filer']} across the
-        {tm['dri_filers']} DRIs in the same {iv['window']['days']} days.</td>
+        {tm['dri_filers']} DRIs who file at all. {len(tm['silent_dris'])} of {tm['n_dris']} have
+        filed nothing in {iv['window']['days']} days, between them responsible for
+        <b>{tm['silent_students']:,} students</b> — including the
+        {ordinal(tm['silent_top_rank'])}-largest caseload on the team.</td>
       <td>That spread is either real workload difference or inconsistent practice, and right now
         nobody can tell which. Make the log a standard, then use it to spot who needs support —
         not to rank people.</td></tr>
@@ -760,7 +764,16 @@ HTML = f"""<!DOCTYPE html>
     <tr><td><b>This is outputs, not outcomes</b></td>
       <td>Everything here measures work done and work made visible. It does not yet show a child
         who learned more because of it — the log is {iv['window']['days']} days old and there is
-        no before to compare against, because nothing was recorded before it.</td></tr>
+        no before to compare against, because nothing was recorded before it.
+        <b>What closes that gap:</b> the log is itself the missing baseline. Every row since
+        {tm['first_entry']} records the trigger and the date, so by
+        {(dt.date.fromisoformat(iv['window']['last']) + dt.timedelta(days=90)).strftime('%-d %B %Y')}
+        there is a before and an after for the {CA['students']} students already in it. The measure
+        I would accept being held to, in the job: accuracy and XP in the 30 days after an
+        intervention against the 30 days before, reported by intervention type — with the types
+        that move nobody named as plainly as the ones that work. A remediation that does not change
+        a number is one the team should stop spending time on, and right now nothing would tell
+        us.</td></tr>
     <tr><td><b>The window is short</b></td>
       <td>{iv['window']['days']} days. Long enough to show a rate, not long enough to show a trend.</td></tr>
     <tr><td><b>The platform is not solo work</b></td>

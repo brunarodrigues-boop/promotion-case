@@ -27,6 +27,8 @@ python3 build_systems.py        # reads the four inputs, writes index.html
 | `/tmp/promo/accuracy.json` | see below | ~2,000 API calls |
 | `/tmp/promo/interventions.json` | see below | one SQL round trip |
 | `/tmp/promo/deepdive.json` | see below | one SQL round trip |
+| `/tmp/promo/team.json` | `python3 pull_team.py` | one SQL round trip |
+| `/tmp/promo/g12_reading_k8.json` | `python3 pull_g12_reading.py` | needs the `/tmp` OneRoster caches first |
 | `~/Desktop/dri-workload/tickets_raw.json` | `cd ~/Desktop/dri-workload && python3 pull_tickets.py` | ~12 min, pages all ~40k cases |
 | `/tmp/promo/tickets2.json` | `python3 classify_tickets.py` | seconds |
 | `/tmp/promo/dashboard.json` | `python3 pull_dashboard.py` | seconds |
@@ -66,6 +68,31 @@ The `subject_dri` log is written retrospectively — the entry is made after the
 work is done — so elapsed time is not defined for it and including it would
 produce negative durations.
 
+### team.json
+
+The figures the ask itself rests on — the caseload claims, the headline stat
+row, and the two caveats about rank. Until `pull_team.py` existed these were the
+only numbers on the page written by hand, which meant they were also the only
+ones `audit.py` could not re-derive. Both properties were invisible until `/tmp`
+was cleared and the build died on a missing file nothing in the repo could write.
+
+**The join is on email, never on name.** `dris.json` and `team_members` disagree
+on the spelling of three of the sixteen people — "Chris Voigt" against
+"Christopher Voigt", "Hari Soragaon" against "Hariprasad Soragaon", "Joshua
+Albar" against "Joshua Lance Martin Albar". Matching on name silently drops
+those three and the adoption claim comes out at 11 of 16 instead of 14, which
+reads as three DRIs ignoring the log rather than as a string mismatch.
+
+**Who counts as a DRI is `dris.json`, not `position` in `team_members`.** That
+column reads `Campus DRI` for only 13 of the 16: my own row says "AI-driven
+Learning Analyst", and two people who file into the campus log — a Curriculum
+DRI and an Academic Lead — carry no campus caseload at all.
+
+Adoption is **14 of 16**, not all 16. The page said "All 14 of 16" until the
+producer made the number real; two DRIs responsible for 1,915 students between
+them, including the second-largest caseload on the team, have filed nothing. The
+audit now asserts that "all" and a non-empty silent list cannot both be true.
+
 ### tickets.json
 
 `pull_tickets.py` pages every case on the Kayako instance and filters locally to
@@ -100,7 +127,7 @@ visible rather than hidden.
 ## Auditing
 
 ```bash
-python3 audit.py     # 32 checks, exits non-zero on any failure
+python3 audit.py     # 105 checks, exits non-zero on any failure
 ```
 
 Every figure on the page is re-derived by a *second route* and compared: the

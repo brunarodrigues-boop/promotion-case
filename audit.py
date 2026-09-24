@@ -321,6 +321,85 @@ check("campus counts match the campus lists",
 check("caseload is not stale",
       dr["generated"] >= "2026-09-20", True)
 
+print("\n=== 9 · THE TEAM FIGURES ON THE CASE TAB ===")
+# These are the numbers the ask itself rests on, and until pull_team.py they
+# were the only ones on the page no second route could reach. The caseload side
+# is recomputed from the per-DRI rows rather than read from the headline keys;
+# the filing side is re-queried in a different shape than pull_team.py used —
+# plain group-by rows recounted in Python, not a json_build_object.
+tm = json.load(open(f"{PROMO}/team.json"))
+ME = "bruna.rodrigues@alpha.school"
+
+by_students = sorted(dris, key=lambda x: -x["students"])
+mine = next(x for x in dris if x["email"].lower() == ME)
+total = sum(x["students"] for x in by_students)
+
+check("n_dris matches the caseload rows", len(dris), tm["n_dris"])
+check("team_students re-adds from per-DRI rows", round(total), tm["team_students"], 1)
+check("team_campuses matches the campus list", dr["n_campuses"], tm["team_campuses"])
+check("my_students re-read from my own row", round(mine["students"]), tm["my_students"], 1)
+check("my_campuses re-read from my own row", mine["n_campuses"], tm["my_campuses"])
+check("my caseload rank recomputed by sorting",
+      [x["email"].lower() for x in by_students].index(ME) + 1, tm["my_caseload_rank"])
+check("top3 share recomputed",
+      round(100 * sum(x["students"] for x in by_students[:3]) / total), tm["top3_share"], 1)
+check("caseload spread recomputed",
+      round(by_students[0]["students"] / by_students[-1]["students"], 1), tm["spread"], 0.1)
+
+# Filing side, re-queried as rows rather than as one aggregated object.
+rows = sql("""select json_build_object('rows', json_agg(json_build_object(
+  'email', lower(tm.email), 'pos', tm.position, 'section', ir.section)))::text
+  from intervention_requests ir join team_members tm on tm.id = ir.created_by""")["rows"]
+campus_rows = [r for r in rows if r["section"] == "campus_dri"]
+tally = collections.Counter(r["email"] for r in campus_rows)
+dri_emails = {x["email"].lower() for x in dris}
+filed = {e: n for e, n in tally.items() if e in dri_emails}
+silent = [x for x in dris if x["email"].lower() not in filed]
+
+check_growing("filings recount to at least the snapshot", len(campus_rows), sum(tally.values()))
+check("dri_filers recounted from raw rows", len(filed), tm["dri_filers"])
+check("silent DRIs recounted", len(silent), len(tm["silent_dris"]))
+check("silent students re-added", round(sum(x["students"] for x in silent)),
+      tm["silent_students"], 1)
+check_growing("my filings recounted", tally.get(ME, 0), tm["my_filings"])
+check("my filing rank recomputed",
+      sorted(tally.values(), reverse=True).index(tally.get(ME, 0)) + 1, tm["my_rank"])
+check_growing("top filer recounted", max(filed.values()), tm["top_filer"])
+check("min filer recounted", min(filed.values()), tm["min_filer"])
+check("curriculum filers recounted from raw rows",
+      len({r["email"] for r in rows
+           if r["section"] == "subject_dri" and r["pos"] == "Curriculum DRI"}),
+      tm["curriculum_filers"])
+check_growing("creators recounted", len({r["email"] for r in rows}), tm["creators"])
+
+live = sql("""select json_build_object(
+  'campuses', (select count(distinct campus) from intervention_requests
+               where campus is not null and campus <> ''),
+  'completers', (select count(distinct completed_by) from intervention_requests
+                 where completed_by is not null),
+  'first', (select min(created_at)::date::text from intervention_requests))::text""")
+check_growing("campuses covered re-queried", live["campuses"], tm["campuses_covered"])
+check_growing("completers re-queried", live["completers"], tm["completers"])
+check("first entry re-queried", live["first"], tm["first_entry"])
+
+# The claim the first tab makes out of these, checked as a claim and not just
+# as arithmetic. "All N of 16" was live on the page while N was 14.
+check("adoption is not overstated as unanimous",
+      tm["dri_filers"] <= tm["n_dris"] and
+      (tm["dri_filers"] == tm["n_dris"]) == (len(tm["silent_dris"]) == 0), True)
+check("every DRI who filed is on the caseload sheet",
+      len(set(filed) - dri_emails), 0)
+# "including the Nth-largest caseload" is prose on the case tab, so the rank
+# behind it has to be re-derived like any other figure.
+ranks = sorted([x["email"].lower() for x in by_students].index(s["email"].lower()) + 1
+               for s in [next(y for y in dris if y["name"] == d["name"])
+                         for d in tm["silent_dris"]])
+check("silent DRI caseload ranks recomputed",
+      ranks, sorted(d["caseload_rank"] for d in tm["silent_dris"]))
+check("the worst silent caseload rank recomputed", ranks[0], tm["silent_top_rank"])
+check("team figures are not stale", tm["caseload_generated"] >= "2026-09-20", True)
+
+
 print("\n" + "=" * 78)
 print(f"{len(PASS)} passed, {len(FAIL)} failed")
 for name, got, want in FAIL:
