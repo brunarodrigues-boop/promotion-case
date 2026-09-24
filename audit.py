@@ -421,6 +421,42 @@ check("the worst silent caseload rank recomputed", ranks[0], tm["silent_top_rank
 check("team figures are not stale", tm["caseload_generated"] >= "2026-09-20", True)
 
 
+print("\n=== 10 · GUIDE SURVEY THEMES ===")
+# The case tab now states the tooling/coaching/people split and the number of
+# themes that traced to one person. Both were prose until now, and both were
+# wrong: the page said three by tooling and four by coaching against a source
+# that says four and three. Independent route: SURVEY declares its own theme
+# count, so the list has to agree with it, and every label has to be one the
+# page knows how to render.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import feedback as FBA
+
+themes = FBA.THEMES
+check("theme list matches the count the survey declares",
+      len(themes), FBA.SURVEY["themes"])
+check("every theme has a status the page can render",
+      sorted({t["status"] for t in themes}), ["done", "in progress", "partly"])
+check("every theme has a kind the page can render",
+      sorted({t["kind"] for t in themes}), ["People", "Practice", "Tooling"])
+kinds = collections.Counter(t["kind"] for t in themes)
+check("the kind split adds back to every theme", sum(kinds.values()), len(themes))
+statuses = collections.Counter(t["status"] for t in themes)
+check("the status split adds back to every theme", sum(statuses.values()), len(themes))
+check("tooling is not the largest half of the answer",
+      kinds["Practice"] + kinds["People"] > kinds["Tooling"], True)
+# The reassignment is claimed as two themes about one person; both must be
+# People-kind, or the claim and the label disagree.
+reassigned = [t for t in themes if t.get("person") == "reassigned"]
+check("the reassigned themes are marked as people work",
+      sum(1 for t in reassigned if t["kind"] != "People"), 0)
+check("every theme carries a quote and an action",
+      sum(1 for t in themes if not t["quotes"] or not t["action"].strip()), 0)
+check("every theme numbers itself in order",
+      [t["n"] for t in themes], list(range(1, len(themes) + 1)))
+
+
+# Written after every check, never mid-file: a dump placed above a later
+# section records a stale tally and the page then states it as fact.
 json.dump({"passed": len(PASS), "failed": len(FAIL),
            "ran": __import__("datetime").date.today().isoformat(),
            "failures": [n for n, _, _ in FAIL]},

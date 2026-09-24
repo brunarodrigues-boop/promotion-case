@@ -17,6 +17,7 @@ Inputs
   ~/Desktop/dri-workload/tickets.json   pull_tickets.py + classify.py
   repo figures                    counted live from the working copies
 """
+import collections
 import datetime as dt
 import json
 import os
@@ -252,6 +253,8 @@ SURVEY = FB.SURVEY
 DONE = sum(1 for t in FB.THEMES if t["status"] == "done")
 PARTLY = sum(1 for t in FB.THEMES if t["status"] == "partly")
 WIP = sum(1 for t in FB.THEMES if t["status"] == "in progress")
+KIND = collections.Counter(t["kind"] for t in FB.THEMES)
+REASSIGNED = sum(1 for t in FB.THEMES if t.get("person") == "reassigned")
 
 STATUS_LABEL = {"done": "Done", "partly": "Partly", "in progress": "In progress"}
 STATUS_CLASS = {"done": "st-done", "partly": "st-partly", "in progress": "st-wip"}
@@ -698,17 +701,23 @@ HTML = f"""<!DOCTYPE html>
     f"only {STUCK['n']} are a stuck child — the academic conversation was never in the ticket "
     f"queue, and now it has somewhere to live.")}
 
-  {claim(5, "I ask the people I serve, and then I change things.",
+  {claim(5, "I asked the guides, and the hardest fixes were people, not tooling.",
     f"Before the year I surveyed the guides the role exists to serve — {SURVEY['responses']} "
-    f"responses from {SURVEY['campuses']} campuses. Ten themes of criticism came back. Seven are "
-    f"done, two partly, one is a correction: guides were blaming DRIs for a delay an automation "
-    f"was causing. Two of the ten traced to a single Campus DRI, and the answer there was a "
-    f"personnel decision — move them off the campus, hand the feedback to their replacement, "
-    f"coach them. They are doing the job well now. That is the part of this role that cannot be "
-    f"solved by building something.",
+    f"responses from {SURVEY['campuses']} campuses. {SURVEY['themes']} themes of criticism came "
+    f"back, and only {KIND['Tooling']} of them were answered by building something. "
+    f"{KIND['Practice']} were answered by changing how the role is coached and {KIND['People']} "
+    f"by a decision about a person. <b>{REASSIGNED} of the {SURVEY['themes']} were one Campus "
+    f"DRI</b> — the same person behind both the complaint about message volume and the one about "
+    f"blaming guides for content they could not fix. They were moved off the campus, the feedback "
+    f"was handed to their replacement, and the original DRI was coached. They are doing the job "
+    f"well now. That is the half of this role no system solves, and it is the half the job is "
+    f"actually for. One theme I told the guides they were wrong about: the skill-plan delay they "
+    f"were putting on DRI responsiveness comes from the automation that generates the plans, so "
+    f"no amount of clearing a DRI queue would have moved it. They were chasing the wrong team, "
+    f"and saying so was part of the answer.",
     f"Every theme, in the guides' own words, with what was done about it, on the Guide feedback "
-    f"tab. {DONE} done, {PARTLY} partly, {WIP} in progress — and three of the ten were answered "
-    f"by tooling, three by a personnel decision, and four by changing how the role is coached.")}
+    f"tab — {DONE} done, {PARTLY} partly, {WIP} still in progress, and each one labelled with "
+    f"whether it was answered by tooling, by coaching, or by a personnel decision.")}
 
   {claim(6, "Missing data no longer reads as a child doing nothing.",
     "Mid-week reports were putting working students in the RED tier at 0.0 XP/day. On one campus "

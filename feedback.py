@@ -36,7 +36,7 @@ THEMES = [
   kind="Tooling"),
 
  dict(
-  n=2, status="done",
+  n=2, status="done", person="reassigned",
   title="Too many messages, the same information repeated",
   quotes=[("San Francisco", "Less re-alerting to known issues."),
           ("Austin", "Less daily updates of the same information regurgitated."),
@@ -61,7 +61,7 @@ THEMES = [
 
  dict(
   n=4, status="done",
-  title="Blaming the guide instead of fixing the content",
+  title="Blaming the guide instead of fixing the content", person="reassigned",
   quotes=[("Chicago", "The feedback frequently sounded like ‘please help motivate them’ when "
                       "significant instructional and content gaps were the real issue."),
           ("Austin", "Less blaming, and more adjusting content to keep data moving."),

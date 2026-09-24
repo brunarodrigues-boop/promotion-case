@@ -134,7 +134,7 @@ visible rather than hidden.
 ## Auditing
 
 ```bash
-python3 audit.py     # 105 checks, exits non-zero on any failure
+python3 audit.py     # 114 checks, exits non-zero on any failure
 ```
 
 `check_growing` and `check_drifting` exist because the intervention log is
