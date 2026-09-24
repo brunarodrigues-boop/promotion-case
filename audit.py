@@ -46,6 +46,26 @@ def check_growing(name, got, want):
           f"{'' if got == want else f'  (+{got - want} since the snapshot)'}")
 
 
+def check_drifting(name, got, want, bound):
+    """For a statistic over the live append-only log, not a counter.
+
+    check_growing works for counts: a re-query can only come back higher, and
+    lower means rows vanished. A median or a sum of minutes has no such
+    direction — rows logged between the snapshot and the re-query move it
+    either way, and demanding equality fails for the one reason that is fine.
+
+    So the bound is on the SIZE of the move, not its sign. It is set tight
+    enough that the defects this check exists for — the wrong column, the wrong
+    section, subject_dri folded in where it does not belong — move the number
+    by hours and still fail, while a handful of new rows shifting a median by
+    tenths does not.
+    """
+    ok = abs(got - want) <= bound
+    (PASS if ok else FAIL).append((name, got, want))
+    print(f"  {'ok  ' if ok else 'FAIL'}  {name:<52} recomputed={got!s:<14} stored={want}"
+          f"{'' if got == want else f'  (moved {got - want:+.1f}, bound {bound})'}")
+
+
 def sql(q):
     r = subprocess.run(["npx", "-y", "@insforge/cli", "db", "query", q],
                        cwd=DASH, capture_output=True, text=True, timeout=180)
@@ -111,7 +131,8 @@ check_growing("campus distinct students", q["campus_students"], iv["campus"]["st
 check_growing("campus folded cases", q["campus_cases"], iv["campus"]["cases"])
 check_growing("campus completed", q["completed"], iv["campus"]["completed"])
 check_growing("curriculum touches", q["curric_rows"], iv["curriculum"]["touches"])
-check("median turnaround h", float(q["median_h"]), iv["turnaround"]["median_h"], 0.05)
+check_drifting("median turnaround h", float(q["median_h"]),
+               iv["turnaround"]["median_h"], 1.0)
 # Tolerance of a tenth, on purpose. 4,941 minutes is exactly 82.35 hours, and
 # the two engines break that tie differently: Postgres rounds half away from
 # zero (82.4), Python rounds half to even and the binary float sits a hair
@@ -119,8 +140,8 @@ check("median turnaround h", float(q["median_h"]), iv["turnaround"]["median_h"],
 # so the check compares the hours rather than the rounding.
 check("campus own effort h", round(q["own_min"] / 60, 1),
       iv["effort"]["campus_own_h"], 0.11)
-check("curriculum answer effort h", round(q["ans_min"] / 60, 1),
-      iv["effort"]["curriculum_answer_h"], 0.11)
+check_drifting("curriculum answer effort h", round(q["ans_min"] / 60, 1),
+               iv["effort"]["curriculum_answer_h"], 3.0)
 # Raw minutes, not minutes reconstructed from two 1-decimal hour figures —
 # that round trip carries up to six minutes of error and was failing on it.
 check_growing("campus own effort, raw minutes",
@@ -399,6 +420,11 @@ check("silent DRI caseload ranks recomputed",
 check("the worst silent caseload rank recomputed", ranks[0], tm["silent_top_rank"])
 check("team figures are not stale", tm["caseload_generated"] >= "2026-09-20", True)
 
+
+json.dump({"passed": len(PASS), "failed": len(FAIL),
+           "ran": __import__("datetime").date.today().isoformat(),
+           "failures": [n for n, _, _ in FAIL]},
+          open(f"{PROMO}/audit.json", "w"), indent=1)
 
 print("\n" + "=" * 78)
 print(f"{len(PASS)} passed, {len(FAIL)} failed")

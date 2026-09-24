@@ -17,8 +17,14 @@ after any of the four systems moves.
 ## Rebuild
 
 ```bash
-python3 build_systems.py        # reads the four inputs, writes index.html
+python3 audit.py                # must pass first — it writes audit.json
+python3 build_systems.py        # reads the inputs, writes index.html
 ```
+
+The order matters now. `build_systems.py` reads `audit.json` and **refuses to
+build off a failing audit**, because the page claims every figure on it is
+checked. The check count on the case tab is read from that file rather than
+typed, so adding a check updates the page.
 
 ## Inputs, and how to refresh each
 
@@ -29,6 +35,7 @@ python3 build_systems.py        # reads the four inputs, writes index.html
 | `/tmp/promo/deepdive.json` | see below | one SQL round trip |
 | `/tmp/promo/team.json` | `python3 pull_team.py` | one SQL round trip |
 | `/tmp/promo/g12_reading_k8.json` | `python3 pull_g12_reading.py` | needs the `/tmp` OneRoster caches first |
+| `/tmp/promo/audit.json` | `python3 audit.py` | ~3 min; the build refuses a failing audit |
 | `~/Desktop/dri-workload/tickets_raw.json` | `cd ~/Desktop/dri-workload && python3 pull_tickets.py` | ~12 min, pages all ~40k cases |
 | `/tmp/promo/tickets2.json` | `python3 classify_tickets.py` | seconds |
 | `/tmp/promo/dashboard.json` | `python3 pull_dashboard.py` | seconds |
@@ -129,6 +136,14 @@ visible rather than hidden.
 ```bash
 python3 audit.py     # 105 checks, exits non-zero on any failure
 ```
+
+`check_growing` and `check_drifting` exist because the intervention log is
+live and append-only, and the audit re-queries it seconds to minutes after the
+snapshot the page was built from. For a **counter**, a re-query can only come
+back higher and lower means rows vanished, so only a decrease fails. For a
+**median or a sum of minutes** there is no such direction — new rows move it
+either way — so the bound is on the size of the move, not its sign, set tight
+enough that the wrong column or the wrong section still fails by hours.
 
 Every figure on the page is re-derived by a *second route* and compared: the
 accuracy totals are recounted straight from the per-student cache, the

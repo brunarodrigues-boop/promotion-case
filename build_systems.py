@@ -13,6 +13,7 @@ Inputs
   /tmp/promo/interventions.json   pull_interventions.sh
   /tmp/promo/deepdive.json        pull_interventions.sh
   /tmp/promo/team.json            pull_team.py
+  /tmp/promo/audit.json           audit.py (the page will not build if it failed)
   ~/Desktop/dri-workload/tickets.json   pull_tickets.py + classify.py
   repo figures                    counted live from the working copies
 """
@@ -40,6 +41,10 @@ rs = json.load(open(PROMO / "resources.json"))
 bx = json.load(open(PROMO / "bot_examples.json"))
 dr = json.load(open(DRI / "dris.json"))
 tm = json.load(open(PROMO / "team.json"))
+A = json.load(open(PROMO / "audit.json"))
+if A["failed"]:
+    raise SystemExit(f"audit.json reports {A['failed']} failing checks "
+                     f"({', '.join(A['failures'][:3])}) — refusing to build the page")
 
 MINE = ("bruna rodrigues", "brunar999", "brunarodrigues-boop")
 
@@ -705,16 +710,26 @@ HTML = f"""<!DOCTYPE html>
     f"tab. {DONE} done, {PARTLY} partly, {WIP} in progress — and three of the ten were answered "
     f"by tooling, three by a personnel decision, and four by changing how the role is coached.")}
 
-  {claim(6, "I find what is failing silently.",
-    "The failures that matter are the ones nothing reports. Mid-week reports were putting working "
-    "students in the RED tier at 0.0 XP/day — on one report, seven of the nine students listed as "
-    "having little to no engagement had earned XP every single day. The cause was a fetch that "
-    "returned empty instead of raising when the API answered 503, so an outage read as a child "
-    "doing no work. Fifteen DRIs acting on a report like that is fifteen wasted conversations and "
-    "nine children mislabelled.",
-    f"{R['fixes']} of my {R['tb_mine']:,} commits are fixes. The same instinct caught a silent cap "
-    f"in the helpdesk pull behind this page — it stopped at exactly 40,000 cases against an "
-    f"instance of {tk['scanned']:,} and reported nothing.")}
+  {claim(6, "Missing data no longer reads as a child doing nothing.",
+    "Mid-week reports were putting working students in the RED tier at 0.0 XP/day. On one campus "
+    "report, seven of the nine children listed under <em>little to no engagement</em> had earned "
+    "XP every single day — one read 0.0 against 118 XP actually earned. The tell was that their "
+    "time was right to the minute while only the XP had gone: the two are fetched from different "
+    "places, so the loss was in the cache build, not in the report. Underneath it, a paged fetch "
+    "ended on any non-200 and returned whatever it already had. The API answers 503 under load, "
+    "and that is as likely on the first page as any other, so what came back was usually nothing "
+    "at all — with no exception and no flag, and a student with no XP days is tiered RED "
+    "automatically. An outage read as a child doing no work, and a DRI acting on that report "
+    "spends the week on a child who never needed it while the ones who did go unseen.",
+    f"Fixed as a class rather than as an incident: a page that cannot be fetched now raises "
+    f"instead of truncating, the failure is recorded per student, and the report holds those "
+    f"children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child "
+    f"whose data would not load is not evidence that they did nothing. It took three commits in "
+    f"four days, since the first covered only the deep dive's path and the guard in the second "
+    f"stopped firing exactly when it was needed most, once a fallback began supplying the name it "
+    f"keyed on. The pulls behind this page refuse to write a short file for the same reason, and "
+    f"every figure on it is re-derived by a second route: <b>{A['passed']} checks</b>, "
+    f"{A['failed']} failing.")}
 </div>
 
 <div class="card">
