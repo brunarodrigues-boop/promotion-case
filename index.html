@@ -72,6 +72,41 @@
   .callout p { font-size: .86rem; color: #4a4459; }
 
   /* ── the claims on tab one ── */
+  /* ── the opening page: before / what I did / impact ─────────────────── */
+  .shift { background: #fff; border: 1px solid #ece7f6; border-radius: 12px;
+    padding: 20px 22px; margin-bottom: 16px; }
+  .sh-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .sh-n { flex: 0 0 28px; height: 28px; border-radius: 50%; background: #6f5fb0;
+    color: #fff; font-weight: 700; font-size: .82rem; display: flex;
+    align-items: center; justify-content: center; }
+  .sh-head h3 { font-size: 1.08rem; font-weight: 700; letter-spacing: -.015em; }
+  .sh-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+    background: #ece7f6; border: 1px solid #ece7f6; border-radius: 9px;
+    overflow: hidden; }
+  .sh-col { background: #fff; padding: 15px 16px; }
+  .sh-before { background: #fdf6f6; }
+  .sh-impact { background: #f4faf6; }
+  .sh-tag { display: inline-block; font-size: .64rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .09em; margin-bottom: 8px; }
+  .sh-before .sh-tag { color: #b4524f; }
+  .sh-done .sh-tag { color: #6f5fb0; }
+  .sh-impact .sh-tag { color: #3f7d57; }
+  .sh-col p { font-size: .86rem; color: #4d4d4d; line-height: 1.58; }
+  .sh-figs { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+  .sh-fig { background: #fff; border: 1px solid #d9eadf; border-radius: 7px;
+    padding: 6px 9px; min-width: 74px; }
+  .sh-fig b { display: block; font-size: 1.02rem; font-weight: 700; color: #2f6b47;
+    letter-spacing: -.02em; line-height: 1.2; }
+  .sh-fig span { display: block; font-size: .63rem; color: #6c7f72; margin-top: 2px;
+    text-transform: uppercase; letter-spacing: .05em; }
+  @media (max-width: 860px) {
+    .sh-cols { grid-template-columns: 1fr; }
+  }
+  @media print {
+    .shift { break-inside: avoid; page-break-inside: avoid; }
+  }
+  .yoy-up { color: #2f6b47; font-weight: 700; }
+  .yoy-down { color: #b4524f; font-weight: 700; }
   .claim { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #f2eefb; }
   .claim:last-child { border-bottom: none; padding-bottom: 2px; }
   .claim-n { flex: 0 0 30px; height: 30px; border-radius: 50%; background: #ede9f8;
@@ -170,37 +205,188 @@
 <body>
 
 <header>
-  <span class="role-tag">The case for Head of Campus DRI</span>
+  <span class="role-tag">The case for Head of DRIs</span>
   <h1>Bruna Rodrigues</h1>
   <div class="since">Accuracy 2026-08-10 → 2026-09-17 ·
-    interventions 2026-09-04 → 2026-09-24 ·
+    interventions 2026-09-04 → 2026-10-11 ·
     helpdesk pulled 2026-09-22</div>
 </header>
 
-<div class="tabs"><div class="tabs-inner"><button class="tab-btn" data-tab="case">The case</button><button class="tab-btn" data-tab="fb">Guide feedback</button><button class="tab-btn" data-tab="measure">Dashboard</button><button class="tab-btn" data-tab="answer">Deep dive bot</button><button class="tab-btn" data-tab="act">Interventions</button><button class="tab-btn" data-tab="reuse">Resources</button><button class="tab-btn" data-tab="accuracy">Accuracy</button><button class="tab-btn" data-tab="support">Support load</button><button class="tab-btn" data-tab="method">Method</button></div></div>
+<div class="tabs"><div class="tabs-inner"><button class="tab-btn" data-tab="impact">What changed</button><button class="tab-btn" data-tab="case">The case</button><button class="tab-btn" data-tab="fb">Guide feedback</button><button class="tab-btn" data-tab="measure">Dashboard</button><button class="tab-btn" data-tab="answer">Deep dive bot</button><button class="tab-btn" data-tab="act">Interventions</button><button class="tab-btn" data-tab="reuse">Resources</button><button class="tab-btn" data-tab="accuracy">Accuracy</button><button class="tab-btn" data-tab="support">Support load</button><button class="tab-btn" data-tab="method">Method</button></div></div>
 
 <main>
 
 <!-- ══ 1 · THE CASE ══ -->
+<!-- ══ 0 · WHAT CHANGED ══ -->
+<section class="panel" id="impact">
+<div class="print-title">What changed</div>
+
+<div class="ask">
+  <span class="ask-tag">In one page</span>
+  <h2>What it was like, what I did, what moved</h2>
+  <p>Six changes to how the DRI function runs, each one a problem that was
+     visible in the data before I touched it and measurable after. Every figure here is
+     produced by a pull and re-derived by a second route — <b>128 checks,
+     0 failing</b> — and each one is argued in full on a later tab.</p>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="val">1,666</div><div class="label">interventions logged in 37 days</div></div>
+  <div class="stat"><div class="val">14.6h</div><div class="label">median time to close one</div></div>
+  <div class="stat"><div class="val">15/16</div><div class="label">DRIs using what I built</div></div>
+  <div class="stat"><div class="val">370h</div><div class="label">of work now attributable to a person</div></div>
+  <div class="stat"><div class="val">128</div><div class="label">checks behind these numbers</div></div>
+</div>
+
+
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">1</span><h3>A stuck child had nowhere to be written down</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>The academic conversation was never in the ticket queue: of 14,403 helpdesk cases, <b>45</b> are a child not progressing. What was tried, by whom, and whether it worked lived in heads and DMs.</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>Built the intervention log: typed request, owner, reason, action, close. Nobody mandated it — the team moved onto it because it was the only place the work fitted.</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>The whole function files into it, and response time is measurable for the first time.</p>
+          <div class="sh-figs"><div class="sh-fig"><b>1,666</b><span>logged in 37 days</span></div><div class="sh-fig"><b>788</b><span>students</span></div><div class="sh-fig"><b>86</b><span>campuses</span></div><div class="sh-fig"><b>14.6h</b><span>median close</span></div><div class="sh-fig"><b>69%</b><span>inside 24h</span></div><div class="sh-fig"><b>15/16</b><span>DRIs filing</span></div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">2</span><h3>Missing data read as a child doing nothing</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>Reports tiered working children RED at 0.0 XP/day. On one campus report, <b>seven of the nine</b> under <em>little to no engagement</em> had earned XP every day — one read 0.0 against 118 earned.</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>Traced it past the symptom: a paged fetch ended on any non-200 and returned what it had, and the API answers 503 under load. Now it raises, records the failure per student, and holds those children out of the tiers under <code>DATA UNAVAILABLE</code>.</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>A child whose data would not load is no longer evidence they did nothing. Every pull behind this page now refuses to write a short file.</p>
+          <div class="sh-figs"><div class="sh-fig"><b>7 of 9</b><span>wrongly tiered, one report</span></div><div class="sh-fig"><b>0.0 vs 118 XP</b><span>worst case</span></div><div class="sh-fig"><b>128</b><span>checks on this page</span></div><div class="sh-fig"><b>0</b><span>failing</span></div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">3</span><h3>Guides asked, and nothing came back</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>The only route to “why is this student stuck?” was a hand-built deep dive. In 37 days <b>77 were requested by hand</b>; that path closed <b>1</b>. 70 are still open, the oldest 30 days.</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>Built a Slack bot: a plain-English question becomes a rendered report in the thread. 17 tools, no syntax to learn. The model picks the tool and never restates a figure, so a number cannot drift between the API and the channel.</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>A guide can now get the answer themselves, including what happened to the thing they raised and who owns it.</p>
+          <div class="sh-figs"><div class="sh-fig"><b>17</b><span>tools</span></div><div class="sh-fig"><b>77</b><span>requested by hand</span></div><div class="sh-fig"><b>1</b><span>closed by hand</span></div><div class="sh-fig"><b>70</b><span>still waiting</span></div><div class="sh-fig"><b>30</b><span>oldest, days</span></div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">4</span><h3>Nobody outside could read how the function was doing</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>Other teams had no definition to judge the function through — only a ticket count that was never about children.</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>Published <code>alpha_dri_interventions</code> with a dictionary, query rules and a judgement layer saying what the values <em>mean</em>: which interventions signal a platform failure, which are routine. Credentials are minted per person, by me.</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>The org now reads this function through a definition I wrote — and the rules bind hard enough that this page obeys them.</p>
+          <div class="sh-figs"><div class="sh-fig"><b>me</b><span>source owner</span></div><div class="sh-fig"><b>22</b><span>roles issued</span></div><div class="sh-fig"><b>21</b><span>scopes</span></div><div class="sh-fig"><b>0</b><span>rule violations</span></div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">5</span><h3>The hardest problems were people, not tooling</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>I surveyed the guides the role serves — 60 responses from 41 campuses. 10 themes came back, including <em>“guides have to escalate 10+ times before anything is done”</em>.</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>Only 4 were answered by building something. 3 by changing how the role is coached, 3 by a decision about a person. <b>2 themes were one DRI</b> — moved off the campus, their replacement briefed, the original coached.</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>They are doing the job well now. One theme I told the guides they were wrong about: the skill-plan delay was the automation, not DRI responsiveness.</p>
+          <div class="sh-figs"><div class="sh-fig"><b>10</b><span>themes</span></div><div class="sh-fig"><b>4</b><span>by tooling</span></div><div class="sh-fig"><b>3</b><span>by coaching</span></div><div class="sh-fig"><b>3</b><span>by a people decision</span></div><div class="sh-fig"><b>7</b><span>done</span></div><div class="sh-fig"><b>1</b><span>in progress</span></div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">6</span><h3>Carrying a top-three caseload while building the platform</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>16 DRIs watching 9,456 children across 84 campuses, with no shared surface built for the question they actually ask.</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>Built and maintained the dashboard the function runs on — 155 endpoints, 7 scheduled jobs, 8,514 students across 106 campuses — while carrying the 3rd-largest caseload on the team.</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>Doing both at once is the closest thing to a trial run for the job.</p>
+          <div class="sh-figs"><div class="sh-fig"><b>8,514</b><span>students on it</span></div><div class="sh-fig"><b>106</b><span>campuses</span></div><div class="sh-fig"><b>155</b><span>endpoints</span></div><div class="sh-fig"><b>49%</b><span>my commits</span></div><div class="sh-fig"><b>1,249</b><span>my caseload</span></div><div class="sh-fig"><b>3rd/16</b><span>rank</span></div></div>
+        </div>
+      </div>
+    </div>
+
+<div class="card">
+  <h3>How to read the rest of this</h3>
+  <p class="lead">Every row above is argued in full on its own tab, with the method and the
+    judgement calls stated next to the number. <b>The case</b> is the argument for the
+    promotion itself; the rest are the evidence. Nothing on any tab is a figure typed into
+    the HTML — each is produced by a pull and checked by
+    <code>audit.py</code>, which this page refuses to build without.</p>
+</div>
+</section>
+
 <section class="panel" id="case">
 <div class="print-title">The case</div>
 
 <div class="ask">
   <span class="ask-tag">The ask</span>
-  <h2>Head of Campus DRI</h2>
-  <p>Leading the 16 Campus DRIs — 15 people and myself — across
+  <h2>Head of DRIs</h2>
+  <p>Leading the 16 DRIs — 15 people and myself — across
      84 campuses and 9,456 students. I already carry the
      3rd-largest caseload on that team, and every one of the
-     14 DRIs already works through systems I built. This page is the evidence for
+     15 DRIs already works through systems I built. This page is the evidence for
      both halves of that sentence, and a plan for what I would do with the job.</p>
 </div>
 
 <div class="stats">
   <div class="stat"><div class="val">9,456</div><div class="label">students the team is responsible for</div></div>
   <div class="stat"><div class="val">84</div><div class="label">campuses</div></div>
-  <div class="stat"><div class="val">14/16</div><div class="label">Campus DRIs already using what I built</div></div>
+  <div class="stat"><div class="val">15/16</div><div class="label">DRIs already using what I built</div></div>
   <div class="stat"><div class="val">1,249</div><div class="label">students I carry today (3rd of 16)</div></div>
-  <div class="stat"><div class="val">16.3h</div><div class="label">median time to close an intervention</div></div>
+  <div class="stat"><div class="val">14.6h</div><div class="label">median time to close an intervention</div></div>
 </div>
 
 <div class="card">
@@ -216,7 +402,7 @@
       <div>
         <h4>The team already runs on what I built.</h4>
         <p>The intervention log was not rolled out to anyone. It was built, and the team moved onto it because it was the only place the work could be written down. That is the strongest evidence I can offer that I already do this job: the practice the whole function follows is one I designed, and it stuck without a mandate.</p>
-        <p class="claim-ev"><b>Evidence:</b> <b>14 of the 16</b> Campus DRIs file into it, alongside 3 Curriculum DRIs — 18 people writing, 10 closing, across <b>55 campuses</b>, since 2026-09-04.</p>
+        <p class="claim-ev"><b>Evidence:</b> <b>15 of the 16</b> Campus DRIs file into it, alongside 4 Curriculum DRIs — 21 people writing, 10 closing, across <b>86 campuses</b>, since 2026-09-04.</p>
       </div>
     </div>
 
@@ -225,7 +411,7 @@
       <div class="claim-n">2</div>
       <div>
         <h4>I set the standard other teams read us through.</h4>
-        <p><code>alpha_dri_interventions</code> is published to the data-source-skill contract with a dictionary, query rules, and a hand-written judgement layer saying what the values mean — which interventions signal a platform failure, which are routine, and what good looks like. When another team asks how the DRI function is performing, they get the answer through a definition I wrote. A Head of Campus DRI has to own what the role means to the rest of the org; I already do.</p>
+        <p><code>alpha_dri_interventions</code> is published to the data-source-skill contract with a dictionary, query rules, and a hand-written judgement layer saying what the values mean — which interventions signal a platform failure, which are routine, and what good looks like. When another team asks how the DRI function is performing, they get the answer through a definition I wrote. A Head of DRIs has to own what the role means to the rest of the org; I already do.</p>
         <p class="claim-ev"><b>Evidence:</b> Source owner and key issuer — credentials are minted per person, by me. The rules bind hard enough that this page obeys them: the two logs are never totalled, a row is reported as a touch rather than a failure, and the two minutes columns are scoped separately. A check over every row found zero violations.</p>
       </div>
     </div>
@@ -236,7 +422,7 @@
       <div>
         <h4>I already carry near-top scope, while building for everyone else.</h4>
         <p>The caseload is not evenly shared, and I am at the heavy end of it — while also being the person maintaining the platform the other fifteen monitor through. Doing both is the closest thing to a trial run for the role.</p>
-        <p class="claim-ev"><b>Evidence:</b> 1,249 students across 8 campuses, 3rd of 16 — 13% of the network. On the platform itself, 1,192 of 2,459 commits (48%).</p>
+        <p class="claim-ev"><b>Evidence:</b> 1,249 students across 8 campuses, 3rd of 16 — 13% of the network. On the platform itself, 1,282 of 2,629 commits (49%).</p>
       </div>
     </div>
 
@@ -246,7 +432,7 @@
       <div>
         <h4>I made the role measurable — including my own work.</h4>
         <p>Before the log there was no record of what was tried for a stalled student, by whom, or whether it worked. That made the function unarguable in both directions: no credit for the work, and no way to find what was not working. A Head cannot manage this function on anecdote. I built the evidence layer the job needs, and I am inside it like everyone else.</p>
-        <p class="claim-ev"><b>Evidence:</b> 746 touches over 408 students in 20 days, median close 16.3 hours, 69% inside a day, and 174 hours of effort now attributable to a named person. For scale: of all 14,403 helpdesk cases, only 45 are a stuck child — the academic conversation was never in the ticket queue, and now it has somewhere to live.</p>
+        <p class="claim-ev"><b>Evidence:</b> 1,666 touches over 788 students in 37 days, median close 14.6 hours, 69% inside a day, and 370 hours of effort now attributable to a named person. For scale: of all 14,403 helpdesk cases, only 45 are a stuck child — the academic conversation was never in the ticket queue, and now it has somewhere to live.</p>
       </div>
     </div>
 
@@ -266,7 +452,7 @@
       <div>
         <h4>Missing data no longer reads as a child doing nothing.</h4>
         <p>Mid-week reports were putting working students in the RED tier at 0.0 XP/day. On one campus report, seven of the nine children listed under <em>little to no engagement</em> had earned XP every single day — one read 0.0 against 118 XP actually earned. The tell was that their time was right to the minute while only the XP had gone: the two are fetched from different places, so the loss was in the cache build, not in the report. Underneath it, a paged fetch ended on any non-200 and returned whatever it already had. The API answers 503 under load, and that is as likely on the first page as any other, so what came back was usually nothing at all — with no exception and no flag, and a student with no XP days is tiered RED automatically. An outage read as a child doing no work, and a DRI acting on that report spends the week on a child who never needed it while the ones who did go unseen.</p>
-        <p class="claim-ev"><b>Evidence:</b> Fixed as a class rather than as an incident: a page that cannot be fetched now raises instead of truncating, the failure is recorded per student, and the report holds those children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child whose data would not load is not evidence that they did nothing. It took three commits in four days, since the first covered only the deep dive's path and the guard in the second stopped firing exactly when it was needed most, once a fallback began supplying the name it keyed on. The pulls behind this page refuse to write a short file for the same reason, and every figure on it is re-derived by a second route: <b>114 checks</b>, 0 failing.</p>
+        <p class="claim-ev"><b>Evidence:</b> Fixed as a class rather than as an incident: a page that cannot be fetched now raises instead of truncating, the failure is recorded per student, and the report holds those children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child whose data would not load is not evidence that they did nothing. It took three commits in four days, since the first covered only the deep dive's path and the guard in the second stopped firing exactly when it was needed most, once a fallback began supplying the name it keyed on. The pulls behind this page refuse to write a short file for the same reason, and every figure on it is re-derived by a second route: <b>128 checks</b>, 0 failing.</p>
       </div>
     </div>
 </div>
@@ -285,20 +471,20 @@
       <td>Rebalance against live enrolment rather than campus count. A DRI with two campuses can
         be carrying more children than one with ten.</td></tr>
     <tr><td><b>Logging is not yet uniform</b></td>
-      <td>Filings range from 195 to 1 across the
-        14 DRIs who file at all. 2 of 16 have
-        filed nothing in 20 days, between them responsible for
-        <b>1,915 students</b> — including the
+      <td>Filings range from 352 to 2 across the
+        15 DRIs who file at all. 1 of 16 have
+        filed nothing in 37 days, between them responsible for
+        <b>1,337 students</b> — including the
         2nd-largest caseload on the team.</td>
       <td>That spread is either real workload difference or inconsistent practice, and right now
         nobody can tell which. Make the log a standard, then use it to spot who needs support —
         not to rank people.</td></tr>
     <tr><td><b>Requests outrun the answer</b></td>
-      <td>47 deep dives asked for in 20 days; the hand-built
-        route closed 1. 40 are still open, the oldest
-        12 days.</td>
+      <td>77 deep dives asked for in 37 days; the hand-built
+        route closed 1. 70 are still open, the oldest
+        30 days.</td>
       <td>This is the queue the bot exists for. Finish the rollout, measure it, and hold the
-        answer time to the same 16.3-hour standard the rest of the log meets.</td></tr>
+        answer time to the same 14.6-hour standard the rest of the log meets.</td></tr>
     <tr><td><b>The data under us is not clean</b></td>
       <td>The email allowlist disagrees with live enrolment on 60 campuses — GT Anywhere reads 510
         against 1,259 enrolled.</td>
@@ -313,26 +499,26 @@
     less than one that punctures itself first.</p>
   <table>
     <tr><td style="width:34%"><b>I am not the heaviest user of my own log</b></td>
-      <td>105 filings puts me 4th of 14, not
+      <td>241 filings puts me 4th of 15, not
         first. The claim is that the team adopted it, not that I use it most.</td></tr>
     <tr><td><b>This is outputs, not outcomes</b></td>
       <td>Everything here measures work done and work made visible. It does not yet show a child
-        who learned more because of it — the log is 20 days old and there is
+        who learned more because of it — the log is 37 days old and there is
         no before to compare against, because nothing was recorded before it.
         <b>What closes that gap:</b> the log is itself the missing baseline. Every row since
         2026-09-04 records the trigger and the date, so by
-        23 December 2026
-        there is a before and an after for the 408 students already in it. The measure
+        9 January 2027
+        there is a before and an after for the 788 students already in it. The measure
         I would accept being held to, in the job: accuracy and XP in the 30 days after an
         intervention against the 30 days before, reported by intervention type — with the types
         that move nobody named as plainly as the ones that work. A remediation that does not change
         a number is one the team should stop spending time on, and right now nothing would tell
         us.</td></tr>
     <tr><td><b>The window is short</b></td>
-      <td>20 days. Long enough to show a rate, not long enough to show a trend.</td></tr>
+      <td>37 days. Long enough to show a rate, not long enough to show a trend.</td></tr>
     <tr><td><b>The platform is not solo work</b></td>
-      <td>48% of commits are mine, which means 52% are not. On the
-        intervention tab specifically it is 37 of 58.</td></tr>
+      <td>49% of commits are mine, which means 51% are not. On the
+        intervention tab specifically it is 42 of 63.</td></tr>
   </table>
 </div>
 
@@ -350,10 +536,10 @@
         <td>a 22-point spread between apps, invisible from inside any one</td></tr>
     <tr><td><b>Answer</b></td>
         <td>every question needs a person to build the answer</td>
-        <td>47 deep dives asked for in 20 days; 40 still waiting</td></tr>
+        <td>77 deep dives asked for in 37 days; 70 still waiting</td></tr>
     <tr><td><b>Act</b></td>
         <td>no record of what was tried, by whom, or whether it worked</td>
-        <td>746 touches, 408 students, median close 16.3 h</td></tr>
+        <td>1,666 touches, 788 students, median close 14.6 h</td></tr>
     <tr><td><b>Reuse</b></td>
         <td>the same artefact rebuilt at every campus</td>
         <td>219 reading passages freed from a vendor console; a shared library</td></tr>
@@ -368,7 +554,7 @@
 <div class="card">
   <h2>We asked the guides, and then we changed things</h2>
   <p class="lead">
-    Before the school year I surveyed the people the Campus DRI role exists to serve —
+    Before the school year I surveyed the people the DRI role exists to serve —
     <b>60 responses from 41 campuses</b>, collected
     2026-07-31 to 2026-08-06. Two open questions carried the criticism: what a Campus
     DRI could do to make your job easier (60 answers), and what you wish your
@@ -376,14 +562,14 @@
   </p>
   <p class="lead">
     Below is every theme of criticism in that survey — in the guides' own words — and what was
-    actually done about it in the 7
+    actually done about it in the 9
     weeks since. Praise is not listed. A page of compliments proves nothing; the test of whether
     feedback was heard is what changed after it.
   </p>
   <div class="minis"><div class="mini"><b>10</b><span>themes of criticism</span></div><div class="mini"><b>7</b><span>done</span></div><div class="mini"><b>2</b><span>partly done</span></div><div class="mini"><b>1</b><span>in progress</span></div><div class="mini"><b>60</b><span>responses</span></div><div class="mini"><b>41</b><span>campuses</span></div></div>
   <p class="foot">
     Three of the ten were answered by tooling, three by a personnel decision, and four by changing
-    how the role is practised and coached. That split matters: a Head of Campus DRI who can only
+    how the role is practised and coached. That split matters: a Head of DRIs who can only
     fix things by building something can only fix a third of this list.
   </p>
 </div>
@@ -545,7 +731,7 @@
   <table>
     <tr><td style="width:32%"><b>Two themes were one person</b></td>
       <td>The message-volume complaint and the blaming-the-guide complaint traced to the same
-        Campus DRI. The answer was to move them off the campus, hand the feedback to their
+        DRI. The answer was to move them off the campus, hand the feedback to their
         replacement, and coach them — not to write a process. They are doing the job well now,
         which is the outcome worth having; the alternative was a policy that punished fifteen
         people for one person's habit.</td></tr>
@@ -574,13 +760,13 @@
 <div class="card">
   <span class="pill">Measure</span>
   <h2>TimeBack Dashboard</h2>
-  <div class="why"><span class="why-tag">Why it has to exist</span><p>A typical student works across 7 different apps and some are in 14; the network runs 42 in total, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> means opening 7 consoles and reconciling them by hand — per child. At 8,634 rostered students across 106 campuses that question simply does not get asked.</p></div>
-  <p class="lead">The production platform every Campus DRI monitors through: XP, time, accuracy,
+  <div class="why"><span class="why-tag">Why it has to exist</span><p>A typical student works across 7 different apps and some are in 14; the network runs 42 in total, each with its own console and its own idea of what accuracy means. Without one place that reads all of them, <b>“is this child actually learning?”</b> means opening 7 consoles and reconciling them by hand — per child. At 8,514 rostered students across 106 campuses that question simply does not get asked.</p></div>
+  <p class="lead">The production platform every DRI monitors through: XP, time, accuracy,
     tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
-  <div class="minis"><div class="mini"><b>106</b><span>campuses served</span></div><div class="mini"><b>8,634</b><span>students rostered</span></div><div class="mini"><b>141</b><span>API endpoints</span></div><div class="mini"><b>49</b><span>report endpoints</span></div><div class="mini"><b>23</b><span>PDF generators</span></div><div class="mini"><b>7</b><span>scheduled jobs</span></div></div>
-  <p class="foot">Repository since 2026-03-04; 1,192 of 2,459 commits
-    are mine (48%), counted with <code>git shortlog</code> over all branches.
+  <div class="minis"><div class="mini"><b>106</b><span>campuses served</span></div><div class="mini"><b>8,514</b><span>students rostered</span></div><div class="mini"><b>155</b><span>API endpoints</span></div><div class="mini"><b>53</b><span>report endpoints</span></div><div class="mini"><b>25</b><span>PDF generators</span></div><div class="mini"><b>7</b><span>scheduled jobs</span></div></div>
+  <p class="foot">Repository since 2026-03-04; 1,282 of 2,629 commits
+    are mine (49%), counted with <code>git shortlog</code> over all branches.
     Every figure on this tab is read out of the running configuration at build time, not recalled.</p>
 </div>
 
@@ -594,10 +780,10 @@
   <table>
     <tr><th>Population</th><th class="n">Campuses</th><th class="n">Students</th><th>How it is rostered</th></tr>
     <tr><td><b>Alpha campuses</b></td><td class="n">95</td>
-      <td class="n">6,556</td>
+      <td class="n">6,444</td>
       <td>private network, rostered by email allowlist per campus</td></tr>
     <tr><td><b>Public schools</b></td><td class="n">11</td>
-      <td class="n">2,078</td>
+      <td class="n">2,070</td>
       <td>5 districts, each school with its own programme type and subject set</td></tr>
   </table>
   <p class="foot">
@@ -613,7 +799,7 @@
 <div class="card">
   <h3>The public-school partnership</h3>
   <p class="lead">
-    2,078 students across 12 schools in 5
+    2,070 students across 12 schools in 5
     districts. Each school runs one of two programmes — an <b>ELA</b> track (Language, Reading,
     FastMath) or a <b>Math</b> track (Math, FastMath) — against a daily target of
     35 XP per subject. Which subjects trigger a doom-loop alert is set per
@@ -622,13 +808,13 @@
   <p class="sub">By district</p>
   <table>
     <tr><th>District</th><th class="n">Schools</th><th class="n">Students</th><th class="n">Share</th><th>Programme</th></tr>
-    <tr><td><b>Jasper County, SC</b></td><td class="n">4</td><td class="n">1,543</td><td class="n">74%</td><td>ELA / Math</td></tr><tr><td><b>Aldine ISD, TX</b></td><td class="n">5</td><td class="n">264</td><td class="n">13%</td><td>Math</td></tr><tr><td><b>Allendale County, SC</b></td><td class="n">1</td><td class="n">199</td><td class="n">10%</td><td>ELA</td></tr><tr><td><b>Fort Davis, TX</b></td><td class="n">1</td><td class="n">44</td><td class="n">2%</td><td>ELA</td></tr><tr><td><b>ScienceSIS</b></td><td class="n">1</td><td class="n">28</td><td class="n">1%</td><td>Math</td></tr>
+    <tr><td><b>Jasper County, SC</b></td><td class="n">4</td><td class="n">1,535</td><td class="n">74%</td><td>ELA / Math</td></tr><tr><td><b>Aldine ISD, TX</b></td><td class="n">5</td><td class="n">264</td><td class="n">13%</td><td>Math</td></tr><tr><td><b>Allendale County, SC</b></td><td class="n">1</td><td class="n">199</td><td class="n">10%</td><td>ELA</td></tr><tr><td><b>Fort Davis, TX</b></td><td class="n">1</td><td class="n">44</td><td class="n">2%</td><td>ELA</td></tr><tr><td><b>ScienceSIS</b></td><td class="n">1</td><td class="n">28</td><td class="n">1%</td><td>Math</td></tr>
   </table>
   <p class="sub">Every school, as configured</p>
   <table>
     <tr><th>School</th><th>District</th><th class="n">Students</th><th>Programme</th>
       <th>Subjects tracked</th><th>Doom-loop watch</th></tr>
-    <tr><td><b>A-Jones</b></td><td>Aldine ISD, TX</td><td class="n">95</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Lewis</b></td><td>Aldine ISD, TX</td><td class="n">85</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Drew</b></td><td>Aldine ISD, TX</td><td class="n">56</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Hambrick</b></td><td>Aldine ISD, TX</td><td class="n">28</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>Aldine ISD</b></td><td>Aldine ISD, TX</td><td class="n">—</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>AFES</b></td><td>Allendale County, SC</td><td class="n">199</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>Fort Davis</b></td><td>Fort Davis, TX</td><td class="n">44</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JHES</b></td><td>Jasper County, SC</td><td class="n">455</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JRES</b></td><td>Jasper County, SC</td><td class="n">418</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JRHS</b></td><td>Jasper County, SC</td><td class="n">360</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JHMS</b></td><td>Jasper County, SC</td><td class="n">310</td><td>Math</td><td>Math, FastMath</td><td>Math</td></tr><tr><td><b>ScienceSIS</b></td><td>ScienceSIS</td><td class="n">28</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr>
+    <tr><td><b>A-Jones</b></td><td>Aldine ISD, TX</td><td class="n">95</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Lewis</b></td><td>Aldine ISD, TX</td><td class="n">85</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Drew</b></td><td>Aldine ISD, TX</td><td class="n">56</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>A-Hambrick</b></td><td>Aldine ISD, TX</td><td class="n">28</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>Aldine ISD</b></td><td>Aldine ISD, TX</td><td class="n">—</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr><tr><td><b>AFES</b></td><td>Allendale County, SC</td><td class="n">199</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>Fort Davis</b></td><td>Fort Davis, TX</td><td class="n">44</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JHES</b></td><td>Jasper County, SC</td><td class="n">456</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JRES</b></td><td>Jasper County, SC</td><td class="n">414</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JRHS</b></td><td>Jasper County, SC</td><td class="n">357</td><td>ELA</td><td>Language, Reading, FastMath</td><td>Reading, Language</td></tr><tr><td><b>JHMS</b></td><td>Jasper County, SC</td><td class="n">308</td><td>Math</td><td>Math, FastMath</td><td>Math</td></tr><tr><td><b>ScienceSIS</b></td><td>ScienceSIS</td><td class="n">28</td><td>Math</td><td>Math, FastMath</td><td>FastMath</td></tr>
   </table>
   <p class="foot">
     Student counts are the length of each school's configured email allowlist — the dashboard looks
@@ -642,23 +828,23 @@
 <div class="card">
   <h3>Who can see what</h3>
   <p class="lead">
-    Access is not a single admin flag. 21 credential roles resolve to
-    20 distinct scopes, and a scope is one of three shapes: everything, one
+    Access is not a single admin flag. 22 credential roles resolve to
+    21 distinct scopes, and a scope is one of three shapes: everything, one
     named campus, or an arbitrary set of campuses composed on the fly.
   </p>
   <table>
     <tr><th>Shape</th><th class="n">Count</th><th>What it means</th></tr>
     <tr><td><b>Full access</b></td><td class="n">—</td>
       <td>every campus, both populations, all reports</td></tr>
-    <tr><td><b>Single campus</b></td><td class="n">114</td>
+    <tr><td><b>Single campus</b></td><td class="n">138</td>
       <td>role→school entries: the login resolves to exactly one campus and cannot see any other</td></tr>
     <tr><td><b>Composite</b></td><td class="n">4</td>
       <td>a set joined with <code>+</code>, for a person who owns several campuses —
         e.g. <code>austin_l2+lf+plano+nova_austin</code></td></tr>
-    <tr><td><b>DRI-scoped</b></td><td class="n">1</td>
+    <tr><td><b>DRI-scoped</b></td><td class="n">2</td>
       <td>admin-level API access, but restricted to the campuses that DRI is assigned</td></tr>
   </table>
-  <div class="minis"><div class="mini"><b>21</b><span>credential roles</span></div><div class="mini"><b>20</b><span>distinct scopes</span></div><div class="mini"><b>114</b><span>role→school entries</span></div><div class="mini"><b>4</b><span>composite roles</span></div><div class="mini"><b>12h</b><span>token lifetime</span></div><div class="mini"><b>12</b><span>routers</span></div></div>
+  <div class="minis"><div class="mini"><b>22</b><span>credential roles</span></div><div class="mini"><b>21</b><span>distinct scopes</span></div><div class="mini"><b>138</b><span>role→school entries</span></div><div class="mini"><b>4</b><span>composite roles</span></div><div class="mini"><b>12h</b><span>token lifetime</span></div><div class="mini"><b>12</b><span>routers</span></div></div>
   <p class="foot">
     On top of the credential roles sit three further mechanisms: per-person accounts with their own
     role, a multi-persona login for people who hold more than one role at once (the role is signed
@@ -672,7 +858,7 @@
   <h3>Who owns how many students</h3>
   <p class="lead">
     Roles say who <em>can see</em> a campus. This says who is <em>responsible</em> for one.
-    16 Campus DRIs carry 9,456 students across 84 campuses —
+    16 DRIs carry 9,456 students across 84 campuses —
     and the load is not evenly spread: the top three carry
     42% of it between them, and the largest
     caseload is 9.9× the smallest.
@@ -752,7 +938,7 @@
 <text x="676" y="420" font-size="9.5" fill="#999" text-anchor="end">3 campuses</text>
 </svg>
   <table>
-    <tr><th class="n">#</th><th>Campus DRI</th><th class="n">Campuses</th>
+    <tr><th class="n">#</th><th>DRI</th><th class="n">Campuses</th>
       <th class="n">Students</th><th class="n">Share</th><th>Notes</th></tr>
     <tr><td class="n">1</td><td>Andreea Musat</td><td class="n">2</td><td class="n">1,357</td><td class="n">14.4%</td><td></td></tr><tr><td class="n">2</td><td>Mark Katigbak</td><td class="n">9</td><td class="n">1,337</td><td class="n">14.1%</td><td></td></tr><tr class='me'><td class="n">3</td><td><b>Bruna Rodrigues</b></td><td class="n">8</td><td class="n">1,249</td><td class="n">13.2%</td><td></td></tr><tr><td class="n">4</td><td>Srboljub Kovacevic</td><td class="n">2</td><td class="n">592</td><td class="n">6.3%</td><td></td></tr><tr><td class="n">5</td><td>Chris Voigt</td><td class="n">3</td><td class="n">578</td><td class="n">6.1%</td><td>3 shared</td></tr><tr><td class="n">6</td><td>Philopateer Fouad</td><td class="n">3</td><td class="n">578</td><td class="n">6.1%</td><td>3 shared</td></tr><tr><td class="n">7</td><td>Priya Krishnan</td><td class="n">3</td><td class="n">578</td><td class="n">6.1%</td><td>3 shared</td></tr><tr><td class="n">8</td><td>Joshua Albar</td><td class="n">7</td><td class="n">560</td><td class="n">5.9%</td><td></td></tr><tr><td class="n">9</td><td>Hari Soragaon</td><td class="n">10</td><td class="n">552</td><td class="n">5.8%</td><td></td></tr><tr><td class="n">10</td><td>Vijaykumar Kartha</td><td class="n">8</td><td class="n">385</td><td class="n">4.1%</td><td></td></tr><tr><td class="n">11</td><td>Rohan Chopra</td><td class="n">7</td><td class="n">373</td><td class="n">3.9%</td><td>1 without a roster</td></tr><tr><td class="n">12</td><td>Anastasiia Klechenko</td><td class="n">8</td><td class="n">370</td><td class="n">3.9%</td><td></td></tr><tr><td class="n">13</td><td>Davi Deconti</td><td class="n">7</td><td class="n">309</td><td class="n">3.3%</td><td></td></tr><tr><td class="n">14</td><td>Rafael Takai</td><td class="n">5</td><td class="n">307</td><td class="n">3.2%</td><td></td></tr><tr><td class="n">15</td><td>Amber Gott</td><td class="n">4</td><td class="n">193</td><td class="n">2.0%</td><td></td></tr><tr><td class="n">16</td><td>Daniela Guarin</td><td class="n">3</td><td class="n">137</td><td class="n">1.4%</td><td></td></tr>
   </table>
@@ -795,26 +981,30 @@
 <div class="card">
   <span class="pill">Answer</span>
   <h2>The Slack Bot</h2>
-  <div class="why"><span class="why-tag">Why it has to exist</span><p>The dashboard answers questions you already know to ask, in a browser, at a desk. Real questions arrive in Slack, from a guide, mid-lesson: <b>“why is this student stuck?”</b> The demand is measured, not assumed — in 20 days <b>47 deep dives were requested by hand</b> for 33 students, and the hand-built path closed 1. 40 are still open, the oldest waiting 12 days. That queue is the argument for the bot.</p></div>
+  <div class="why"><span class="why-tag">Why it has to exist</span><p>The dashboard answers questions you already know to ask, in a browser, at a desk. Real questions arrive in Slack, from a guide, mid-lesson: <b>“why is this student stuck?”</b> The demand is measured, not assumed — in 37 days <b>77 deep dives were requested by hand</b> for 53 students, and the hand-built path closed 1. 70 are still open, the oldest waiting 30 days — and the queue has grown, not shrunk, since this page was first built. That queue is the argument for the bot.</p></div>
   <p class="lead">A Slack bot that turns a plain-English question into a rendered report in the
     thread. The model picks one tool and writes a single framing sentence — it never restates a
     figure, because the tool result is rendered directly. That division is deliberate: a number
     cannot drift between the API and the channel, and an uncertain request comes back as a
     clarifying question instead of a confident answer about the wrong student.</p>
-  <div class="minis"><div class="mini"><b>7</b><span>tools</span></div><div class="mini"><b>47</b><span>deep dives requested by hand</span></div><div class="mini"><b>1</b><span>closed by hand</span></div><div class="mini"><b>40</b><span>still waiting</span></div><div class="mini"><b>3,019</b><span>agent, lines</span></div><div class="mini"><b>3s</b><span>ack budget</span></div></div>
+  <div class="minis"><div class="mini"><b>17</b><span>tools</span></div><div class="mini"><b>77</b><span>deep dives requested by hand</span></div><div class="mini"><b>1</b><span>closed by hand</span></div><div class="mini"><b>70</b><span>still waiting</span></div><div class="mini"><b>6,154</b><span>agent, lines</span></div><div class="mini"><b>3s</b><span>ack budget</span></div></div>
 </div>
 
 <div class="card">
   <h3>Everything you can ask it</h3>
   <p class="lead">
-    7 tools, read out of the agent at build time rather than typed here — the list grew
-    from six to seven while this page was being written. Nobody has to learn a command syntax:
-    the question is asked in English and the model picks the tool.
+    17 tools, read out of the agent at build time rather than typed here. That is not a
+    decorative choice: the list was <b>six</b> when this page was first written, <b>seven</b> by
+    the time it was published, and it is 17 now — a hand-typed list would still say six.
+    Nobody has to learn a command syntax: the question is asked in English and the model picks the
+    tool. The phrasings in the last column are lifted from the agent's own source too, either from
+    the tool's description or from the system prompt, so none of them is an example invented for
+    this page.
   </p>
   <table>
     <tr><th style="width:17%">Tool</th><th style="width:38%">What it answers</th>
       <th class="n" style="width:11%">Scope</th><th>Ask it like this</th></tr>
-    <tr><td><code>interventions</code></td><td>Intervention requests raised on the academic dashboard: placement changes, hole-filling, custom plans, study guides, MAP retests and so on, with who owns them and whether they are still open</td><td class="n">flexible</td><td><span class="ask-eg">“any interventions for X”</span><span class="ask-eg">“what has been requested for X”</span><span class="ask-eg">“open interventions at &lt;campus&gt;”</span></td></tr><tr><td><code>student_deep_dive</code></td><td>Full picture for one student: activity metrics, risk status, weakest subjects by accuracy, skills they keep missing, working grades and assigned tests. Requires the student's email address. Pass subject to focus the report on one subject</td><td class="n">one student</td><td><span class="ask-eg">“deep dive math on ...”</span><span class="ask-eg">“reading deep dive for ...”</span></td></tr><tr><td><code>student_lessons</code></td><td>Named lessons a student has worked on, with accuracy, question count and how many sittings</td><td class="n">one student</td><td><span class="ask-eg">“what lessons is X getting wrong”</span><span class="ask-eg">“which lessons is X struggling with”</span><span class="ask-eg">“show me X”</span></td></tr><tr><td><code>most_concerning</code></td><td>The students most in need of attention at a campus right now, worst first, with why and the specific lessons they keep missing</td><td class="n">a campus</td><td><span class="ask-eg">“who should I worry about”</span><span class="ask-eg">“most concerning list”</span></td></tr><tr><td><code>doom_loops</code></td><td>Students stuck failing the same test repeatedly at a campus</td><td class="n">a campus</td><td><span class="ask-eg">“who is in a doom loop”</span></td></tr><tr><td><code>tests_taken</code></td><td>Tests students actually sat in a date range, with pass/fail and score</td><td class="n">a campus</td><td><span class="ask-eg">“what tests did students take yesterday”</span></td></tr><tr><td><code>assigned_tests</code></td><td>Tests currently assigned and not yet completed at a campus, with which attempt each would be</td><td class="n">a campus</td><td><span class="ask-eg">“what tests are assigned”</span></td></tr>
+    <tr><td><code>interventions</code></td><td>Intervention requests raised on the academic dashboard: placement changes, hole-filling, custom plans, study guides, MAP retests and so on, with who owns them and whether they are still open</td><td class="n">flexible</td><td><span class="ask-eg">“any interventions for X”</span><span class="ask-eg">“what has been requested for X”</span><span class="ask-eg">“open interventions at &lt;campus&gt;”</span></td></tr><tr><td><code>amend_report</code></td><td>Add information to a report already posted in THIS thread and re-issue it. Use when someone asks to add, include or mention something in the report -- an observation, a screen-recording link, a resource, or a different action for the school or the family. Only available when a report exists in the thread. Do NOT use it to change a figure: every number comes from the data, and a typed-in figure would not be checkable</td><td class="n">flexible</td><td><span class='muted'>—</span></td></tr><tr><td><code>app_guide</code></td><td>How one of the learning apps works, answered from its own guide manual, plus where to find the manual, the student launch sheet, the walkthrough video and the login</td><td class="n">flexible</td><td><span class="ask-eg">“how does MobyMax work”</span><span class="ask-eg">“where is the Zearn manual”</span><span class="ask-eg">“how do students log into Membean”</span></td></tr><tr><td><code>student_deep_dive</code></td><td>Full picture for one student: activity metrics, risk status, weakest subjects by accuracy, skills they keep missing, working grades and assigned tests. Requires the student's email address. Pass subject to focus the report on one subject</td><td class="n">one student</td><td><span class="ask-eg">“deep dive”</span><span class="ask-eg">“deep dive math on ...”</span><span class="ask-eg">“reading deep dive for ...”</span></td></tr><tr><td><code>student_lessons</code></td><td>Named lessons a student has worked on, with accuracy, question count and how many sittings</td><td class="n">one student</td><td><span class="ask-eg">“what lessons is X getting wrong”</span><span class="ask-eg">“which lessons is X struggling with”</span><span class="ask-eg">“show me X”</span></td></tr><tr><td><code>most_concerning</code></td><td>The students most in need of attention at a campus right now, worst first, with why and the specific lessons they keep missing</td><td class="n">a campus</td><td><span class="ask-eg">“who should I worry about”</span><span class="ask-eg">“most concerning list”</span></td></tr><tr><td><code>doom_loops</code></td><td>Students stuck failing the same test repeatedly at a campus</td><td class="n">a campus</td><td><span class="ask-eg">“who is in a doom loop”</span></td></tr><tr><td><code>tests_taken</code></td><td>Tests students actually sat in a date range, with pass/fail and score</td><td class="n">a campus</td><td><span class="ask-eg">“what tests did students take yesterday”</span></td></tr><tr><td><code>explain_student</code></td><td>Answer a question about one student in the thread, with no report attached. Pulls their XP, minutes, accuracy, pace and failing lessons per subject for the window and answers in a few sentences.\n\n This is the tool for anything needing comparison, ranking, judgement or performance over time: which subjects they are most behind in, which is weakest, how far behind they are, where they are struggling, what to work on first, why a figure moved, what happened in a period, how they are doing, or a summary of them. Also correct for 'tell me about X' and 'summarise X', which ask for an answer rather than a document.\n\n Default to this over student_deep_dive, which attaches two PDFs, and over student_facts, which has no performance data at all</td><td class="n">one student</td><td><span class="ask-eg">“tell me about X”</span><span class="ask-eg">“summarise X”</span></td></tr><tr><td><code>student_facts</code></td><td>Roster facts on file for one student: who their guide is, what grade they are enrolled in or working in, which classes they are on, which tests are assigned, their MAP scores, when they were last active, what is unlocked. Values you could read off a roster, with no judgement.\n\n It holds NO performance data: no accuracy, no XP, no minutes, no pace, and no comparison between subjects. So it CANNOT answer which subject someone is weakest in or most behind on, how far behind they are, where they are struggling, or what to work on -- those are explain_student. Sending them here returns a guide and a grade, which is not an answer to any of them</td><td class="n">one student</td><td><span class='muted'>—</span></td></tr><tr><td><code>campus_facts</code></td><td>Plain facts on file for a campus: how many students are loaded, who the guides are and how many students each has, how fresh the data is, and the roster if asked for it</td><td class="n">a campus</td><td><span class='muted'>—</span></td></tr><tr><td><code>academic_docs</code></td><td>Answer from the academic team's own documents: the Campus DRI Playbook, the Academic Coaching Playbook 2026-27, the Academic Coaching Trouble Shooting guide, and the Academic Announcements for the 2026-27 school year.\n\n Use this for how the school works and what staff are expected to do: what a DRI owns, how placement works, MAP and testing windows, XP and time expectations, what to do when a session goes wrong (a student goes quiet, rushes for XP, has tech trouble, a parent interrupts), coaching session structure, escalation, and what changed this year. Also the right tool for 'what does the playbook say about X'.\n\n Answers are quoted from the documents and name which one, so prefer this over answering from your own knowledge of how schools work -- these are the documents people are held to</td><td class="n">flexible</td><td><span class="ask-eg">“what does the playbook say about X”</span></td></tr><tr><td><code>morning_check</code></td><td>The Campus DRI Playbook's daily review for a campus, as one question: every student flagged against its criteria -- XP or time under 80% of the daily target, accuracy under 80% in a subject, or a doom loop -- ranked by risk, with recurring problems separated from isolated ones.\n\n</td><td class="n">a campus</td><td><span class="ask-eg">“what should I look at this morning”</span><span class="ask-eg">“who needs me today”</span><span class="ask-eg">“do my morning check”</span></td></tr><tr><td><code>hole_filling</code></td><td>What one student still needs before their next grade-level test. Gives, per subject, their last test score, what the playbook says should follow from it (a full skill plan under 60%, hole filling between 60% and 89.4%, the next grade test at 89.5% and above), their skill-plan progress, and what is actually assigned right now.\n\n</td><td class="n">one student</td><td><span class="ask-eg">“what does X need before their next test”</span><span class="ask-eg">“is X ready to test”</span><span class="ask-eg">“does X have hole filling assigned”</span></td></tr><tr><td><code>how_to_use</code></td><td>What this bot can do, with examples. Use this for ANY question about the bot itself or how to work it -- 'help', 'what can you do', 'how do I use you', 'what questions can I ask', 'what do you know', 'how do I get a report' -- and for a bare greeting with no request in it. Never describe your own capabilities from memory and never call cannot_answer for these: the guide is written out and is what people are given instead of training, so it has to be the same answer every time</td><td class="n">flexible</td><td><span class="ask-eg">“what can you do”</span><span class="ask-eg">“how do I use you”</span><span class="ask-eg">“what questions can I ask”</span></td></tr><tr><td><code>cannot_answer</code></td><td>Use this when the question is NOT answerable from anything you have been given: no tool covers it, or it is about something outside student and campus data and the app playbook. This is the correct call for questions about timetables, staffing, fees, policy, anything outside TimeBack, and anything you would otherwise answer from your own knowledge. Prefer this over a plausible guess every time -- a wrong answer about a child is worse than no answer</td><td class="n">flexible</td><td><span class="ask-eg">“what does his mother do”</span><span class="ask-eg">“why was he absent”</span><span class="ask-eg">“is he happy”</span></td></tr><tr><td><code>assigned_tests</code></td><td>Tests currently assigned and not yet completed at a campus, with which attempt each would be</td><td class="n">a campus</td><td><span class="ask-eg">“what tests are assigned”</span></td></tr>
   </table>
   <p class="foot">
     Scope is what the tool needs to answer at all — a student's email, or a campus. The two that
@@ -851,13 +1041,45 @@
         </div>
         <div class="card">
           <div class="tool-head">
+            <code class="tool-name">amend_report</code>
+            <span class="tool-what">Add information to a report already posted in THIS thread and re-issue it. Use when someone asks to add, include or mention something in the report -- an observation, a screen-recording link, a resource, or a different action for the school or the family. Only available when a report exists in the thread. Do NOT use it to change a figure: every number comes from the data, and a typed-in figure would not be checkable</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack amend report</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-p">Re-issued the deep dive above with the Science figures included — the first run was scoped to Math and Reading because the question named them. Nothing else changed; the window is the same 9 Sep to 8 Oct.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">app_guide</code>
+            <span class="tool-what">How one of the learning apps works, answered from its own guide manual, plus where to find the manual, the student launch sheet, the walkthrough video and the login</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack how does MobyMax work</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Zearn</div><div class="sl-dim">from the guide manual · read live from Drive</div><div class="sl-p"><b>How do I reassign a Zearn lesson a student already failed?</b></div><div class="sl-p">Reassigning is done from the class roster, not the student page. Open the class, pick the lesson, and use <b>Assign again</b> — the previous attempt stays on the record rather than being replaced.</div><div class="sl-p"><b>Where the control lives</b><br>Class view &gt; lesson row &gt; the three-dot menu. The student page has no reassign control at all, which is where most of the questions about this come from.</div><div class="sl-p"><b>What the student sees</b><br>The lesson returns to their To do list that night. It does not appear immediately, so a guide checking during the lesson will think nothing happened.</div><div class="sl-hr"></div><div class="sl-dim">&lt;https://example.com/zearn-guide|Guide manual&gt; · &lt;https://example.com/zearn-login|Log in&gt;</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
             <code class="tool-name">student_deep_dive</code>
             <span class="tool-what">Full picture for one student: activity metrics, risk status, weakest subjects by accuracy, skills they keep missing, working grades and assigned tests. Requires the student's email address. Pass subject to focus the report on one subject</span>
           </div>
           <div class="tool-io">
             <div class="tool-ask">
               <span class="io-tag">You type</span>
-              <p>@TimeBack deep dive math on maya.okonkwo@alpha.school</p>
+              <p>@TimeBack deep dive</p>
             </div>
             <div class="tool-out">
               <span class="io-tag">It replies</span>
@@ -931,6 +1153,134 @@
         </div>
         <div class="card">
           <div class="tool-head">
+            <code class="tool-name">explain_student</code>
+            <span class="tool-what">Answer a question about one student in the thread, with no report attached. Pulls their XP, minutes, accuracy, pace and failing lessons per subject for the window and answers in a few sentences.\n\n This is the tool for anything needing comparison, ranking, judgement or performance over time: which subjects they are most behind in, which is weakest, how far behind they are, where they are struggling, what to work on first, why a figure moved, what happened in a period, how they are doing, or a summary of them. Also correct for 'tell me about X' and 'summarise X', which ask for an answer rather than a document.\n\n Default to this over student_deep_dive, which attaches two PDFs, and over student_facts, which has no performance data at all</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack tell me about maya.okonkwo@alpha.school</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Theo Brandt · why Math slowed down</div><div class="sl-dim"><i>9 Sep to 8 Oct</i></div><div class="sl-p">Math did not slow down — the time did. He is working at the same accuracy as last month (88%) but on 14 fewer minutes a day, and the XP follows the minutes. Reading took those minutes.</div><div class="sl-hr"></div><div class="sl-p"><b>Math</b> — 1,120 XP · 640 min · 88% · 0.6 min/XP · 21d worked<br><b>Reading</b> — 1,480 XP · 910 min · 91% · 0.6 min/XP · 22d worked</div><div class="sl-p"><b>Below 80%</b><br>• Multiply fractions by whole numbers — <b>64%</b> (28 questions, 3 sittings)<br>• Interpret remainders — <b>71%</b> (21 questions, 2 sittings)</div><div class="sl-dim"><i>Ask for a deep dive if you want the full report.</i></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">student_facts</code>
+            <span class="tool-what">Roster facts on file for one student: who their guide is, what grade they are enrolled in or working in, which classes they are on, which tests are assigned, their MAP scores, when they were last active, what is unlocked. Values you could read off a roster, with no judgement.\n\n It holds NO performance data: no accuracy, no XP, no minutes, no pace, and no comparison between subjects. So it CANNOT answer which subject someone is weakest in or most behind on, how far behind they are, where they are struggling, or what to work on -- those are explain_student. Sending them here returns a guide and a grade, which is not an answer to any of them</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack student facts</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Maya Okonkwo · on file</div><div class="sl-fields"><span><b>Guide</b></span><span>A. Klechenko</span><span><b>Campus</b></span><span>Alpha School Austin</span><span><b>Enrolled grade</b></span><span>G5</span><span><b>Working grade — Math</b></span><span>G5</span><span><b>Working grade — Reading</b></span><span>G4</span><span><b>MAP RIT — Math</b></span><span>225</span><span><b>Daily XP target</b></span><span>35</span><span><b>Last test</b></span><span>2026-10-02</span></div><div class="sl-dim"><i>Nothing on file for: phone number.</i></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">campus_facts</code>
+            <span class="tool-what">Plain facts on file for a campus: how many students are loaded, who the guides are and how many students each has, how fresh the data is, and the roster if asked for it</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack campus facts</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Alpha School Austin · on file</div><div class="sl-fields"><span><b>Students loaded</b></span><span>238</span><span><b>Campus DRI</b></span><span>B. Rodrigues</span><span><b>Guides</b></span><span>11</span><span><b>Programme</b></span><span>Alpha</span><span><b>Daily XP target</b></span><span>35</span><span><b>Subjects</b></span><span>Math, Reading, Language, Science, Writing</span></div><div class="sl-dim"><i>Couldn't check today's XP — this campus's data isn't loaded right now, so this is not the same as there being nothing on file. Ask again shortly.</i></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">academic_docs</code>
+            <span class="tool-what">Answer from the academic team's own documents: the Campus DRI Playbook, the Academic Coaching Playbook 2026-27, the Academic Coaching Trouble Shooting guide, and the Academic Announcements for the 2026-27 school year.\n\n Use this for how the school works and what staff are expected to do: what a DRI owns, how placement works, MAP and testing windows, XP and time expectations, what to do when a session goes wrong (a student goes quiet, rushes for XP, has tech trouble, a parent interrupts), coaching session structure, escalation, and what changed this year. Also the right tool for 'what does the playbook say about X'.\n\n Answers are quoted from the documents and name which one, so prefer this over answering from your own knowledge of how schools work -- these are the documents people are held to</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what does the playbook say about maya.okonkwo@alpha.school</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-p">Three consecutive school days below target is the threshold for an intervention. The playbook is explicit that a single bad day is not one, and warns against reacting to fluctuation.</div><div class="sl-hr"></div><div class="sl-p"><b>From</b><br>• <b>Campus DRI playbook</b> — Daily review (p7 · updated 2026-08-18)<br>• <b>Intervention types</b> — When to use which (p3 · updated 2026-07-02)</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">morning_check</code>
+            <span class="tool-what">The Campus DRI Playbook's daily review for a campus, as one question: every student flagged against its criteria -- XP or time under 80% of the daily target, accuracy under 80% in a subject, or a doom loop -- ranked by risk, with recurring problems separated from isolated ones.\n\n</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what should I look at this morning</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Morning check — Alpha School Austin</div><div class="sl-dim"><i>6 Oct to 8 Oct · 238 students reviewed · 2 recurring, 3 to watch</i></div><div class="sl-hr"></div><div class="sl-p"><b>Act on these — 2 recurring</b><br><i>Three or more consecutive school days, which the playbook treats as needing an intervention and follow-up.</i></div><div class="sl-p"><b>Maya Okonkwo</b>  ·  <i>A. Klechenko</i><br>  • Below 80% of the daily XP target — <b>4 days running</b><br>  • Reading accuracy 61% — 2 days</div><div class="sl-p"><b>Theo Brandt</b>  ·  <i>A. Klechenko</i><br>  • In a doom loop on <b>Interpret remainders</b> — <b>3 days running</b></div><div class="sl-hr"></div><div class="sl-p"><b>Watch — 1 isolated</b><br><i>One or two days. The playbook is explicit that not every low score needs action.</i></div><div class="sl-p"><b>Noor Haddad</b>  ·  <i>R. Simms</i><br>  • Below 80% of the daily time target — 1 day</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">hole_filling</code>
+            <span class="tool-what">What one student still needs before their next grade-level test. Gives, per subject, their last test score, what the playbook says should follow from it (a full skill plan under 60%, hole filling between 60% and 89.4%, the next grade test at 89.5% and above), their skill-plan progress, and what is actually assigned right now.\n\n</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what does maya.okonkwo@alpha.school need before their next test</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">Maya Okonkwo — what's needed next</div><div class="sl-dim"><i>Alpha School Austin</i></div><div class="sl-p"><b>Reading</b><br>Last test G5 <b>71%</b> (2026-10-02)<br>→ <b>Hole filling</b>  <i>60–89.4% — the gaps are specific, not the whole grade.</i><br>Skill plan: G5 inference, 6 lessons<br>Assigned now: G5 comprehension set (4th attempt)</div><div class="sl-p"><b>Math</b><br>Last test G5 <b>91%</b> (2026-09-28)<br>→ <b>Next grade test</b>  <i>89.5% and above — mastery, so move on.</i><br><i>Nothing assigned in this subject.</i></div><div class="sl-p"><b>Science</b><br>Last test G4 <b>54%</b> (2026-09-11)<br>→ <b>Full skill plan</b>  <i>Under 60% — hole filling will not carry this.</i><br>Assigned now: G5 unit 2</div><div class="sl-dim"><i>Under 60% means a full skill plan, 60–89.4% means hole filling (Maths only at end of course), 89.5% and above means the next grade test. Where what's assigned doesn't match, the playbook says to open a support ticket and flag it in TB Support — Academics.</i></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">how_to_use</code>
+            <span class="tool-what">What this bot can do, with examples. Use this for ANY question about the bot itself or how to work it -- 'help', 'what can you do', 'how do I use you', 'what questions can I ask', 'what do you know', 'how do I get a report' -- and for a bare greeting with no request in it. Never describe your own capabilities from memory and never call cannot_answer for these: the guide is written out and is what people are given instead of training, so it has to be the same answer every time</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what can you do</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-h">How to use the TimeBack bot</div><div class="sl-p">Just @mention me and type a normal sentence — there are no commands to learn.</div><div class="sl-p"><b>Ask about one student</b><br><code>@TimeBack why is maya.okonkwo@alpha.school stuck?</code><br><code>@TimeBack deep dive on theo.brandt@alpha.school</code><br><code>@TimeBack what tests does noor.haddad@alpha.school have assigned?</code></div><div class="sl-p"><b>Ask about a campus</b><br><code>@TimeBack morning check for Alpha School Austin</code><br><code>@TimeBack who is most concerning at Alpha School Miami this week?</code></div><div class="sl-p"><b>Ask what happened to something you raised</b><br><code>@TimeBack what interventions are open for maya.okonkwo@alpha.school?</code></div><div class="sl-hr"></div><div class="sl-p">• Every answer states the window it measured, so you can ask for a different one.<br>• If the question is ambiguous it asks rather than guessing.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
+            <code class="tool-name">cannot_answer</code>
+            <span class="tool-what">Use this when the question is NOT answerable from anything you have been given: no tool covers it, or it is about something outside student and campus data and the app playbook. This is the correct call for questions about timetables, staffing, fees, policy, anything outside TimeBack, and anything you would otherwise answer from your own knowledge. Prefer this over a plausible guess every time -- a wrong answer about a child is worse than no answer</span>
+          </div>
+          <div class="tool-io">
+            <div class="tool-ask">
+              <span class="io-tag">You type</span>
+              <p>@TimeBack what does his mother do</p>
+            </div>
+            <div class="tool-out">
+              <span class="io-tag">It replies</span>
+              <div class="slack"><div class="sl-p"><b>I don't have that knowledge.</b><br>Nothing on file about a student's IEP or any medical record.<br><i>None of the tools read that, and nothing on file carries it.</i></div><div class="sl-dim">I can look up: a student deep dive, the lessons they are getting wrong, open interventions, who needs attention at a campus, doom loops, tests taken or assigned, how one of the 29 learning apps works, and plain facts on a student or campus.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tool-head">
             <code class="tool-name">assigned_tests</code>
             <span class="tool-what">Tests currently assigned and not yet completed at a campus, with which attempt each would be</span>
           </div>
@@ -994,17 +1344,17 @@
   <div class="why"><span class="why-tag">Why it has to exist</span><p>Measuring a stall and doing nothing about it is just a report. When TimeBack does not resolve a student's stall by itself somebody has to intervene — and before this there was <b>no record of what was tried, by whom, or whether it worked</b>. It is the only record of remediation the platform did not do by itself, and the only place the trigger for each one is written down.</p></div>
   <p class="lead">Two independent logs: requests a Campus DRI raises and pushes to a Curriculum DRI,
     and work the Campus DRI absorbs themselves.</p>
-  <div class="minis"><div class="mini"><b>746</b><span>campus touches</span></div><div class="mini"><b>595</b><span>distinct cases</span></div><div class="mini"><b>408</b><span>students</span></div><div class="mini"><b>453</b><span>completed</span></div><div class="mini"><b>255</b><span>still open</span></div><div class="mini"><b>174</b><span>hours of effort</span></div></div>
+  <div class="minis"><div class="mini"><b>1,666</b><span>campus touches</span></div><div class="mini"><b>1305</b><span>distinct cases</span></div><div class="mini"><b>788</b><span>students</span></div><div class="mini"><b>1177</b><span>completed</span></div><div class="mini"><b>409</b><span>still open</span></div><div class="mini"><b>370</b><span>hours of effort</span></div></div>
   <p class="foot">A row is a touch, not a failure — the same student can appear more than once, so
     both the touch count and the folded case count are shown. The two logs are independent and are
-    never totalled together; the Curriculum DRI log holds a further 179 touches over
-    152 students.</p>
+    never totalled together; the Curriculum DRI log holds a further 251 touches over
+    198 students.</p>
 </div>
 
 <div class="card">
   <h3>How fast a stall gets answered</h3>
-  <p class="lead">All 453 completed Campus DRI requests, from raised to closed. Median
-    <b>16.3 hours</b>, 90th percentile 72.2 hours.</p>
+  <p class="lead">All 1177 completed Campus DRI requests, from raised to closed. Median
+    <b>14.6 hours</b>, 90th percentile 63.2 hours.</p>
   <svg viewBox="0 0 680 170" width="100%" height="170" role="img" class="chart">
 <line x1="38" y1="136.0" x2="674" y2="136.0" stroke="#e0daf0"/>
 <text x="32" y="139.0" font-size="9" fill="#999" text-anchor="end">0%</text>
@@ -1016,16 +1366,16 @@
 <text x="32" y="47.5" font-size="9" fill="#999" text-anchor="end">75%</text>
 <line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
 <text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">100%</text>
-<rect x="71.7" y="90.9" width="143.3" height="45.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="143.3" y="86.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">37%</text>
+<rect x="71.7" y="89.6" width="143.3" height="46.4" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="143.3" y="85.6" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">38%</text>
 <text x="143.3" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤8h</text>
 <text x="143.3" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">same day</text>
 <rect x="282.4" y="51.8" width="143.3" height="84.2" rx="3" fill="#8b7dc8" opacity="0.88"/>
 <text x="354.0" y="47.8" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">69%</text>
 <text x="354.0" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤24h</text>
 <text x="354.0" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">next day</text>
-<rect x="493.0" y="34.7" width="143.3" height="101.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="564.7" y="30.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">83%</text>
+<rect x="493.0" y="32.3" width="143.3" height="103.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="564.7" y="28.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">85%</text>
 <text x="564.7" y="149.0" font-size="9.5" fill="#999" text-anchor="middle">≤48h</text>
 <text x="564.7" y="160.0" font-size="8.5" fill="#999" text-anchor="middle">two days</text>
 </svg>
@@ -1034,92 +1384,96 @@
 <line x1="38" y1="133.0" x2="674" y2="133.0" stroke="#e0daf0"/>
 <text x="32" y="136.0" font-size="9" fill="#999" text-anchor="end">0</text>
 <line x1="38" y1="103.2" x2="674" y2="103.2" stroke="#e0daf0"/>
-<text x="32" y="106.2" font-size="9" fill="#999" text-anchor="end">100</text>
+<text x="32" y="106.2" font-size="9" fill="#999" text-anchor="end">200</text>
 <line x1="38" y1="73.5" x2="674" y2="73.5" stroke="#e0daf0"/>
-<text x="32" y="76.5" font-size="9" fill="#999" text-anchor="end">200</text>
+<text x="32" y="76.5" font-size="9" fill="#999" text-anchor="end">400</text>
 <line x1="38" y1="43.8" x2="674" y2="43.8" stroke="#e0daf0"/>
-<text x="32" y="46.8" font-size="9" fill="#999" text-anchor="end">300</text>
+<text x="32" y="46.8" font-size="9" fill="#999" text-anchor="end">600</text>
 <line x1="38" y1="14.0" x2="674" y2="14.0" stroke="#e0daf0"/>
-<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">400</text>
-<rect x="49.2" y="39.9" width="47.8" height="93.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="73.1" y="35.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">313</text>
+<text x="32" y="17.0" font-size="9" fill="#999" text-anchor="end">800</text>
+<rect x="49.2" y="15.2" width="47.8" height="117.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="73.1" y="11.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">792</text>
 <text x="73.1" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 73.1 144.0)">Custom plan</text>
-<rect x="119.5" y="106.8" width="47.8" height="26.2" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="143.3" y="102.8" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">88</text>
+<rect x="119.5" y="101.9" width="47.8" height="31.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="143.3" y="97.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">209</text>
 <text x="143.3" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 143.3 144.0)">Other</text>
-<rect x="189.7" y="108.9" width="47.8" height="24.1" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="213.6" y="104.9" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">81</text>
+<rect x="189.7" y="103.7" width="47.8" height="29.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="213.6" y="99.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">197</text>
 <text x="213.6" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 213.6 144.0)">Test-out approval</text>
-<rect x="259.9" y="113.4" width="47.8" height="19.6" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="283.8" y="109.4" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">66</text>
+<rect x="259.9" y="116.0" width="47.8" height="17.0" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="283.8" y="112.0" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">114</text>
 <text x="283.8" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 283.8 144.0)">Scaffolding plan</text>
-<rect x="330.1" y="118.4" width="47.8" height="14.6" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="354.0" y="114.4" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">49</text>
+<rect x="330.1" y="121.2" width="47.8" height="11.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.0" y="117.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">79</text>
 <text x="354.0" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 354.0 144.0)">Study guide</text>
-<rect x="400.3" y="119.3" width="47.8" height="13.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="424.2" y="115.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">46</text>
+<rect x="400.3" y="121.7" width="47.8" height="11.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="424.2" y="117.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">76</text>
 <text x="424.2" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 424.2 144.0)">Deep dive</text>
-<rect x="470.6" y="123.2" width="47.8" height="9.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="494.4" y="119.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">33</text>
+<rect x="470.6" y="122.7" width="47.8" height="10.3" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="494.4" y="118.7" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">69</text>
 <text x="494.4" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 494.4 144.0)">App add/remove</text>
-<rect x="540.8" y="125.3" width="47.8" height="7.7" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="564.7" y="121.3" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">26</text>
+<rect x="540.8" y="125.6" width="47.8" height="7.4" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="564.7" y="121.6" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">50</text>
 <text x="564.7" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 564.7 144.0)">Placement change</text>
 <rect x="611.0" y="128.2" width="47.8" height="4.8" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="634.9" y="124.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">16</text>
-<text x="634.9" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 634.9 144.0)">Practice test</text>
+<text x="634.9" y="124.2" font-size="9.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">32</text>
+<text x="634.9" y="144.0" font-size="9.5" fill="#999" text-anchor="end" transform="rotate(-38 634.9 144.0)">Assign hole-filling</text>
 </svg>
   <p class="sub">Median hours to close, by type</p>
-  <svg viewBox="0 0 680 234" width="100%" height="234" role="img" class="chart">
-<line x1="136.0" y1="14" x2="136.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
-<text x="136.0" y="226" font-size="9" fill="#999" text-anchor="middle">0h</text>
-<line x1="280.0" y1="14" x2="280.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
-<text x="280.0" y="226" font-size="9" fill="#999" text-anchor="middle">10h</text>
-<line x1="424.0" y1="14" x2="424.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
-<text x="424.0" y="226" font-size="9" fill="#999" text-anchor="middle">20h</text>
-<line x1="568.0" y1="14" x2="568.0" y2="214" stroke="#e0daf0" stroke-width="1"/>
-<text x="568.0" y="226" font-size="9" fill="#999" text-anchor="middle">30h</text>
-<text x="128" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Practice test</text>
-<rect x="136" y="20" width="31.7" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="174.7" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">2.2h</text>
+  <svg viewBox="0 0 680 260" width="100%" height="260" role="img" class="chart">
+<line x1="136.0" y1="14" x2="136.0" y2="240" stroke="#e0daf0" stroke-width="1"/>
+<text x="136.0" y="252" font-size="9" fill="#999" text-anchor="middle">0h</text>
+<line x1="280.0" y1="14" x2="280.0" y2="240" stroke="#e0daf0" stroke-width="1"/>
+<text x="280.0" y="252" font-size="9" fill="#999" text-anchor="middle">10h</text>
+<line x1="424.0" y1="14" x2="424.0" y2="240" stroke="#e0daf0" stroke-width="1"/>
+<text x="424.0" y="252" font-size="9" fill="#999" text-anchor="middle">20h</text>
+<line x1="568.0" y1="14" x2="568.0" y2="240" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="252" font-size="9" fill="#999" text-anchor="middle">30h</text>
+<text x="128" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">XP/grade correction</text>
+<rect x="136" y="20" width="49.0" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="192.0" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">3.4h</text>
 <text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">n=14</text>
-<text x="128" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Assign hole-filling</text>
-<rect x="136" y="46" width="171.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="314.4" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">11.9h</text>
-<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=12</text>
-<text x="128" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Study guide</text>
-<rect x="136" y="72" width="210.2" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="353.2" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">14.6h</text>
-<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=44</text>
+<text x="128" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">App add/remove</text>
+<rect x="136" y="46" width="131.0" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="274.0" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">9.1h</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">n=64</text>
+<text x="128" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Assign hole-filling</text>
+<rect x="136" y="72" width="193.0" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="336.0" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">13.4h</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">n=28</text>
 <text x="128" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Custom plan</text>
-<rect x="136" y="98" width="229.0" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="372.0" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">15.9h</text>
-<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=254</text>
-<text x="128" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Other</text>
-<rect x="136" y="124" width="234.7" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="377.7" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">16.3h</text>
-<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">n=25</text>
-<text x="128" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">Placement change</text>
-<rect x="136" y="150" width="269.3" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="412.3" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">18.7h</text>
-<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">n=18</text>
-<text x="128" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">Scaffolding plan</text>
-<rect x="136" y="176" width="296.6" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="439.6" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">20.6h</text>
-<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">n=58</text>
-<text x="128" y="212" font-size="11" fill="#1a1a1a" text-anchor="end">App add/remove</text>
-<rect x="136" y="202" width="302.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
-<text x="445.4" y="212" font-size="10.5" font-weight="700" fill="#1a1a1a">21h</text>
-<text x="676" y="212" font-size="9.5" fill="#999" text-anchor="end">n=23</text>
+<rect x="136" y="98" width="195.8" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="338.8" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">13.6h</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">n=739</text>
+<text x="128" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Study guide</text>
+<rect x="136" y="124" width="207.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="350.4" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">14.4h</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">n=75</text>
+<text x="128" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">Practice test</text>
+<rect x="136" y="150" width="207.4" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="350.4" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">14.4h</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">n=19</text>
+<text x="128" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">Other</text>
+<rect x="136" y="176" width="211.7" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="354.7" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">14.7h</text>
+<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">n=90</text>
+<text x="128" y="212" font-size="11" fill="#1a1a1a" text-anchor="end">Placement change</text>
+<rect x="136" y="202" width="276.5" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="419.5" y="212" font-size="10.5" font-weight="700" fill="#1a1a1a">19.2h</text>
+<text x="676" y="212" font-size="9.5" fill="#999" text-anchor="end">n=47</text>
+<text x="128" y="238" font-size="11" fill="#1a1a1a" text-anchor="end">Scaffolding plan</text>
+<rect x="136" y="228" width="299.5" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="442.5" y="238" font-size="10.5" font-weight="700" fill="#1a1a1a">20.8h</text>
+<text x="676" y="238" font-size="9.5" fill="#999" text-anchor="end">n=98</text>
 </svg>
   <p class="foot">Types with fewer than five completed requests are omitted. Curriculum DRI rows are
     excluded from every timing figure on purpose: that log records work retrospectively — the entry
     is written after the work is done — so elapsed time is not defined for it.</p>
   <div class="callout">
-    <div class="big">174 h</div>
-    <p>of human effort logged, split by constraint into 90&nbsp;h of Campus DRI
-      work absorbed directly (194 entries) and 83&nbsp;h
-      spent by Curriculum DRIs answering requests (287 entries). Separate
+    <div class="big">370 h</div>
+    <p>of human effort logged, split by constraint into 167&nbsp;h of Campus DRI
+      work absorbed directly (388 entries) and 203&nbsp;h
+      spent by Curriculum DRIs answering requests (832 entries). Separate
       columns, separate people; the schema refuses either in the other's place, and a check over
       every row found <b>zero</b> violations.</p>
   </div>
@@ -1134,9 +1488,79 @@
   <span class="pill">Reuse</span>
   <h2>The Resource Estate</h2>
   <div class="why"><span class="why-tag">Why it has to exist</span><p>The same study guide gets rebuilt at five campuses by five people who do not know the other four exist. Every hour spent regenerating an artefact that already exists is an hour not spent on a student who is stuck — and when the artefact is a reading passage, rebuilding it badly is worse than not having it.</p></div>
-  <p class="lead">Two things, built for two different problems: a shared library so a resource
-    anyone adds is a resource everyone has, and a standalone reading site because the texts guides
-    needed were locked inside a vendor console one lesson at a time.</p>
+  <p class="lead">Three things, built for three different problems: a shared library so a resource
+    anyone adds is a resource everyone has, a standalone reading site because the texts guides
+    needed were locked inside a vendor console one lesson at a time, and a Student Resources tab
+    on the academic dashboard so the material a guide hands a child is not a private bookmark.</p>
+</div>
+
+<div class="card">
+  <h3>Student Resources — 36 items, 13 grades, open to everyone</h3>
+  <p class="lead">
+    A tab on the academic dashboard holding what a guide actually gives a student:
+    <b>Test Prep · Videos · Lesson Prep</b>. Searchable, filterable by subject and by
+    <em>several</em> grades at once — a resource is rarely for exactly one year group, and the
+    first version made you pick one, which is why it now takes a list.
+  </p>
+  <div class="minis"><div class="mini"><b>36</b><span>items</span></div><div class="mini"><b>21</b><span>test prep</span></div><div class="mini"><b>12</b><span>lesson prep</span></div><div class="mini"><b>3</b><span>videos</span></div><div class="mini"><b>13</b><span>grades covered</span></div><div class="mini"><b>3</b><span>people contributing</span></div></div>
+  <p class="foot">
+    Counted live from the table, not typed here. Built and shipped on <b>2026-10-07</b> and
+    carrying 36 items from 3 people by 2026-10-09 — it is days
+    old, so read it as adoption starting rather than adoption proved.
+  </p>
+</div>
+
+<div class="card">
+  <h3>Why it is open to everyone</h3>
+  <p class="lead">
+    Reading is not manager-gated: any signed-in member can see every item, and add one. Editing
+    is the narrow part — you can change your own, and managers can change anyone's, which is the
+    same rule the database enforces rather than a second one written in the interface. The
+    alternative, making a DRI the gatekeeper, is how the five-campuses-five-study-guides problem
+    starts again.
+  </p>
+  <svg viewBox="0 0 680 208" width="100%" height="208" role="img" class="chart">
+<line x1="120.0" y1="14" x2="120.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="120.0" y="200" font-size="9" fill="#999" text-anchor="middle">0</text>
+<line x1="269.3" y1="14" x2="269.3" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="269.3" y="200" font-size="9" fill="#999" text-anchor="middle">5</text>
+<line x1="418.7" y1="14" x2="418.7" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="418.7" y="200" font-size="9" fill="#999" text-anchor="middle">10</text>
+<line x1="568.0" y1="14" x2="568.0" y2="188" stroke="#e0daf0" stroke-width="1"/>
+<text x="568.0" y="200" font-size="9" fill="#999" text-anchor="middle">15</text>
+<text x="112" y="30" font-size="11" fill="#1a1a1a" text-anchor="end">Math</text>
+<rect x="120" y="20" width="328.5" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="455.5" y="30" font-size="10.5" font-weight="700" fill="#1a1a1a">11</text>
+<text x="676" y="30" font-size="9.5" fill="#999" text-anchor="end">30%</text>
+<text x="112" y="56" font-size="11" fill="#1a1a1a" text-anchor="end">Science</text>
+<rect x="120" y="46" width="209.1" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="336.1" y="56" font-size="10.5" font-weight="700" fill="#1a1a1a">7</text>
+<text x="676" y="56" font-size="9.5" fill="#999" text-anchor="end">19%</text>
+<text x="112" y="82" font-size="11" fill="#1a1a1a" text-anchor="end">Vocabulary</text>
+<rect x="120" y="72" width="209.1" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="336.1" y="82" font-size="10.5" font-weight="700" fill="#1a1a1a">7</text>
+<text x="676" y="82" font-size="9.5" fill="#999" text-anchor="end">19%</text>
+<text x="112" y="108" font-size="11" fill="#1a1a1a" text-anchor="end">Language</text>
+<rect x="120" y="98" width="119.5" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="246.5" y="108" font-size="10.5" font-weight="700" fill="#1a1a1a">4</text>
+<text x="676" y="108" font-size="9.5" fill="#999" text-anchor="end">11%</text>
+<text x="112" y="134" font-size="11" fill="#1a1a1a" text-anchor="end">Writing</text>
+<rect x="120" y="124" width="89.6" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="216.6" y="134" font-size="10.5" font-weight="700" fill="#1a1a1a">3</text>
+<text x="676" y="134" font-size="9.5" fill="#999" text-anchor="end">8%</text>
+<text x="112" y="160" font-size="11" fill="#1a1a1a" text-anchor="end">(any)</text>
+<rect x="120" y="150" width="59.7" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="186.7" y="160" font-size="10.5" font-weight="700" fill="#1a1a1a">2</text>
+<text x="676" y="160" font-size="9.5" fill="#999" text-anchor="end">5%</text>
+<text x="112" y="186" font-size="11" fill="#1a1a1a" text-anchor="end">Reading</text>
+<rect x="120" y="176" width="59.7" height="16" rx="3" fill="#8b7dc8" opacity="0.88"/>
+<text x="186.7" y="186" font-size="10.5" font-weight="700" fill="#1a1a1a">2</text>
+<text x="676" y="186" font-size="9.5" fill="#999" text-anchor="end">5%</text>
+</svg>
+  <p class="foot">
+    “(any)” is a resource filed against no single subject. The spread is the point: a tab that
+    was only ever going to hold Maths would not have needed building.
+  </p>
 </div>
 
 <div class="card">
@@ -1219,7 +1643,7 @@
   <p class="lead">A library on its own service with Postgres behind it, so a resource added by
     anyone appears for everyone rather than living in one person's browser. Two roles: staff see
     everything, students never receive staff-only rows.</p>
-  <div class="minis"><div class="mini"><b>30</b><span>resources live</span></div><div class="mini"><b>7</b><span>subjects</span></div><div class="mini"><b>8</b><span>resource types</span></div><div class="mini"><b>13</b><span>grade bands</span></div><div class="mini"><b>2</b><span>roles</span></div><div class="mini"><b>75</b><span>in the DRI tab</span></div></div>
+  <div class="minis"><div class="mini"><b>31</b><span>resources live</span></div><div class="mini"><b>7</b><span>subjects</span></div><div class="mini"><b>8</b><span>resource types</span></div><div class="mini"><b>13</b><span>grade bands</span></div><div class="mini"><b>2</b><span>roles</span></div><div class="mini"><b>75</b><span>in the DRI tab</span></div></div>
   <p class="foot">
     Counts read live from the service's own <code>/api/health</code> and <code>/api/config</code>.
     Postgres-backed and it checks: Railway wipes container disk on every redeploy, so a SQLite
@@ -1233,6 +1657,49 @@
 <!-- ══ 6 · ACCURACY ══ -->
 <section class="panel" id="accuracy">
 <div class="print-title">Accuracy</div>
+
+
+<div class="card">
+  <h3>Last year against this year — the same children</h3>
+  <p class="lead">
+    Pooled accuracy for the <b>289 students</b> with real volume in both windows
+    <b>held flat</b>: <b>86.1%</b> at the end of last school year against
+    <b>86.2%</b> now, a change of <b>+0.1 points</b> across
+    9,203,048 answered questions.
+    That is not an improvement and is not presented as one —
+    and the split underneath it is closer still: <b>135 improved,
+    154 did not</b>.
+  </p>
+  <p class="lead">
+    The honest reading is that accuracy <b>held</b> while the estate grew around it. What moved is
+    underneath: <b>Science is up +10.6</b>
+    and Reading up +2.0,
+    while <b>Maths and Language are each down 2.8</b>. Those two are the ones to ask about, and
+    they are on this page because leaving them off would make the rest of it worth less.
+  </p>
+  <div class="minis"><div class="mini"><b>86.1%</b><span>last year</span></div><div class="mini"><b>86.2%</b><span>this year</span></div><div class="mini"><b>+0.1 pts</b><span>change</span></div><div class="mini"><b>289</b><span>students matched</span></div><div class="mini"><b>135</b><span>improved</span></div><div class="mini"><b>154</b><span>declined</span></div></div>
+  <p class="sub">By subject</p>
+  <table>
+    <tr><th style="width:22%">Subject</th><th class="n">Last year</th><th class="n">This year</th>
+      <th class="n">Change</th><th class="n">Answered last</th><th class="n">Answered this</th></tr>
+    <tr><td>Vocabulary</td><td class="n">87.2%</td><td class="n">86.0%</td><td class="n yoy-down">-1.2</td><td class="n">1,888,185</td><td class="n">1,016,958</td></tr><tr><td>FastMath</td><td class="n">90.7%</td><td class="n">91.3%</td><td class="n yoy-up">+0.6</td><td class="n">1,391,552</td><td class="n">938,398</td></tr><tr><td>Reading</td><td class="n">84.0%</td><td class="n">86.0%</td><td class="n yoy-up">+2.0</td><td class="n">982,384</td><td class="n">341,925</td></tr><tr><td>Language</td><td class="n">78.5%</td><td class="n">75.7%</td><td class="n yoy-down">-2.8</td><td class="n">385,737</td><td class="n">151,735</td></tr><tr><td>Math</td><td class="n">80.1%</td><td class="n">77.3%</td><td class="n yoy-down">-2.8</td><td class="n">170,899</td><td class="n">112,504</td></tr><tr><td>Science</td><td class="n">73.3%</td><td class="n">83.9%</td><td class="n yoy-up">+10.6</td><td class="n">107,215</td><td class="n">45,905</td></tr><tr><td>Writing</td><td class="n">85.4%</td><td class="n">85.0%</td><td class="n yoy-down">-0.4</td><td class="n">10,321</td><td class="n">5,676</td></tr>
+  </table>
+  <p class="foot">
+    <b>Read the windows before the number.</b> Last year is 2026-03-01 to 2026-06-04, this year is
+    2026-08-10 to 2026-09-17. They are not the same length, and they could not be: the analytics
+    endpoint holds nothing before November 2025, so the matching August window last year does not
+    exist, and it costs one call per day — all of last year for every child is 438,000 calls.
+    Accuracy is a rate, so unequal windows still compare; exposure does not, which is why the
+    answered counts sit next to every percentage.
+  </p>
+  <p class="foot">
+    <b>Matched, not everyone.</b> 289 of 1,323 students clear
+    200 answered questions in <em>both</em> windows. The rest are mostly children
+    who joined this year and have no last year. Pooling across everyone would compare two
+    different groups of children and call the difference progress.
+  </p>
+</div>
+
 <div class="card">
   <h3>Accuracy across every grade, subject and app</h3>
   <p class="lead">16,369,072 answered questions from 1,368 students between
@@ -1474,8 +1941,8 @@
       child who is stuck and needs a plan — a deep dive, a custom plan, an accuracy investigation.
       The helpdesk is where the <em>platform</em> gets fixed and where <em>accounts</em> get made.
       It is not where the academic conversation happens. That work had nowhere to live, which is
-      exactly why the intervention log had to be built: it captured 746 of those in
-      20 days, more in under three weeks than the helpdesk saw all year.</p>
+      exactly why the intervention log had to be built: it captured 1,666 of those in
+      37 days, more in under three weeks than the helpdesk saw all year.</p>
   </div>
 </div>
 
@@ -1609,10 +2076,10 @@
     describes almost nothing. For the cases a human actually worked, the median is
     6.7 days.</p>
   <div class="callout">
-    <div class="big">6.7 d → 16.3 h</div>
+    <div class="big">6.7 d → 14.6 h</div>
     <p>A problem raised through the general helpdesk waits a median of 6.7 days for a
       human resolution. An academic stall raised through the purpose-built intervention loop is
-      closed in 16.3 hours. These are <em>different kinds of work</em> and the comparison is
+      closed in 14.6 hours. These are <em>different kinds of work</em> and the comparison is
       not apples to apples — but it is the same organisation, the same period and largely the same
       students, and it is the clearest available evidence for what a dedicated loop buys over a
       general queue.</p>
@@ -1676,7 +2143,7 @@
       <code>minutes_spent</code> for Campus DRI manual work and <code>completion_minutes</code> for
       Curriculum DRI answers, which the store keeps disjoint by constraint.</li>
     <li><b>Turnaround</b> — <code>completed_at − created_at</code> over completed Campus DRI rows.
-      All 453 qualify. The 179 Curriculum DRI rows are excluded because that log is
+      All 1177 qualify. The 251 Curriculum DRI rows are excluded because that log is
       written retrospectively, which would otherwise produce negative elapsed times.</li>
     <li><b>Support tickets</b> — the Kayako instance carries 40,593 cases across ~219
       brands and its API accepts no brand filter, so the pull reads every case and filters locally to

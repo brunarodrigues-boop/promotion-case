@@ -260,17 +260,46 @@ check("slack tools reproduce from source",
       len(re.findall(r'\{\s*"name":\s*"[a-z_]+",\s*"description"', agent)), len(tools))
 check("every tool states what it answers",
       sum(1 for t in tools if not t["what"]), 0)
-check("every tool has a worked example",
-      sum(1 for t in tools if not t["asks"]), 0)
+# Worked phrasings are LIFTED FROM SOURCE, never typed onto the page: they come
+# either from the tool's own description ("Use for 'X'") or from the SYSTEM
+# prompt, which names phrasings against tools directly. Three tools --
+# amend_report, student_facts, campus_facts -- are described in source by what
+# they do rather than by how they are asked, and those show no example. That is
+# the honest answer, so what is asserted here is that nothing was invented:
+# every phrasing shown must appear verbatim in slack_agent.py.
+# The haystack is the agent's STRING LITERALS JOINED, not its raw text. A tool
+# description is built by concatenating literals across lines, so "any
+# interventions for X" is split as "...for " + "X'..." and never appears
+# verbatim in the file -- while still being entirely source-derived. Joining
+# the literals reproduces what the pull actually reads.
+# Triple-quoted blocks are removed first: a bare `"""` reads as an empty
+# literal followed by an opening quote, which throws the pairing off for the
+# whole rest of the file and made every phrasing look invented.
+_no_doc = re.sub(r'"""(?:.|\n)*?"""', " ", agent)
+_lits = " ".join(re.findall(r'"([^"\\]*(?:\\.[^"\\]*)*)"', _no_doc))
+_lits += " " + " ".join(re.findall(r'"([^"]{6,90})"', agent))   # plus prompt text
+_agent_flat = re.sub(r"\s+", " ", _lits.replace("\\n", " ")).lower()
+_asks = [a for t in tools for a in t["asks"]]
+check("every worked example is source-derived, not typed onto the page",
+      sum(1 for a in _asks if re.sub(r"\s+", " ", a).lower() not in _agent_flat), 0)
+check("most tools carry a worked example",
+      sum(1 for t in tools if not t["asks"]) <= 3, True)
 # Every tool must carry an example reply, and those replies must come out of
 # the bot's own renderer — not be typed onto the page.
 bxj = json.load(open(f"{PROMO}/bot_examples.json"))
 check("every tool has an example reply",
       sum(1 for t in tools if t["name"] not in bxj), 0)
-check("every example reply has a header and body",
+# Every reply must carry a body. A HEADER is not required of all of them:
+# render_doc_answer, render_plain and render_no_knowledge deliberately emit none,
+# because an answer quoted from a playbook and a one-line decline both read
+# better as a sentence than as a titled report.
+check("every example reply has a body",
       sum(1 for e in bxj.values()
-          if not any(k == "h" for k, _ in e["blocks"])
-          or not any(k in ("p", "fields") for k, _ in e["blocks"])), 0)
+          if not any(k in ("p", "fields") for k, _ in e["blocks"])), 0)
+check("every example reply that should have a header has one",
+      sum(1 for n, e in bxj.items()
+          if n not in ("academic_docs", "amend_report", "cannot_answer")
+          and not any(k == "h" for k, _ in e["blocks"])), 0)
 # The samples are fictional on purpose; assert no real student slipped in.
 real = {m["email"].split("@")[0] for m in json.load(
     open(f"{PROMO}/g12_reading_k8.json"))["all_mastered"] if m.get("email")}
@@ -281,6 +310,45 @@ check("no real student name in the samples", len(leak), 0)
 
 check("every tool declares what it needs",
       sum(1 for t in tools if not t["params"]), 0)
+
+# ── year-over-year accuracy ──────────────────────────────────────────────────
+# The comparison is the one figure on the page that could flatter by accident:
+# a matched cohort is a filter, and a filter is where a flattering number hides.
+# So every part of it is recomputed from the student rows it was folded from.
+yoy_path = f"{PROMO}/accuracy_yoy.json"
+if os.path.exists(yoy_path):
+    Y = json.load(open(yoy_path))
+    srows = Y["students"]
+    check("matched count equals the rows kept", len(srows), Y["matched"])
+    check("every matched student clears the floor in BOTH windows",
+          sum(1 for r in srows
+              if r["last_answered"] < Y["min_answered"]
+              or r["this_answered"] < Y["min_answered"]), 0)
+    check("pooled last-year accuracy recomputes",
+          round(100 * sum(r["last_correct"] for r in srows)
+                / sum(r["last_answered"] for r in srows), 1), Y["last_acc"])
+    check("pooled this-year accuracy recomputes",
+          round(100 * sum(r["this_correct"] for r in srows)
+                / sum(r["this_answered"] for r in srows), 1), Y["this_acc"])
+    check("improved + declined accounts for every matched student",
+          Y["improved"] + Y["declined"], Y["matched"])
+    check("improved count recomputes",
+          sum(1 for r in srows if r["this_acc"] > r["last_acc"]), Y["improved"])
+    check("no student counted twice",
+          len({r["email"] for r in srows}), len(srows))
+    check("correct never exceeds answered",
+          sum(1 for r in srows if r["last_correct"] > r["last_answered"]
+              or r["this_correct"] > r["this_answered"]), 0)
+    check("the matched cohort is a subset of the roster pulled",
+          Y["matched"] <= Y["roster"], True)
+    # The windows are the claim's weakest point, so they must be on the page.
+    check("both windows are stated",
+          bool(Y["last_window"]) and bool(Y["this_window"]), True)
+    check("this-year window matches the accuracy tab's own window",
+          Y["this_window"], acc["overall"]["window"])
+    check("every subject row recomputes against the cohort it reports",
+          sum(1 for b in Y["by_subject"]
+              if b["last_answered"] <= 0 or b["this_answered"] <= 0), 0)
 
 check("no job counted that is commented out",
       db["surface"]["scheduled_jobs"] < len(re.findall(r"_scheduler\.add_job\(", mp)), True)

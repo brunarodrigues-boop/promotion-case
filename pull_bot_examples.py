@@ -147,6 +147,125 @@ SAMPLES = {
      {"student": "Theo Brandt", "test_name": "Alpha Math STAAR G5.2015",
       "subject": "Math", "grade": "G5", "status": "assigned", "attempt_number": 1},
    ]}),
+
+ # ── the ten added when the agent grew from seven tools to seventeen ────────
+ # Every payload below is the shape its renderer actually reads, taken from
+ # slack_blocks.py, not invented -- a sample passing keys the renderer ignores
+ # makes the example look thinner than the real reply.
+
+ "app_guide": ("app guide", B.render_app_guide, {
+   "app": "Zearn", "kind": "guide_manual", "source": "drive", "exact": True,
+   "question": "How do I reassign a Zearn lesson a student already failed?",
+   "answer": "Reassigning is done from the class roster, not the student page. "
+             "Open the class, pick the lesson, and use *Assign again* \u2014 the "
+             "previous attempt stays on the record rather than being replaced.",
+   "sections": [
+     {"heading": "Where the control lives",
+      "text": "Class view > lesson row > the three-dot menu. The student page "
+              "has no reassign control at all, which is where most of the "
+              "questions about this come from."},
+     {"heading": "What the student sees",
+      "text": "The lesson returns to their To do list that night. It does not "
+              "appear immediately, so a guide checking during the lesson will "
+              "think nothing happened."}],
+   "links": {"guide_manual": "https://example.com/zearn-guide",
+             "login": "https://example.com/zearn-login"}}),
+
+ "student_facts": ("student facts", B.render_facts, {
+   "title": "Maya Okonkwo", "subtitle": "on file",
+   "facts": {"Guide": "A. Klechenko", "Campus": "Alpha School Austin",
+             "Enrolled grade": "G5", "Working grade \u2014 Math": "G5",
+             "Working grade \u2014 Reading": "G4", "MAP RIT \u2014 Math": "225",
+             "Daily XP target": "35", "Last test": "2026-10-02"},
+   "missing": ["phone number"]}),
+
+ "campus_facts": ("campus facts", B.render_facts, {
+   "title": "Alpha School Austin", "subtitle": "on file",
+   "facts": {"Students loaded": "238", "Campus DRI": "B. Rodrigues",
+             "Guides": "11", "Programme": "Alpha", "Daily XP target": "35",
+             "Subjects": "Math, Reading, Language, Science, Writing"},
+   "not_checked": ["today's XP"]}),
+
+ "explain_student": ("explain", B.render_explained, {
+   "name": "Theo Brandt", "focus": "why Math slowed down",
+   "window": "9 Sep to 8 Oct",
+   "answer": "Math did not slow down \u2014 the time did. He is working at the "
+             "same accuracy as last month (88%) but on 14 fewer minutes a day, "
+             "and the XP follows the minutes. Reading took those minutes.",
+   "by_subject": {
+     "Math": {"xp": 1120, "minutes": 640, "accuracy": 88, "min_per_xp": 0.6,
+              "days_worked": 21},
+     "Reading": {"xp": 1480, "minutes": 910, "accuracy": 91, "min_per_xp": 0.6,
+                 "days_worked": 22}},
+   "lessons": [
+     {"lesson": "Multiply fractions by whole numbers", "accuracy": 64,
+      "questions": 28, "sittings": 3},
+     {"lesson": "Interpret remainders", "accuracy": 71,
+      "questions": 21, "sittings": 2}]}),
+
+ "academic_docs": ("academic docs", B.render_doc_answer, {
+   "answer": "Three consecutive school days below target is the threshold for "
+             "an intervention. The playbook is explicit that a single bad day "
+             "is not one, and warns against reacting to fluctuation.",
+   "sources": [
+     {"doc": "Campus DRI playbook", "heading": "Daily review", "page": 7,
+      "updated": "2026-08-18"},
+     {"doc": "Intervention types", "heading": "When to use which", "page": 3,
+      "updated": "2026-07-02"}]}),
+
+ "morning_check": ("morning check", B.render_morning_check, {
+   "school": "Alpha School Austin", "start": "6 Oct", "end": "8 Oct",
+   "checked": 238, "recurring_count": 2, "watch_count": 3,
+   "students": [
+     {"student": "Maya Okonkwo", "guide": "A. Klechenko", "recurring": True,
+      "reasons": [{"what": "Below 80% of the daily XP target", "run": 4, "days": 4},
+                  {"what": "Reading accuracy 61%", "days": 2}]},
+     {"student": "Theo Brandt", "guide": "A. Klechenko", "recurring": True,
+      "reasons": [{"what": "In a doom loop on *Interpret remainders*", "run": 3,
+                   "days": 3}]},
+     {"student": "Noor Haddad", "guide": "R. Simms", "recurring": False,
+      "reasons": [{"what": "Below 80% of the daily time target", "days": 1}]}]}),
+
+ "hole_filling": ("hole filling", B.render_next_steps, {
+   "name": "Maya Okonkwo", "school": "Alpha School Austin",
+   "rows": [
+     {"subject": "Reading", "grade": "G5", "last_score": 71,
+      "last_date": "2026-10-02", "next_step": "Hole filling",
+      "why": "60\u201389.4% \u2014 the gaps are specific, not the whole grade.",
+      "plan": "G5 inference, 6 lessons",
+      "assigned": "G5 comprehension set (4th attempt)"},
+     {"subject": "Math", "grade": "G5", "last_score": 91,
+      "last_date": "2026-09-28", "next_step": "Next grade test",
+      "why": "89.5% and above \u2014 mastery, so move on.",
+      "assigned": None},
+     {"subject": "Science", "grade": "G4", "last_score": 54,
+      "last_date": "2026-09-11", "next_step": "Full skill plan",
+      "why": "Under 60% \u2014 hole filling will not carry this.",
+      "assigned": "G5 unit 2"}]}),
+
+ "how_to_use": ("how to use", B.render_how_to, {
+   "sections": [
+     ("Ask about one student",
+      ["@TimeBack why is maya.okonkwo@alpha.school stuck?",
+       "@TimeBack deep dive on theo.brandt@alpha.school",
+       "@TimeBack what tests does noor.haddad@alpha.school have assigned?"]),
+     ("Ask about a campus",
+      ["@TimeBack morning check for Alpha School Austin",
+       "@TimeBack who is most concerning at Alpha School Miami this week?"]),
+     ("Ask what happened to something you raised",
+      ["@TimeBack what interventions are open for maya.okonkwo@alpha.school?"])],
+   "notes": ["Every answer states the window it measured, so you can ask for a "
+             "different one.",
+             "If the question is ambiguous it asks rather than guessing."]}),
+
+ "cannot_answer": ("cannot answer", B.render_no_knowledge, {
+   "topic": "a student's IEP or any medical record",
+   "reason": "None of the tools read that, and nothing on file carries it."}),
+
+ "amend_report": ("amend report", lambda m: B.render_plain(m),
+   "Re-issued the deep dive above with the Science figures included \u2014 the "
+   "first run was scoped to Math and Reading because the question named them. "
+   "Nothing else changed; the window is the same 9 Sep to 8 Oct."),
 }
 
 

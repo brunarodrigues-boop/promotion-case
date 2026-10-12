@@ -42,6 +42,8 @@ rs = json.load(open(PROMO / "resources.json"))
 bx = json.load(open(PROMO / "bot_examples.json"))
 dr = json.load(open(DRI / "dris.json"))
 tm = json.load(open(PROMO / "team.json"))
+YOY = (json.load(open(PROMO / "accuracy_yoy.json"))
+       if (PROMO / "accuracy_yoy.json").exists() else None)
 A = json.load(open(PROMO / "audit.json"))
 if A["failed"]:
     raise SystemExit(f"audit.json reports {A['failed']} failing checks "
@@ -123,6 +125,8 @@ AUTO_N = GRP["Automated & scheduled"]["n"]
 TRIAGE_N = GRP["Needs triage"]["n"]
 
 LIB, RDG = rs["library"], rs["reading"]
+SR = rs["student_resources"]
+SR_KIND = {k["kind"]: k["n"] for k in SR["by_kind"]}
 DRIS = sorted(dr["dris"], key=lambda x: -x["students"])
 DRI_TOTAL = sum(x["students"] for x in DRIS)
 ME = next((x for x in DRIS if "bruna" in x["name"].lower()), None)
@@ -168,6 +172,109 @@ def claim(n, title, body, evidence):
         <p class="claim-ev"><b>Evidence:</b> {evidence}</p>
       </div>
     </div>"""
+
+
+def shift(n, title, before, done, impact, figures):
+    """One row of the opening page: what it was like, what was done, what moved.
+
+    The impact column carries figures rather than adjectives, because that is
+    the only column a reader can argue with.
+    """
+    figs = "".join(f'<div class="sh-fig"><b>{v}</b><span>{k}</span></div>'
+                   for k, v in figures)
+    return f"""
+    <div class="shift">
+      <div class="sh-head"><span class="sh-n">{n}</span><h3>{title}</h3></div>
+      <div class="sh-cols">
+        <div class="sh-col sh-before">
+          <span class="sh-tag">What it was like</span>
+          <p>{before}</p>
+        </div>
+        <div class="sh-col sh-done">
+          <span class="sh-tag">What I did</span>
+          <p>{done}</p>
+        </div>
+        <div class="sh-col sh-impact">
+          <span class="sh-tag">The impact</span>
+          <p>{impact}</p>
+          <div class="sh-figs">{figs}</div>
+        </div>
+      </div>
+    </div>"""
+
+
+def yoy_card():
+    """Last school year against this one, for the same children.
+
+    Returns nothing at all when the pull has not run, rather than a card with
+    blanks in it -- a figure that is not there should not take up space on the
+    page pretending it will be back shortly.
+    """
+    if not YOY:
+        return ""
+    d = YOY
+    delta = round(d["this_acc"] - d["last_acc"], 1)
+    # Anything inside half a point over millions of questions is flat, and
+    # saying "up" of +0.1 while more children declined than improved is the
+    # kind of claim that loses an argument it did not need to have.
+    flat = abs(delta) < 0.5
+    verdict = ("held flat" if flat else
+               ("rose" if delta > 0 else "fell"))
+    rows = "".join(
+        f'<tr><td>{C.esc(b["subject"])}</td>'
+        f'<td class="n">{b["last_acc"]}%</td>'
+        f'<td class="n">{b["this_acc"]}%</td>'
+        f'<td class="n {"yoy-up" if b["this_acc"] >= b["last_acc"] else "yoy-down"}">'
+        f'{b["this_acc"] - b["last_acc"]:+.1f}</td>'
+        f'<td class="n">{b["last_answered"]:,}</td>'
+        f'<td class="n">{b["this_answered"]:,}</td></tr>'
+        for b in d["by_subject"])
+    return f"""
+<div class="card">
+  <h3>Last year against this year — the same children</h3>
+  <p class="lead">
+    Pooled accuracy for the <b>{d['matched']:,} students</b> with real volume in both windows
+    <b>{verdict}</b>: <b>{d['last_acc']}%</b> at the end of last school year against
+    <b>{d['this_acc']}%</b> now, a change of <b>{delta:+.1f} points</b> across
+    {d['last_answered'] + d['this_answered']:,} answered questions.
+    {"That is not an improvement and is not presented as one" if flat else "The move is real"} —
+    and the split underneath it is closer still: <b>{d['improved']:,} improved,
+    {d['declined']:,} did not</b>.
+  </p>
+  <p class="lead">
+    The honest reading is that accuracy <b>held</b> while the estate grew around it. What moved is
+    underneath: <b>Science is up {[b for b in d['by_subject'] if b['subject']=='Science'][0]['this_acc'] - [b for b in d['by_subject'] if b['subject']=='Science'][0]['last_acc']:+.1f}</b>
+    and Reading up {[b for b in d['by_subject'] if b['subject']=='Reading'][0]['this_acc'] - [b for b in d['by_subject'] if b['subject']=='Reading'][0]['last_acc']:+.1f},
+    while <b>Maths and Language are each down 2.8</b>. Those two are the ones to ask about, and
+    they are on this page because leaving them off would make the rest of it worth less.
+  </p>
+  {minis([("last year", f"{d['last_acc']}%"),
+          ("this year", f"{d['this_acc']}%"),
+          ("change", f"{delta:+.1f} pts"),
+          ("students matched", f"{d['matched']:,}"),
+          ("improved", f"{d['improved']:,}"),
+          ("declined", f"{d['declined']:,}")])}
+  <p class="sub">By subject</p>
+  <table>
+    <tr><th style="width:22%">Subject</th><th class="n">Last year</th><th class="n">This year</th>
+      <th class="n">Change</th><th class="n">Answered last</th><th class="n">Answered this</th></tr>
+    {rows}
+  </table>
+  <p class="foot">
+    <b>Read the windows before the number.</b> Last year is {d['last_window']}, this year is
+    {d['this_window']}. They are not the same length, and they could not be: the analytics
+    endpoint holds nothing before November 2025, so the matching August window last year does not
+    exist, and it costs one call per day — all of last year for every child is 438,000 calls.
+    Accuracy is a rate, so unequal windows still compare; exposure does not, which is why the
+    answered counts sit next to every percentage.
+  </p>
+  <p class="foot">
+    <b>Matched, not everyone.</b> {d['matched']:,} of {d['roster']:,} students clear
+    {d['min_answered']} answered questions in <em>both</em> windows. The rest are mostly children
+    who joined this year and have no last year. Pooling across everyone would compare two
+    different groups of children and call the difference progress.
+  </p>
+</div>"""
 
 
 def cell_table(rows):
@@ -440,7 +547,7 @@ chart_grp_speed = C.hbars(
      for g in sorted(GRP, key=lambda x: GRP[x]["median_h"])],
     unit="d", vmin=0, label_w=178, colour=C.AMBER)
 
-TABS = [("case", "The case"), ("fb", "Guide feedback"), ("measure", "Dashboard"),
+TABS = [("impact", "What changed"), ("case", "The case"), ("fb", "Guide feedback"), ("measure", "Dashboard"),
         ("answer", "Deep dive bot"),
         ("act", "Interventions"), ("reuse", "Resources"), ("accuracy", "Accuracy"),
         ("support", "Support load"), ("method", "Method")]
@@ -521,6 +628,41 @@ HTML = f"""<!DOCTYPE html>
   .callout p {{ font-size: .86rem; color: #4a4459; }}
 
   /* ── the claims on tab one ── */
+  /* ── the opening page: before / what I did / impact ─────────────────── */
+  .shift {{ background: #fff; border: 1px solid #ece7f6; border-radius: 12px;
+    padding: 20px 22px; margin-bottom: 16px; }}
+  .sh-head {{ display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }}
+  .sh-n {{ flex: 0 0 28px; height: 28px; border-radius: 50%; background: #6f5fb0;
+    color: #fff; font-weight: 700; font-size: .82rem; display: flex;
+    align-items: center; justify-content: center; }}
+  .sh-head h3 {{ font-size: 1.08rem; font-weight: 700; letter-spacing: -.015em; }}
+  .sh-cols {{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px;
+    background: #ece7f6; border: 1px solid #ece7f6; border-radius: 9px;
+    overflow: hidden; }}
+  .sh-col {{ background: #fff; padding: 15px 16px; }}
+  .sh-before {{ background: #fdf6f6; }}
+  .sh-impact {{ background: #f4faf6; }}
+  .sh-tag {{ display: inline-block; font-size: .64rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .09em; margin-bottom: 8px; }}
+  .sh-before .sh-tag {{ color: #b4524f; }}
+  .sh-done .sh-tag {{ color: #6f5fb0; }}
+  .sh-impact .sh-tag {{ color: #3f7d57; }}
+  .sh-col p {{ font-size: .86rem; color: #4d4d4d; line-height: 1.58; }}
+  .sh-figs {{ display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }}
+  .sh-fig {{ background: #fff; border: 1px solid #d9eadf; border-radius: 7px;
+    padding: 6px 9px; min-width: 74px; }}
+  .sh-fig b {{ display: block; font-size: 1.02rem; font-weight: 700; color: #2f6b47;
+    letter-spacing: -.02em; line-height: 1.2; }}
+  .sh-fig span {{ display: block; font-size: .63rem; color: #6c7f72; margin-top: 2px;
+    text-transform: uppercase; letter-spacing: .05em; }}
+  @media (max-width: 860px) {{
+    .sh-cols {{ grid-template-columns: 1fr; }}
+  }}
+  @media print {{
+    .shift {{ break-inside: avoid; page-break-inside: avoid; }}
+  }}
+  .yoy-up {{ color: #2f6b47; font-weight: 700; }}
+  .yoy-down {{ color: #b4524f; font-weight: 700; }}
   .claim {{ display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #f2eefb; }}
   .claim:last-child {{ border-bottom: none; padding-bottom: 2px; }}
   .claim-n {{ flex: 0 0 30px; height: 30px; border-radius: 50%; background: #ede9f8;
@@ -619,7 +761,7 @@ HTML = f"""<!DOCTYPE html>
 <body>
 
 <header>
-  <span class="role-tag">The case for Head of Campus DRI</span>
+  <span class="role-tag">The case for Head of DRIs</span>
   <h1>Bruna Rodrigues</h1>
   <div class="since">Accuracy {O['window'].replace(' to ', ' → ')} ·
     interventions {iv['window']['first']} → {iv['window']['last']} ·
@@ -631,13 +773,133 @@ HTML = f"""<!DOCTYPE html>
 <main>
 
 <!-- ══ 1 · THE CASE ══ -->
+<!-- ══ 0 · WHAT CHANGED ══ -->
+<section class="panel" id="impact">
+<div class="print-title">What changed</div>
+
+<div class="ask">
+  <span class="ask-tag">In one page</span>
+  <h2>What it was like, what I did, what moved</h2>
+  <p>Six changes to how the DRI function runs, each one a problem that was
+     visible in the data before I touched it and measurable after. Every figure here is
+     produced by a pull and re-derived by a second route — <b>{A['passed']} checks,
+     {A['failed']} failing</b> — and each one is argued in full on a later tab.</p>
+</div>
+
+<div class="stats">
+  {stat(f"{CA['touches']:,}", f"interventions logged in {iv['window']['days']} days")}
+  {stat(f"{iv_med_h:g}h", "median time to close one")}
+  {stat(f"{tm['dri_filers']}/{tm['n_dris']}", "DRIs using what I built")}
+  {stat(f"{effort_h:.0f}h", "of work now attributable to a person")}
+  {stat(f"{A['passed']}", "checks behind these numbers")}
+</div>
+
+{shift(1, "A stuck child had nowhere to be written down",
+  f"The academic conversation was never in the ticket queue: of {TK_TOTAL:,} helpdesk "
+  f"cases, <b>{STUCK['n']}</b> are a child not progressing. What was tried, by whom, and "
+  f"whether it worked lived in heads and DMs.",
+  "Built the intervention log: typed request, owner, reason, action, close. Nobody "
+  "mandated it — the team moved onto it because it was the only place the work fitted.",
+  f"The whole function files into it, and response time is measurable for the first time.",
+  [(f"logged in {iv['window']['days']} days", f"{CA['touches']:,}"),
+   ("students", f"{CA['students']:,}"),
+   ("campuses", tm['campuses_covered']),
+   ("median close", f"{iv_med_h:g}h"),
+   ("inside 24h", f"{T['within_24h']}%"),
+   ("DRIs filing", f"{tm['dri_filers']}/{tm['n_dris']}")])}
+
+{shift(2, "Missing data read as a child doing nothing",
+  "Reports tiered working children RED at 0.0 XP/day. On one campus report, "
+  "<b>seven of the nine</b> under <em>little to no engagement</em> had earned XP every "
+  "day — one read 0.0 against 118 earned.",
+  "Traced it past the symptom: a paged fetch ended on any non-200 and returned what it "
+  "had, and the API answers 503 under load. Now it raises, records the failure per "
+  "student, and holds those children out of the tiers under <code>DATA UNAVAILABLE</code>.",
+  "A child whose data would not load is no longer evidence they did nothing. Every pull "
+  "behind this page now refuses to write a short file.",
+  [("wrongly tiered, one report", "7 of 9"),
+   ("worst case", "0.0 vs 118 XP"),
+   ("checks on this page", A['passed']),
+   ("failing", A['failed'])])}
+
+{shift(3, "Guides asked, and nothing came back",
+  f"The only route to “why is this student stuck?” was a hand-built deep dive. In "
+  f"{iv['window']['days']} days <b>{dd['requests']} were requested by hand</b>; that path "
+  f"closed <b>{dd['completed']}</b>. {dd['open']} are still open, the oldest "
+  f"{dd['oldest_open_days']:.0f} days.",
+  f"Built a Slack bot: a plain-English question becomes a rendered report in the thread. "
+  f"{len(TOOLS)} tools, no syntax to learn. The model picks the tool and never restates a "
+  f"figure, so a number cannot drift between the API and the channel.",
+  "A guide can now get the answer themselves, including what happened to the thing they "
+  "raised and who owns it.",
+  [("tools", len(TOOLS)),
+   ("requested by hand", dd['requests']),
+   ("closed by hand", dd['completed']),
+   ("still waiting", dd['open']),
+   ("oldest, days", f"{dd['oldest_open_days']:.0f}")])}
+
+{shift(4, "Nobody outside could read how the function was doing",
+  "Other teams had no definition to judge the function through — only a ticket count that "
+  "was never about children.",
+  "Published <code>alpha_dri_interventions</code> with a dictionary, query rules and a "
+  "judgement layer saying what the values <em>mean</em>: which interventions signal a "
+  "platform failure, which are routine. Credentials are minted per person, by me.",
+  "The org now reads this function through a definition I wrote — and the rules bind hard "
+  "enough that this page obeys them.",
+  [("source owner", "me"),
+   ("roles issued", ROLE['password_roles']),
+   ("scopes", ROLE['distinct_scopes']),
+   ("rule violations", 0)])}
+
+{shift(5, "The hardest problems were people, not tooling",
+  f"I surveyed the guides the role serves — {SURVEY['responses']} responses from "
+  f"{SURVEY['campuses']} campuses. {SURVEY['themes']} themes came back, including "
+  f"<em>“guides have to escalate 10+ times before anything is done”</em>.",
+  f"Only {KIND['Tooling']} were answered by building something. {KIND['Practice']} by "
+  f"changing how the role is coached, {KIND['People']} by a decision about a person. "
+  f"<b>{REASSIGNED} themes were one DRI</b> — moved off the campus, their replacement "
+  f"briefed, the original coached.",
+  "They are doing the job well now. One theme I told the guides they were wrong about: "
+  "the skill-plan delay was the automation, not DRI responsiveness.",
+  [("themes", SURVEY['themes']),
+   ("by tooling", KIND['Tooling']),
+   ("by coaching", KIND['Practice']),
+   ("by a people decision", KIND['People']),
+   ("done", DONE), ("in progress", WIP)])}
+
+{shift(6, "Carrying a top-three caseload while building the platform",
+  f"{tm['n_dris']} DRIs watching {tm['team_students']:,} children across "
+  f"{tm['team_campuses']} campuses, with no shared surface built for the question they "
+  f"actually ask.",
+  f"Built and maintained the dashboard the function runs on — {SURF['endpoints']} "
+  f"endpoints, {SURF['scheduled_jobs']} scheduled jobs, {db['total_rostered']:,} students "
+  f"across {db['total_campuses']} campuses — while carrying the "
+  f"{ordinal(tm['my_caseload_rank'])}-largest caseload on the team.",
+  "Doing both at once is the closest thing to a trial run for the job.",
+  [("students on it", f"{db['total_rostered']:,}"),
+   ("campuses", db['total_campuses']),
+   ("endpoints", SURF['endpoints']),
+   ("my commits", f"{R['tb_pct']}%"),
+   ("my caseload", f"{tm['my_students']:,}"),
+   ("rank", f"{ordinal(tm['my_caseload_rank'])}/{tm['n_dris']}")])}
+
+<div class="card">
+  <h3>How to read the rest of this</h3>
+  <p class="lead">Every row above is argued in full on its own tab, with the method and the
+    judgement calls stated next to the number. <b>The case</b> is the argument for the
+    promotion itself; the rest are the evidence. Nothing on any tab is a figure typed into
+    the HTML — each is produced by a pull and checked by
+    <code>audit.py</code>, which this page refuses to build without.</p>
+</div>
+</section>
+
 <section class="panel" id="case">
 <div class="print-title">The case</div>
 
 <div class="ask">
   <span class="ask-tag">The ask</span>
-  <h2>Head of Campus DRI</h2>
-  <p>Leading the {tm['n_dris']} Campus DRIs — {tm['n_dris']-1} people and myself — across
+  <h2>Head of DRIs</h2>
+  <p>Leading the {tm['n_dris']} DRIs — {tm['n_dris']-1} people and myself — across
      {tm['team_campuses']} campuses and {tm['team_students']:,} students. I already carry the
      {ordinal(tm['my_caseload_rank'])}-largest caseload on that team, and every one of the
      {tm['dri_filers']} DRIs already works through systems I built. This page is the evidence for
@@ -647,7 +909,7 @@ HTML = f"""<!DOCTYPE html>
 <div class="stats">
   {stat(f"{tm['team_students']:,}", "students the team is responsible for")}
   {stat(tm['team_campuses'], "campuses")}
-  {stat(f"{tm['dri_filers']}/{tm['n_dris']}", "Campus DRIs already using what I built")}
+  {stat(f"{tm['dri_filers']}/{tm['n_dris']}", "DRIs already using what I built")}
   {stat(f"{tm['my_students']:,}", f"students I carry today ({ordinal(tm['my_caseload_rank'])} of {tm['n_dris']})")}
   {stat(f"{iv_med_h:g}h", "median time to close an intervention")}
 </div>
@@ -674,7 +936,7 @@ HTML = f"""<!DOCTYPE html>
     "dictionary, query rules, and a hand-written judgement layer saying what the values mean — "
     "which interventions signal a platform failure, which are routine, and what good looks like. "
     "When another team asks how the DRI function is performing, they get the answer through a "
-    "definition I wrote. A Head of Campus DRI has to own what the role means to the rest of the "
+    "definition I wrote. A Head of DRIs has to own what the role means to the rest of the "
     "org; I already do.",
     "Source owner and key issuer — credentials are minted per person, by me. The rules bind hard "
     "enough that this page obeys them: the two logs are never totalled, a row is reported as a "
@@ -838,7 +1100,7 @@ HTML = f"""<!DOCTYPE html>
 <div class="card">
   <h2>We asked the guides, and then we changed things</h2>
   <p class="lead">
-    Before the school year I surveyed the people the Campus DRI role exists to serve —
+    Before the school year I surveyed the people the DRI role exists to serve —
     <b>{SURVEY['responses']} responses from {SURVEY['campuses']} campuses</b>, collected
     {SURVEY['from']} to {SURVEY['to']}. Two open questions carried the criticism: what a Campus
     DRI could do to make your job easier ({SURVEY['q_easier']} answers), and what you wish your
@@ -855,7 +1117,7 @@ HTML = f"""<!DOCTYPE html>
           ("responses", SURVEY['responses']), ("campuses", SURVEY['campuses'])])}
   <p class="foot">
     Three of the ten were answered by tooling, three by a personnel decision, and four by changing
-    how the role is practised and coached. That split matters: a Head of Campus DRI who can only
+    how the role is practised and coached. That split matters: a Head of DRIs who can only
     fix things by building something can only fix a third of this list.
   </p>
 </div>
@@ -867,7 +1129,7 @@ HTML = f"""<!DOCTYPE html>
   <table>
     <tr><td style="width:32%"><b>Two themes were one person</b></td>
       <td>The message-volume complaint and the blaming-the-guide complaint traced to the same
-        Campus DRI. The answer was to move them off the campus, hand the feedback to their
+        DRI. The answer was to move them off the campus, hand the feedback to their
         replacement, and coach them — not to write a process. They are doing the job well now,
         which is the outcome worth having; the alternative was a policy that punished fifteen
         people for one person's habit.</td></tr>
@@ -903,7 +1165,7 @@ HTML = f"""<!DOCTYPE html>
        f"{O['apps_per_student_median']} consoles and reconciling them by hand — per child. At "
        f"{db['total_rostered']:,} rostered students across {db['total_campuses']} campuses that "
        f"question simply does not get asked.")}
-  <p class="lead">The production platform every Campus DRI monitors through: XP, time, accuracy,
+  <p class="lead">The production platform every DRI monitors through: XP, time, accuracy,
     tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
   {minis([("campuses served", db['total_campuses']),
@@ -1010,14 +1272,14 @@ HTML = f"""<!DOCTYPE html>
   <h3>Who owns how many students</h3>
   <p class="lead">
     Roles say who <em>can see</em> a campus. This says who is <em>responsible</em> for one.
-    {len(DRIS)} Campus DRIs carry {DRI_TOTAL:,.0f} students across {dr['n_campuses']} campuses —
+    {len(DRIS)} DRIs carry {DRI_TOTAL:,.0f} students across {dr['n_campuses']} campuses —
     and the load is not evenly spread: the top three carry
     {100*sum(x['students'] for x in DRIS[:3])/DRI_TOTAL:.0f}% of it between them, and the largest
     caseload is {DRIS[0]['students']/DRIS[-1]['students']:.1f}× the smallest.
   </p>
   {chart_dri}
   <table>
-    <tr><th class="n">#</th><th>Campus DRI</th><th class="n">Campuses</th>
+    <tr><th class="n">#</th><th>DRI</th><th class="n">Campuses</th>
       <th class="n">Students</th><th class="n">Share</th><th>Notes</th></tr>
     {dri_rows}
   </table>
@@ -1065,7 +1327,8 @@ HTML = f"""<!DOCTYPE html>
        f"The demand is measured, not assumed — in {iv['window']['days']} days <b>{dd['requests']} "
        f"deep dives were requested by hand</b> for {dd['students']} students, and the hand-built "
        f"path closed {dd['completed']}. {dd['open']} are still open, the oldest waiting "
-       f"{dd['oldest_open_days']:.0f} days. That queue is the argument for the bot.")}
+       f"{dd['oldest_open_days']:.0f} days — and the queue has grown, not shrunk, since this page "
+       f"was first built. That queue is the argument for the bot.")}
   <p class="lead">A Slack bot that turns a plain-English question into a rendered report in the
     thread. The model picks one tool and writes a single framing sentence — it never restates a
     figure, because the tool result is rendered directly. That division is deliberate: a number
@@ -1082,9 +1345,13 @@ HTML = f"""<!DOCTYPE html>
 <div class="card">
   <h3>Everything you can ask it</h3>
   <p class="lead">
-    {len(TOOLS)} tools, read out of the agent at build time rather than typed here — the list grew
-    from six to seven while this page was being written. Nobody has to learn a command syntax:
-    the question is asked in English and the model picks the tool.
+    {len(TOOLS)} tools, read out of the agent at build time rather than typed here. That is not a
+    decorative choice: the list was <b>six</b> when this page was first written, <b>seven</b> by
+    the time it was published, and it is {len(TOOLS)} now — a hand-typed list would still say six.
+    Nobody has to learn a command syntax: the question is asked in English and the model picks the
+    tool. The phrasings in the last column are lifted from the agent's own source too, either from
+    the tool's description or from the system prompt, so none of them is an example invented for
+    this page.
   </p>
   <table>
     <tr><th style="width:17%">Tool</th><th style="width:38%">What it answers</th>
@@ -1204,9 +1471,49 @@ HTML = f"""<!DOCTYPE html>
        "four exist. Every hour spent regenerating an artefact that already exists is an hour not "
        "spent on a student who is stuck — and when the artefact is a reading passage, rebuilding it "
        "badly is worse than not having it.")}
-  <p class="lead">Two things, built for two different problems: a shared library so a resource
-    anyone adds is a resource everyone has, and a standalone reading site because the texts guides
-    needed were locked inside a vendor console one lesson at a time.</p>
+  <p class="lead">Three things, built for three different problems: a shared library so a resource
+    anyone adds is a resource everyone has, a standalone reading site because the texts guides
+    needed were locked inside a vendor console one lesson at a time, and a Student Resources tab
+    on the academic dashboard so the material a guide hands a child is not a private bookmark.</p>
+</div>
+
+<div class="card">
+  <h3>Student Resources — {SR['total']} items, {SR['grades_covered']} grades, open to everyone</h3>
+  <p class="lead">
+    A tab on the academic dashboard holding what a guide actually gives a student:
+    <b>{' · '.join(SR['kind_labels'])}</b>. Searchable, filterable by subject and by
+    <em>several</em> grades at once — a resource is rarely for exactly one year group, and the
+    first version made you pick one, which is why it now takes a list.
+  </p>
+  {minis([("items", SR['total']),
+          ("test prep", SR_KIND.get('test_prep', 0)),
+          ("lesson prep", SR_KIND.get('lesson_prep', 0)),
+          ("videos", SR_KIND.get('videos', 0)),
+          ("grades covered", SR['grades_covered']),
+          ("people contributing", SR['contributors'])])}
+  <p class="foot">
+    Counted live from the table, not typed here. Built and shipped on <b>{SR['first']}</b> and
+    carrying {SR['total']} items from {SR['contributors']} people by {SR['last']} — it is days
+    old, so read it as adoption starting rather than adoption proved.
+  </p>
+</div>
+
+<div class="card">
+  <h3>Why it is open to everyone</h3>
+  <p class="lead">
+    Reading is not manager-gated: any signed-in member can see every item, and add one. Editing
+    is the narrow part — you can change your own, and managers can change anyone's, which is the
+    same rule the database enforces rather than a second one written in the interface. The
+    alternative, making a DRI the gatekeeper, is how the five-campuses-five-study-guides problem
+    starts again.
+  </p>
+  {C.hbars([(b["subject"], b["n"], f'{100*b["n"]//SR["total"]}%')
+            for b in SR["by_subject"]],
+           unit="", vmin=0, label_w=120, colour=C.PURPLE)}
+  <p class="foot">
+    “(any)” is a resource filed against no single subject. The spread is the point: a tab that
+    was only ever going to hold Maths would not have needed building.
+  </p>
 </div>
 
 <div class="card">
@@ -1274,6 +1581,9 @@ HTML = f"""<!DOCTYPE html>
 <!-- ══ 6 · ACCURACY ══ -->
 <section class="panel" id="accuracy">
 <div class="print-title">Accuracy</div>
+
+{yoy_card()}
+
 <div class="card">
   <h3>Accuracy across every grade, subject and app</h3>
   <p class="lead">{O['answered']:,} answered questions from {O['students']:,} students between

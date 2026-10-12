@@ -1,4 +1,5 @@
-"""Measure the resource estate: the shared library, and the reading-texts site.
+"""Measure the resource estate: the shared library, the reading-texts site, and
+the Student Resources tab on the academic dashboard.
 
 Both are read live rather than described from memory — the library from its own
 /api/health and /api/config, the reading site by fetching the published page and
@@ -51,6 +52,48 @@ def library():
     }
 
 
+def student_resources():
+    """The Student Resources tab on the academic dashboard, read from its table.
+
+    Counted live rather than described, for the same reason as everything else
+    here: a number typed onto the page cannot go stale in a way anyone notices.
+    The three kinds are the tab's three sub-tabs, and `grades_covered` counts
+    distinct grades across the `grades` array rather than rows, because one
+    resource can be filed against several.
+    """
+    sql = ("select json_build_object("
+           "'total', count(*),"
+           "'by_kind', (select json_agg(json_build_object('kind',k,'n',n) order by n desc) "
+           "  from (select kind k, count(*) n from student_resources group by 1) a),"
+           "'by_subject', (select json_agg(json_build_object('subject',s,'n',n) order by n desc) "
+           "  from (select coalesce(nullif(subject,''),'(any)') s, count(*) n "
+           "        from student_resources group by 1) b),"
+           "'contributors', count(distinct created_by),"
+           "'first', min(created_at)::date::text,"
+           "'last', max(created_at)::date::text,"
+           "'grades_covered', (select count(distinct g) from student_resources, "
+           "  unnest(coalesce(grades,'{}')) g)"
+           ")::text from student_resources")
+    dash = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "..", "alpha-academic-dashboard")
+    r = subprocess.run(["npx", "-y", "@insforge/cli", "db", "query", sql],
+                       cwd=dash, capture_output=True, text=True, timeout=240)
+    m = re.search(r"\{.*\}", r.stdout, re.S)
+    if not m:
+        raise SystemExit(f"student_resources query failed: {r.stdout[:200]} {r.stderr[:200]}")
+    out = json.loads(m.group(0))
+    # The three sub-tabs, in the order the page shows them -- read from the
+    # component's own constant so the page cannot drift from the app.
+    types_src = open(os.path.join(dash, "src", "types", "db.ts"), encoding="utf-8").read()
+    block = re.search(r"STUDENT_RESOURCE_KINDS[^=]*=\s*\[(.*?)\]", types_src, re.S)
+    out["kind_labels"] = re.findall(r"label:\s*'([^']+)'", block.group(1)) if block else []
+    comp = open(os.path.join(dash, "src", "pages", "StudentResourcesView.tsx"),
+                encoding="utf-8").read()
+    out["component_loc"] = len(comp.splitlines())
+    out["open_to_all"] = "is_manager()" not in comp     # read is not manager-gated
+    return out
+
+
 def reading_texts():
     page = fetch(f"{READING}?cb=audit")
     m = re.search(r"const DATA = (\{.*?\});\n", page, re.S)
@@ -93,7 +136,8 @@ def reading_texts():
 
 
 def main():
-    out = {"library": library(), "reading": reading_texts()}
+    out = {"library": library(), "reading": reading_texts(),
+            "student_resources": student_resources()}
     os.makedirs("/tmp/promo", exist_ok=True)
     json.dump(out, open(OUT, "w"), indent=1)
 
@@ -107,6 +151,10 @@ def main():
               f"{g['words']:>7,} words")
     missing = [k for k, v in rd["features"].items() if not v]
     print(f"   features: {'all present' if not missing else 'MISSING ' + ', '.join(missing)}")
+    sr = out["student_resources"]
+    print(f"student resources: {sr['total']} items, {sr['contributors']} contributors, "
+          f"{sr['grades_covered']} grades, tabs {sr['kind_labels']}, "
+          f"{sr['first']} to {sr['last']}")
     print(f"\nwrote {OUT}")
 
 

@@ -60,7 +60,27 @@ def slack_tools(backend):
     # source rather than invented, so a row with no example shows none.
     sysm = re.search(r'SYSTEM = """(.*?)"""', src, re.S)
     sys_examples = re.findall(r'"([^"]{8,60})"', sysm.group(1)) if sysm else []
-    extra = {"student_deep_dive": [e for e in sys_examples if "deep dive" in e.lower()]}
+    # Four tools carry no "Use for 'X'" phrasing in their own description --
+    # amend_report, student_facts, campus_facts and cannot_answer are described
+    # by what they do rather than by how they are asked.
+    #
+    # The SYSTEM prompt names phrasings against tools directly, in the form
+    #   - "ask it like this", "or like this": tool_name
+    # so that mapping is parsed rather than guessed, and the list stays lifted
+    # from source. A tool the prompt does not name still shows none, which is
+    # the honest answer: nothing in the source says how to ask it.
+    flat = re.sub(r"\\\n\s*", " ", sysm.group(1) if sysm else "")
+    flat = re.sub(r"\s+", " ", flat)
+    extra = {}
+    for m in re.finditer(r'((?:"[^"]{6,70}"(?:\s*,\s*)?){1,4})\s*:\s*([a-z_]{4,})', flat):
+        extra.setdefault(m.group(2), re.findall(r'"([^"]+)"', m.group(1)))
+    # cannot_answer's phrasings are given as a list after a colon-less clause
+    # ("the thing asked about is not held: ..."), so they are picked up here.
+    nao = re.search(r'cannot_answer is also right[^:]*:\s*((?:"[^"]+"(?:,\s*)?){2,4})', flat)
+    if nao:
+        extra["cannot_answer"] = re.findall(r'"([^"]+)"', nao.group(1))
+    extra.setdefault("student_deep_dive",
+                     [e for e in sys_examples if "deep dive" in e.lower()])
 
     out = []
     for name, desc, schema in blocks:
@@ -69,7 +89,10 @@ def slack_tools(backend):
         # the descriptions carry their own worked phrasings: "Use for 'X', 'Y'"
         asks = re.findall(r"'([^']{6,70})'", text)
         what = re.split(r"\s*Use for\b", text)[0].strip().rstrip(".")
-        props = re.findall(r'"([a-z_]+)":\s*\{"type"', schema)
+        # \s* after the brace: a property whose type sits on the next line was
+        # being missed entirely, so cannot_answer read as taking no arguments
+        # when it declares two.
+        props = re.findall(r'"([a-z_]+)":\s*\{\s*"type"', schema)
         req = re.search(r'"required":\s*\[([^\]]*)\]', schema)
         out.append({
             "name": name,
