@@ -107,6 +107,27 @@
   }
   .yoy-up { color: #2f6b47; font-weight: 700; }
   .flat { color: #8a8597; font-style: italic; }
+  /* The ask is one sentence, not a second hero block: two gradient panels
+     stacked read as two openings and the eye stops trusting either. */
+  .ask.ask-tight { background: #fff; border: 2px solid #ded7f3; color: #1a1a1a;
+    padding: 20px 24px; }
+  .ask.ask-tight .ask-tag { background: #efebfa; color: #6f5fb0; }
+  .ask.ask-tight h2 { font-size: 1.22rem; margin-bottom: 6px; }
+  .ask.ask-tight p { color: #514c5e; font-size: .9rem; }
+  .point { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 18px 0;
+    border-top: 1px solid #ece8f6; }
+  .point:first-of-type { border-top: none; }
+  .point-n { width: 28px; height: 28px; border-radius: 50%; background: #efebfa; color: #6f5fb0;
+    font-size: .8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .point-body h4 { font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: 7px; }
+  .point-was, .point-now { font-size: .88rem; color: #514c5e; margin-bottom: 4px; }
+  .point-was b { color: #b0556a; }
+  .point-now b { color: #2f6b47; }
+  .point-ev { font-size: .82rem; color: #6a6478; margin-top: 7px; padding-top: 7px;
+    border-top: 1px dashed #e8e4f2; }
+  .point-where { font-size: .75rem; color: #9a94ab; margin-top: 4px; }
+  .point-where b { color: #7b6db8; }
+
   .sub-rule { display: flex; align-items: center; gap: 14px; margin: 54px 0 26px;
     color: #8b7dc8; font-size: .72rem; font-weight: 700; letter-spacing: .12em;
     text-transform: uppercase; }
@@ -257,223 +278,96 @@
   <div class="stat"><div class="val">138</div><div class="label">checks behind these numbers</div></div>
 </div>
 
-
-    <div class="shift">
-      <div class="sh-head"><span class="sh-n">1</span><h3>A stuck child had nowhere to be written down</h3></div>
-      <div class="sh-cols">
-        <div class="sh-col sh-before">
-          <span class="sh-tag">What it was like</span>
-          <p>The academic conversation was never in the ticket queue: of 14,403 helpdesk cases, <b>45</b> are a child not progressing. What was tried, by whom, and whether it worked lived in heads and DMs.</p>
-        </div>
-        <div class="sh-col sh-done">
-          <span class="sh-tag">What I did</span>
-          <p>Built the intervention log: typed request, owner, reason, action, close. Nobody mandated it — the team moved onto it because it was the only place the work fitted.</p>
-        </div>
-        <div class="sh-col sh-impact">
-          <span class="sh-tag">The impact</span>
-          <p>The whole function files into it, and response time is measurable for the first time.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>1,666</b><span>logged in 37 days</span></div><div class="sh-fig"><b>788</b><span>students</span></div><div class="sh-fig"><b>86</b><span>campuses</span></div><div class="sh-fig"><b>14.6h</b><span>median close</span></div><div class="sh-fig"><b>69%</b><span>inside 24h</span></div><div class="sh-fig"><b>15/16</b><span>DRIs filing</span></div></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="shift">
-      <div class="sh-head"><span class="sh-n">2</span><h3>Missing data read as a child doing nothing</h3></div>
-      <div class="sh-cols">
-        <div class="sh-col sh-before">
-          <span class="sh-tag">What it was like</span>
-          <p>Reports tiered working children RED at 0.0 XP/day. On one campus report, <b>seven of the nine</b> under <em>little to no engagement</em> had earned XP every day — one read 0.0 against 118 earned.</p>
-        </div>
-        <div class="sh-col sh-done">
-          <span class="sh-tag">What I did</span>
-          <p>Traced it past the symptom: a paged fetch ended on any non-200 and returned what it had, and the API answers 503 under load. Now it raises, records the failure per student, and holds those children out of the tiers under <code>DATA UNAVAILABLE</code>.</p>
-        </div>
-        <div class="sh-col sh-impact">
-          <span class="sh-tag">The impact</span>
-          <p>A child whose data would not load is no longer evidence they did nothing. Every pull behind this page now refuses to write a short file.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>7 of 9</b><span>wrongly tiered, one report</span></div><div class="sh-fig"><b>0.0 vs 118 XP</b><span>worst case</span></div><div class="sh-fig"><b>138</b><span>checks on this page</span></div><div class="sh-fig"><b>0</b><span>failing</span></div></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="shift">
-      <div class="sh-head"><span class="sh-n">3</span><h3>Guides asked, and nothing came back</h3></div>
-      <div class="sh-cols">
-        <div class="sh-col sh-before">
-          <span class="sh-tag">What it was like</span>
-          <p>The only route to “why is this student stuck?” was a hand-built deep dive. In 37 days <b>77 were requested by hand</b>; that path closed <b>1</b>. 70 are still open, the oldest 30 days.</p>
-        </div>
-        <div class="sh-col sh-done">
-          <span class="sh-tag">What I did</span>
-          <p>Built a Slack bot: a plain-English question becomes a rendered report in the thread. 17 tools, no syntax to learn. The model picks the tool and never restates a figure, so a number cannot drift between the API and the channel.</p>
-        </div>
-        <div class="sh-col sh-impact">
-          <span class="sh-tag">The impact</span>
-          <p>A guide can now get the answer themselves, including what happened to the thing they raised and who owns it.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>17</b><span>tools</span></div><div class="sh-fig"><b>77</b><span>requested by hand</span></div><div class="sh-fig"><b>1</b><span>closed by hand</span></div><div class="sh-fig"><b>70</b><span>still waiting</span></div><div class="sh-fig"><b>30</b><span>oldest, days</span></div></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="shift">
-      <div class="sh-head"><span class="sh-n">4</span><h3>Nobody outside could read how the function was doing</h3></div>
-      <div class="sh-cols">
-        <div class="sh-col sh-before">
-          <span class="sh-tag">What it was like</span>
-          <p>Other teams had no definition to judge the function through — only a ticket count that was never about children.</p>
-        </div>
-        <div class="sh-col sh-done">
-          <span class="sh-tag">What I did</span>
-          <p>Published <code>alpha_dri_interventions</code> with a dictionary, query rules and a judgement layer saying what the values <em>mean</em>: which interventions signal a platform failure, which are routine. Credentials are minted per person, by me.</p>
-        </div>
-        <div class="sh-col sh-impact">
-          <span class="sh-tag">The impact</span>
-          <p>The org now reads this function through a definition I wrote — and the rules bind hard enough that this page obeys them.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>me</b><span>source owner</span></div><div class="sh-fig"><b>22</b><span>roles issued</span></div><div class="sh-fig"><b>21</b><span>scopes</span></div><div class="sh-fig"><b>0</b><span>rule violations</span></div></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="shift">
-      <div class="sh-head"><span class="sh-n">5</span><h3>The hardest problems were people, not tooling</h3></div>
-      <div class="sh-cols">
-        <div class="sh-col sh-before">
-          <span class="sh-tag">What it was like</span>
-          <p>I surveyed the guides the role serves — 60 responses from 41 campuses. 10 themes came back, including <em>“guides have to escalate 10+ times before anything is done”</em>.</p>
-        </div>
-        <div class="sh-col sh-done">
-          <span class="sh-tag">What I did</span>
-          <p>Only 4 were answered by building something. 3 by changing how the role is coached, 3 by a decision about a person. <b>2 themes were one DRI</b> — moved off the campus, their replacement briefed, the original coached.</p>
-        </div>
-        <div class="sh-col sh-impact">
-          <span class="sh-tag">The impact</span>
-          <p>They are doing the job well now. One theme I told the guides they were wrong about: the skill-plan delay was the automation, not DRI responsiveness.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>10</b><span>themes</span></div><div class="sh-fig"><b>4</b><span>by tooling</span></div><div class="sh-fig"><b>3</b><span>by coaching</span></div><div class="sh-fig"><b>3</b><span>by a people decision</span></div><div class="sh-fig"><b>7</b><span>done</span></div><div class="sh-fig"><b>1</b><span>in progress</span></div></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="shift">
-      <div class="sh-head"><span class="sh-n">6</span><h3>Carrying a top-three caseload while building the platform</h3></div>
-      <div class="sh-cols">
-        <div class="sh-col sh-before">
-          <span class="sh-tag">What it was like</span>
-          <p>16 DRIs watching 9,456 children across 84 campuses, with no shared surface built for the question they actually ask.</p>
-        </div>
-        <div class="sh-col sh-done">
-          <span class="sh-tag">What I did</span>
-          <p>Built and maintained the dashboard the function runs on — 155 endpoints, 7 scheduled jobs, 8,514 students across 106 campuses — while carrying the 3rd-largest caseload on the team.</p>
-        </div>
-        <div class="sh-col sh-impact">
-          <span class="sh-tag">The impact</span>
-          <p>Doing both at once is the closest thing to a trial run for the job.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>8,514</b><span>students on it</span></div><div class="sh-fig"><b>106</b><span>campuses</span></div><div class="sh-fig"><b>155</b><span>endpoints</span></div><div class="sh-fig"><b>49%</b><span>my commits</span></div><div class="sh-fig"><b>1,249</b><span>my caseload</span></div><div class="sh-fig"><b>3rd/16</b><span>rank</span></div></div>
-        </div>
-      </div>
-    </div>
-
-<div class="card">
-  <h3>How to read the rest of this</h3>
-  <p class="lead">Every row above is argued in full on its own tab, with the method and the
-    judgement calls stated next to the number. <b>The case</b> is the argument for the
-    promotion itself; the rest are the evidence. Nothing on any tab is a figure typed into
-    the HTML — each is produced by a pull and checked by
-    <code>audit.py</code>, which this page refuses to build without.</p>
-</div>
-<div class="sub-rule"><span>The ask</span></div>
-
-<div class="print-title">The ask</div>
-
-<div class="ask">
+<div class="ask ask-tight">
   <span class="ask-tag">The ask</span>
   <h2>Head of DRIs</h2>
   <p>Leading the 16 DRIs — 15 people and myself — across
      84 campuses and 9,456 students. I already carry the
-     3rd-largest caseload on that team, and every one of the
-     15 DRIs already works through systems I built. This page is the evidence for
-     both halves of that sentence, and a plan for what I would do with the job.</p>
-</div>
-
-<div class="stats">
-  <div class="stat"><div class="val">9,456</div><div class="label">students the team is responsible for</div></div>
-  <div class="stat"><div class="val">84</div><div class="label">campuses</div></div>
-  <div class="stat"><div class="val">15/16</div><div class="label">DRIs already using what I built</div></div>
-  <div class="stat"><div class="val">1,249</div><div class="label">students I carry today (3rd of 16)</div></div>
-  <div class="stat"><div class="val">14.6h</div><div class="label">median time to close an intervention</div></div>
+     3rd-largest caseload on that team, and 15 of
+     the 16 already work through systems I built.</p>
 </div>
 
 <div class="card">
-  <h2>Why me</h2>
-  <p class="lead">
-    Six claims. Each one is a number on another tab, not an adjective — so each can be checked,
-    and each can be argued with.
-  </p>
+  <h2>Six things that changed, and how to check each one</h2>
+  <p class="lead">Each is a problem visible in the data before I touched it and measurable
+    after. The claim is the heading; the numbers under it are the whole of the argument.</p>
 
   
-    <div class="claim">
-      <div class="claim-n">1</div>
-      <div>
-        <h4>The team already runs on what I built.</h4>
-        <p>The intervention log was not rolled out to anyone. It was built, and the team moved onto it because it was the only place the work could be written down. That is the strongest evidence I can offer that I already do this job: the practice the whole function follows is one I designed, and it stuck without a mandate.</p>
-        <p class="claim-ev"><b>Evidence:</b> <b>15 of the 16</b> Campus DRIs file into it, alongside 4 Curriculum DRIs — 21 people writing, 10 closing, across <b>86 campuses</b>, since 2026-09-04.</p>
+    <div class="point">
+      <div class="point-n">1</div>
+      <div class="point-body">
+        <h4>The team already runs on what I built</h4>
+        <p class="point-was"><b>Was:</b> The academic conversation was never in the ticket queue: of 14,403 helpdesk cases, <b>45</b> are a child not progressing. What was tried, by whom, and whether it worked lived in heads and DMs.</p>
+        <p class="point-now"><b>Now:</b> I built the intervention log. Nobody mandated it — the team moved onto it because it was the only place the work fitted, which is the strongest evidence I can offer that I already do this job.</p>
+        <p class="point-ev"><b>1,666</b> interventions in 37 days · <b>15/16</b> Campus DRIs filing, plus 4 Curriculum DRIs · 86 campuses · 788 students · half closed inside <b>14.6h</b></p>
+        <p class="point-where">Check it on <b>The systems</b></p>
       </div>
     </div>
 
   
-    <div class="claim">
-      <div class="claim-n">2</div>
-      <div>
-        <h4>I set the standard other teams read us through.</h4>
-        <p><code>alpha_dri_interventions</code> is published to the data-source-skill contract with a dictionary, query rules, and a hand-written judgement layer saying what the values mean — which interventions signal a platform failure, which are routine, and what good looks like. When another team asks how the DRI function is performing, they get the answer through a definition I wrote. A Head of DRIs has to own what the role means to the rest of the org; I already do.</p>
-        <p class="claim-ev"><b>Evidence:</b> Source owner and key issuer — credentials are minted per person, by me. The rules bind hard enough that this page obeys them: the two logs are never totalled, a row is reported as a touch rather than a failure, and the two minutes columns are scoped separately. A check over every row found zero violations.</p>
+    <div class="point">
+      <div class="point-n">2</div>
+      <div class="point-body">
+        <h4>I set the standard other teams read us through</h4>
+        <p class="point-was"><b>Was:</b> Other teams had no definition to judge this function by — only a ticket count that was never about children.</p>
+        <p class="point-now"><b>Now:</b> Published <code>alpha_dri_interventions</code> to the data-source contract with a dictionary, query rules and a judgement layer saying what the values <em>mean</em>: which interventions signal a platform failure, which are routine. Credentials are minted per person, by me.</p>
+        <p class="point-ev">source owner: me · <b>22</b> roles issued · 21 scopes · <b>0</b> rule violations, including by this page</p>
+        <p class="point-where">Check it on <b>Method</b></p>
       </div>
     </div>
 
   
-    <div class="claim">
-      <div class="claim-n">3</div>
-      <div>
-        <h4>I already carry near-top scope, while building for everyone else.</h4>
-        <p>The caseload is not evenly shared, and I am at the heavy end of it — while also being the person maintaining the platform the other fifteen monitor through. Doing both is the closest thing to a trial run for the role.</p>
-        <p class="claim-ev"><b>Evidence:</b> 1,249 students across 8 campuses, 3rd of 16 — 13% of the network. On the platform itself, 1,291 of 2,657 commits (49%).</p>
+    <div class="point">
+      <div class="point-n">3</div>
+      <div class="point-body">
+        <h4>I made the role measurable, including my own work</h4>
+        <p class="point-was"><b>Was:</b> Nothing recorded who did what, so no part of the function could be judged — 77 deep dives were requested by hand in 37 days and 70 are still open, the oldest 30 days.</p>
+        <p class="point-now"><b>Now:</b> Response time, ownership and outcome are now attributes of a row rather than of a memory. Every figure on this page is produced by a pull and re-derived by a second route.</p>
+        <p class="point-ev"><b>370h</b> of work now attributable to a person · <b>69%</b> closed inside 24h · <b>138</b> checks behind these numbers, 0 failing</p>
+        <p class="point-where">Check it on <b>Method</b></p>
       </div>
     </div>
 
   
-    <div class="claim">
-      <div class="claim-n">4</div>
-      <div>
-        <h4>I made the role measurable — including my own work.</h4>
-        <p>Before the log there was no record of what was tried for a stalled student, by whom, or whether it worked. That made the function unarguable in both directions: no credit for the work, and no way to find what was not working. A Head cannot manage this function on anecdote. I built the evidence layer the job needs, and I am inside it like everyone else.</p>
-        <p class="claim-ev"><b>Evidence:</b> 1,666 touches over 788 students in 37 days, median close 14.6 hours, 69% inside a day, and 370 hours of effort now attributable to a named person. For scale: of all 14,403 helpdesk cases, only 45 are a stuck child — the academic conversation was never in the ticket queue, and now it has somewhere to live.</p>
+    <div class="point">
+      <div class="point-n">4</div>
+      <div class="point-body">
+        <h4>A guide can now get the answer themselves</h4>
+        <p class="point-was"><b>Was:</b> The only route to “why is this student stuck?” was a hand-built deep dive, and the queue for it never cleared.</p>
+        <p class="point-now"><b>Now:</b> Built a Slack bot: a plain-English question becomes a rendered report in the thread. 17 tools, no syntax to learn. The model picks the tool and never restates a figure, so a number cannot drift between the API and the channel.</p>
+        <p class="point-ev"><b>17</b> tools · 77 asked by hand before it existed · 1 of those ever closed</p>
+        <p class="point-where">Check it on <b>The systems</b></p>
       </div>
     </div>
 
   
-    <div class="claim">
-      <div class="claim-n">5</div>
-      <div>
-        <h4>I asked the guides, and the hardest fixes were people, not tooling.</h4>
-        <p>Before the year I surveyed the guides the role exists to serve — 60 responses from 41 campuses. 10 themes of criticism came back, and only 4 of them were answered by building something. 3 were answered by changing how the role is coached and 3 by a decision about a person. <b>2 of the 10 were one Campus DRI</b> — the same person behind both the complaint about message volume and the one about blaming guides for content they could not fix. They were moved off the campus, the feedback was handed to their replacement, and the original DRI was coached. They are doing the job well now. That is the half of this role no system solves, and it is the half the job is actually for. One theme I told the guides they were wrong about: the skill-plan delay they were putting on DRI responsiveness comes from the automation that generates the plans, so no amount of clearing a DRI queue would have moved it. They were chasing the wrong team, and saying so was part of the answer.</p>
-        <p class="claim-ev"><b>Evidence:</b> Every theme, in the guides' own words, with what was done about it, on the Guide feedback tab — 7 done, 2 partly, 1 still in progress, and each one labelled with whether it was answered by tooling, by coaching, or by a personnel decision.</p>
+    <div class="point">
+      <div class="point-n">5</div>
+      <div class="point-body">
+        <h4>The hardest fixes were people, not tooling</h4>
+        <p class="point-was"><b>Was:</b> I surveyed the guides this role serves — 60 responses from 41 campuses — and 10 themes came back, including <em>“guides have to escalate 10+ times before anything is done”</em>.</p>
+        <p class="point-now"><b>Now:</b> Only 4 were answered by building something. 3 by changing how the role is coached and 3 by a decision about a person: <b>2 themes were one DRI</b>, moved off the campus, their replacement briefed, the original coached. They are doing the job well now.</p>
+        <p class="point-ev">10 themes · 4 tooling · 3 coaching · <b>3 a people decision</b> · 7 done, 1 in progress</p>
+        <p class="point-where">Check it on <b>The evidence</b></p>
       </div>
     </div>
 
   
-    <div class="claim">
-      <div class="claim-n">6</div>
-      <div>
-        <h4>Missing data no longer reads as a child doing nothing.</h4>
-        <p>Mid-week reports were putting working students in the RED tier at 0.0 XP/day. On one campus report, seven of the nine children listed under <em>little to no engagement</em> had earned XP every single day — one read 0.0 against 118 XP actually earned. The tell was that their time was right to the minute while only the XP had gone: the two are fetched from different places, so the loss was in the cache build, not in the report. Underneath it, a paged fetch ended on any non-200 and returned whatever it already had. The API answers 503 under load, and that is as likely on the first page as any other, so what came back was usually nothing at all — with no exception and no flag, and a student with no XP days is tiered RED automatically. An outage read as a child doing no work, and a DRI acting on that report spends the week on a child who never needed it while the ones who did go unseen.</p>
-        <p class="claim-ev"><b>Evidence:</b> Fixed as a class rather than as an incident: a page that cannot be fetched now raises instead of truncating, the failure is recorded per student, and the report holds those children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child whose data would not load is not evidence that they did nothing. It took three commits in four days, since the first covered only the deep dive's path and the guard in the second stopped firing exactly when it was needed most, once a fallback began supplying the name it keyed on. The pulls behind this page refuse to write a short file for the same reason, and every figure on it is re-derived by a second route: <b>138 checks</b>, 0 failing.</p>
+    <div class="point">
+      <div class="point-n">6</div>
+      <div class="point-body">
+        <h4>Missing data no longer reads as a child doing nothing</h4>
+        <p class="point-was"><b>Was:</b> Reports tiered working children RED at 0.0 XP/day. On one campus report <b>seven of the nine</b> under <em>little to no engagement</em> had earned XP every day — one read 0.0 against 118 earned.</p>
+        <p class="point-now"><b>Now:</b> Traced past the symptom: a paged fetch ended on any non-200 and returned what it had, and the API answers 503 under load. It now raises, records the failure per student, and holds those children out of the tiers under <code>DATA UNAVAILABLE</code>.</p>
+        <p class="point-ev">7 of 9 wrongly tiered on one report · worst case <b>0.0 against 118 XP</b> · every pull behind this page now refuses to write a short file</p>
+        <p class="point-where">Check it on <b>Method</b></p>
       </div>
     </div>
 </div>
+
+<div class="sub-rule"><span>The plan</span></div>
+
+<div class="print-title">The plan</div>
 
 <div class="card">
   <h2>What I would do with the job</h2>

@@ -175,6 +175,31 @@ def claim(n, title, body, evidence):
     </div>"""
 
 
+def point(n, claim, before, now, evidence, where):
+    """One claim, told once.
+
+    The page used to tell its six items twice: a "what changed" card at the
+    top and a "why me" claim lower down, 1:1 with each other and 4,100px of
+    the first tab between them. A reader meeting the same work in two framings
+    does not read it twice, they lose track of which list they are in.
+
+    So: the claim is the heading, the before-state is the setup rather than
+    its own card, and the evidence is on the same line as the thing it backs.
+    `where` names the tab a reader goes to in order to take it apart.
+    """
+    return f"""
+    <div class="point">
+      <div class="point-n">{n}</div>
+      <div class="point-body">
+        <h4>{claim}</h4>
+        <p class="point-was"><b>Was:</b> {before}</p>
+        <p class="point-now"><b>Now:</b> {now}</p>
+        <p class="point-ev">{evidence}</p>
+        <p class="point-where">Check it on <b>{where}</b></p>
+      </div>
+    </div>"""
+
+
 def shift(n, title, before, done, impact, figures):
     """One row of the opening page: what it was like, what was done, what moved.
 
@@ -725,6 +750,27 @@ HTML = f"""<!DOCTYPE html>
   }}
   .yoy-up {{ color: #2f6b47; font-weight: 700; }}
   .flat {{ color: #8a8597; font-style: italic; }}
+  /* The ask is one sentence, not a second hero block: two gradient panels
+     stacked read as two openings and the eye stops trusting either. */
+  .ask.ask-tight {{ background: #fff; border: 2px solid #ded7f3; color: #1a1a1a;
+    padding: 20px 24px; }}
+  .ask.ask-tight .ask-tag {{ background: #efebfa; color: #6f5fb0; }}
+  .ask.ask-tight h2 {{ font-size: 1.22rem; margin-bottom: 6px; }}
+  .ask.ask-tight p {{ color: #514c5e; font-size: .9rem; }}
+  .point {{ display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 18px 0;
+    border-top: 1px solid #ece8f6; }}
+  .point:first-of-type {{ border-top: none; }}
+  .point-n {{ width: 28px; height: 28px; border-radius: 50%; background: #efebfa; color: #6f5fb0;
+    font-size: .8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }}
+  .point-body h4 {{ font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: 7px; }}
+  .point-was, .point-now {{ font-size: .88rem; color: #514c5e; margin-bottom: 4px; }}
+  .point-was b {{ color: #b0556a; }}
+  .point-now b {{ color: #2f6b47; }}
+  .point-ev {{ font-size: .82rem; color: #6a6478; margin-top: 7px; padding-top: 7px;
+    border-top: 1px dashed #e8e4f2; }}
+  .point-where {{ font-size: .75rem; color: #9a94ab; margin-top: 4px; }}
+  .point-where b {{ color: #7b6db8; }}
+
   .sub-rule {{ display: flex; align-items: center; gap: 14px; margin: 54px 0 26px;
     color: #8b7dc8; font-size: .72rem; font-weight: 700; letter-spacing: .12em;
     text-transform: uppercase; }}
@@ -873,214 +919,93 @@ HTML = f"""<!DOCTYPE html>
   {stat(f"{A['passed']}", "checks behind these numbers")}
 </div>
 
-{shift(1, "A stuck child had nowhere to be written down",
-  f"The academic conversation was never in the ticket queue: of {TK_TOTAL:,} helpdesk "
-  f"cases, <b>{STUCK['n']}</b> are a child not progressing. What was tried, by whom, and "
-  f"whether it worked lived in heads and DMs.",
-  "Built the intervention log: typed request, owner, reason, action, close. Nobody "
-  "mandated it — the team moved onto it because it was the only place the work fitted.",
-  f"The whole function files into it, and response time is measurable for the first time.",
-  [(f"logged in {iv['window']['days']} days", f"{CA['touches']:,}"),
-   ("students", f"{CA['students']:,}"),
-   ("campuses", tm['campuses_covered']),
-   ("median close", f"{iv_med_h:g}h"),
-   ("inside 24h", f"{T['within_24h']}%"),
-   ("DRIs filing", f"{tm['dri_filers']}/{tm['n_dris']}")])}
-
-{shift(2, "Missing data read as a child doing nothing",
-  "Reports tiered working children RED at 0.0 XP/day. On one campus report, "
-  "<b>seven of the nine</b> under <em>little to no engagement</em> had earned XP every "
-  "day — one read 0.0 against 118 earned.",
-  "Traced it past the symptom: a paged fetch ended on any non-200 and returned what it "
-  "had, and the API answers 503 under load. Now it raises, records the failure per "
-  "student, and holds those children out of the tiers under <code>DATA UNAVAILABLE</code>.",
-  "A child whose data would not load is no longer evidence they did nothing. Every pull "
-  "behind this page now refuses to write a short file.",
-  [("wrongly tiered, one report", "7 of 9"),
-   ("worst case", "0.0 vs 118 XP"),
-   ("checks on this page", A['passed']),
-   ("failing", A['failed'])])}
-
-{shift(3, "Guides asked, and nothing came back",
-  f"The only route to “why is this student stuck?” was a hand-built deep dive. In "
-  f"{iv['window']['days']} days <b>{dd['requests']} were requested by hand</b>; that path "
-  f"closed <b>{dd['completed']}</b>. {dd['open']} are still open, the oldest "
-  f"{dd['oldest_open_days']:.0f} days.",
-  f"Built a Slack bot: a plain-English question becomes a rendered report in the thread. "
-  f"{len(TOOLS)} tools, no syntax to learn. The model picks the tool and never restates a "
-  f"figure, so a number cannot drift between the API and the channel.",
-  "A guide can now get the answer themselves, including what happened to the thing they "
-  "raised and who owns it.",
-  [("tools", len(TOOLS)),
-   ("requested by hand", dd['requests']),
-   ("closed by hand", dd['completed']),
-   ("still waiting", dd['open']),
-   ("oldest, days", f"{dd['oldest_open_days']:.0f}")])}
-
-{shift(4, "Nobody outside could read how the function was doing",
-  "Other teams had no definition to judge the function through — only a ticket count that "
-  "was never about children.",
-  "Published <code>alpha_dri_interventions</code> with a dictionary, query rules and a "
-  "judgement layer saying what the values <em>mean</em>: which interventions signal a "
-  "platform failure, which are routine. Credentials are minted per person, by me.",
-  "The org now reads this function through a definition I wrote — and the rules bind hard "
-  "enough that this page obeys them.",
-  [("source owner", "me"),
-   ("roles issued", ROLE['password_roles']),
-   ("scopes", ROLE['distinct_scopes']),
-   ("rule violations", 0)])}
-
-{shift(5, "The hardest problems were people, not tooling",
-  f"I surveyed the guides the role serves — {SURVEY['responses']} responses from "
-  f"{SURVEY['campuses']} campuses. {SURVEY['themes']} themes came back, including "
-  f"<em>“guides have to escalate 10+ times before anything is done”</em>.",
-  f"Only {KIND['Tooling']} were answered by building something. {KIND['Practice']} by "
-  f"changing how the role is coached, {KIND['People']} by a decision about a person. "
-  f"<b>{REASSIGNED} themes were one DRI</b> — moved off the campus, their replacement "
-  f"briefed, the original coached.",
-  "They are doing the job well now. One theme I told the guides they were wrong about: "
-  "the skill-plan delay was the automation, not DRI responsiveness.",
-  [("themes", SURVEY['themes']),
-   ("by tooling", KIND['Tooling']),
-   ("by coaching", KIND['Practice']),
-   ("by a people decision", KIND['People']),
-   ("done", DONE), ("in progress", WIP)])}
-
-{shift(6, "Carrying a top-three caseload while building the platform",
-  f"{tm['n_dris']} DRIs watching {tm['team_students']:,} children across "
-  f"{tm['team_campuses']} campuses, with no shared surface built for the question they "
-  f"actually ask.",
-  f"Built and maintained the dashboard the function runs on — {SURF['endpoints']} "
-  f"endpoints, {SURF['scheduled_jobs']} scheduled jobs, {db['total_rostered']:,} students "
-  f"across {db['total_campuses']} campuses — while carrying the "
-  f"{ordinal(tm['my_caseload_rank'])}-largest caseload on the team.",
-  "Doing both at once is the closest thing to a trial run for the job.",
-  [("students on it", f"{db['total_rostered']:,}"),
-   ("campuses", db['total_campuses']),
-   ("endpoints", SURF['endpoints']),
-   ("my commits", f"{R['tb_pct']}%"),
-   ("my caseload", f"{tm['my_students']:,}"),
-   ("rank", f"{ordinal(tm['my_caseload_rank'])}/{tm['n_dris']}")])}
-
-<div class="card">
-  <h3>How to read the rest of this</h3>
-  <p class="lead">Every row above is argued in full on its own tab, with the method and the
-    judgement calls stated next to the number. <b>The case</b> is the argument for the
-    promotion itself; the rest are the evidence. Nothing on any tab is a figure typed into
-    the HTML — each is produced by a pull and checked by
-    <code>audit.py</code>, which this page refuses to build without.</p>
-</div>
-</section>
-
-<section class="panel" id="case">
-<div class="print-title">The ask</div>
-
-<div class="ask">
+<div class="ask ask-tight">
   <span class="ask-tag">The ask</span>
   <h2>Head of DRIs</h2>
   <p>Leading the {tm['n_dris']} DRIs — {tm['n_dris']-1} people and myself — across
      {tm['team_campuses']} campuses and {tm['team_students']:,} students. I already carry the
-     {ordinal(tm['my_caseload_rank'])}-largest caseload on that team, and every one of the
-     {tm['dri_filers']} DRIs already works through systems I built. This page is the evidence for
-     both halves of that sentence, and a plan for what I would do with the job.</p>
-</div>
-
-<div class="stats">
-  {stat(f"{tm['team_students']:,}", "students the team is responsible for")}
-  {stat(tm['team_campuses'], "campuses")}
-  {stat(f"{tm['dri_filers']}/{tm['n_dris']}", "DRIs already using what I built")}
-  {stat(f"{tm['my_students']:,}", f"students I carry today ({ordinal(tm['my_caseload_rank'])} of {tm['n_dris']})")}
-  {stat(f"{iv_med_h:g}h", "median time to close an intervention")}
+     {ordinal(tm['my_caseload_rank'])}-largest caseload on that team, and {tm['dri_filers']} of
+     the {tm['n_dris']} already work through systems I built.</p>
 </div>
 
 <div class="card">
-  <h2>Why me</h2>
-  <p class="lead">
-    Six claims. Each one is a number on another tab, not an adjective — so each can be checked,
-    and each can be argued with.
-  </p>
+  <h2>Six things that changed, and how to check each one</h2>
+  <p class="lead">Each is a problem visible in the data before I touched it and measurable
+    after. The claim is the heading; the numbers under it are the whole of the argument.</p>
 
-  {claim(1, "The team already runs on what I built.",
-    "The intervention log was not rolled out to anyone. It was built, and the team moved onto it "
-    "because it was the only place the work could be written down. That is the strongest evidence "
-    "I can offer that I already do this job: the practice the whole function follows is one I "
-    "designed, and it stuck without a mandate.",
-    f"<b>{tm['dri_filers']} of the {tm['n_dris']}</b> Campus DRIs file into it, alongside "
-    f"{tm['curriculum_filers']} Curriculum DRIs — {tm['creators']} people writing, "
-    f"{tm['completers']} closing, across <b>{tm['campuses_covered']} campuses</b>, since "
-    f"{tm['first_entry']}.")}
+  {point(1, "The team already runs on what I built",
+    f"The academic conversation was never in the ticket queue: of {TK_TOTAL:,} helpdesk cases, "
+    f"<b>{STUCK['n']}</b> are a child not progressing. What was tried, by whom, and whether it "
+    f"worked lived in heads and DMs.",
+    "I built the intervention log. Nobody mandated it — the team moved onto it because it was "
+    "the only place the work fitted, which is the strongest evidence I can offer that I already "
+    "do this job.",
+    f"<b>{CA['touches']:,}</b> interventions in {iv['window']['days']} days · "
+    f"<b>{tm['dri_filers']}/{tm['n_dris']}</b> Campus DRIs filing, plus {tm['curriculum_filers']} "
+    f"Curriculum DRIs · {tm['campuses_covered']} campuses · {CA['students']:,} students · "
+    f"half closed inside <b>{iv_med_h:g}h</b>",
+    "The systems")}
 
-  {claim(2, "I set the standard other teams read us through.",
-    "<code>alpha_dri_interventions</code> is published to the data-source-skill contract with a "
-    "dictionary, query rules, and a hand-written judgement layer saying what the values mean — "
-    "which interventions signal a platform failure, which are routine, and what good looks like. "
-    "When another team asks how the DRI function is performing, they get the answer through a "
-    "definition I wrote. A Head of DRIs has to own what the role means to the rest of the "
-    "org; I already do.",
-    "Source owner and key issuer — credentials are minted per person, by me. The rules bind hard "
-    "enough that this page obeys them: the two logs are never totalled, a row is reported as a "
-    "touch rather than a failure, and the two minutes columns are scoped separately. A check over "
-    "every row found zero violations.")}
+  {point(2, "I set the standard other teams read us through",
+    "Other teams had no definition to judge this function by — only a ticket count that was "
+    "never about children.",
+    "Published <code>alpha_dri_interventions</code> to the data-source contract with a "
+    "dictionary, query rules and a judgement layer saying what the values <em>mean</em>: which "
+    "interventions signal a platform failure, which are routine. Credentials are minted per "
+    "person, by me.",
+    f"source owner: me · <b>{ROLE['password_roles']}</b> roles issued · "
+    f"{ROLE['distinct_scopes']} scopes · <b>0</b> rule violations, including by this page",
+    "Method")}
 
-  {claim(3, "I already carry near-top scope, while building for everyone else.",
-    "The caseload is not evenly shared, and I am at the heavy end of it — while also being the "
-    "person maintaining the platform the other fifteen monitor through. Doing both is the closest "
-    "thing to a trial run for the role.",
-    f"{tm['my_students']:,} students across {tm['my_campuses']} campuses, "
-    f"{ordinal(tm['my_caseload_rank'])} of {tm['n_dris']} — "
-    f"{100*tm['my_students']//tm['team_students']}% of the network. On the platform itself, "
-    f"{R['tb_mine']:,} of {R['tb_commits']:,} commits ({R['tb_pct']}%).")}
+  {point(3, "I made the role measurable, including my own work",
+    f"Nothing recorded who did what, so no part of the function could be judged — "
+    f"{dd['requests']} deep dives were requested by hand in {iv['window']['days']} days and "
+    f"{dd['open']} are still open, the oldest {dd['oldest_open_days']:.0f} days.",
+    "Response time, ownership and outcome are now attributes of a row rather than of a memory. "
+    "Every figure on this page is produced by a pull and re-derived by a second route.",
+    f"<b>{effort_h:.0f}h</b> of work now attributable to a person · "
+    f"<b>{T['within_24h']}%</b> closed inside 24h · "
+    f"<b>{A['passed']}</b> checks behind these numbers, {A['failed']} failing",
+    "Method")}
 
-  {claim(4, "I made the role measurable — including my own work.",
-    "Before the log there was no record of what was tried for a stalled student, by whom, or "
-    "whether it worked. That made the function unarguable in both directions: no credit for the "
-    "work, and no way to find what was not working. A Head cannot manage this function on "
-    "anecdote. I built the evidence layer the job needs, and I am inside it like everyone else.",
-    f"{CA['touches']:,} touches over {CA['students']} students in {iv['window']['days']} days, "
-    f"median close {iv_med_h:g} hours, {T['within_24h']}% inside a day, and {effort_h:.0f} hours "
-    f"of effort now attributable to a named person. For scale: of all {TK_TOTAL:,} helpdesk cases, "
-    f"only {STUCK['n']} are a stuck child — the academic conversation was never in the ticket "
-    f"queue, and now it has somewhere to live.")}
+  {point(4, "A guide can now get the answer themselves",
+    "The only route to “why is this student stuck?” was a hand-built deep dive, and the queue "
+    "for it never cleared.",
+    f"Built a Slack bot: a plain-English question becomes a rendered report in the thread. "
+    f"{len(TOOLS)} tools, no syntax to learn. The model picks the tool and never restates a "
+    f"figure, so a number cannot drift between the API and the channel.",
+    f"<b>{len(TOOLS)}</b> tools · {dd['requests']} asked by hand before it existed · "
+    f"{dd['completed']} of those ever closed",
+    "The systems")}
 
-  {claim(5, "I asked the guides, and the hardest fixes were people, not tooling.",
-    f"Before the year I surveyed the guides the role exists to serve — {SURVEY['responses']} "
-    f"responses from {SURVEY['campuses']} campuses. {SURVEY['themes']} themes of criticism came "
-    f"back, and only {KIND['Tooling']} of them were answered by building something. "
-    f"{KIND['Practice']} were answered by changing how the role is coached and {KIND['People']} "
-    f"by a decision about a person. <b>{REASSIGNED} of the {SURVEY['themes']} were one Campus "
-    f"DRI</b> — the same person behind both the complaint about message volume and the one about "
-    f"blaming guides for content they could not fix. They were moved off the campus, the feedback "
-    f"was handed to their replacement, and the original DRI was coached. They are doing the job "
-    f"well now. That is the half of this role no system solves, and it is the half the job is "
-    f"actually for. One theme I told the guides they were wrong about: the skill-plan delay they "
-    f"were putting on DRI responsiveness comes from the automation that generates the plans, so "
-    f"no amount of clearing a DRI queue would have moved it. They were chasing the wrong team, "
-    f"and saying so was part of the answer.",
-    f"Every theme, in the guides' own words, with what was done about it, on the Guide feedback "
-    f"tab — {DONE} done, {PARTLY} partly, {WIP} still in progress, and each one labelled with "
-    f"whether it was answered by tooling, by coaching, or by a personnel decision.")}
+  {point(5, "The hardest fixes were people, not tooling",
+    f"I surveyed the guides this role serves — {SURVEY['responses']} responses from "
+    f"{SURVEY['campuses']} campuses — and {SURVEY['themes']} themes came back, including "
+    f"<em>“guides have to escalate 10+ times before anything is done”</em>.",
+    f"Only {KIND['Tooling']} were answered by building something. {KIND['Practice']} by changing "
+    f"how the role is coached and {KIND['People']} by a decision about a person: "
+    f"<b>{REASSIGNED} themes were one DRI</b>, moved off the campus, their replacement briefed, "
+    f"the original coached. They are doing the job well now.",
+    f"{SURVEY['themes']} themes · {KIND['Tooling']} tooling · {KIND['Practice']} coaching · "
+    f"<b>{KIND['People']} a people decision</b> · {DONE} done, {WIP} in progress",
+    "The evidence")}
 
-  {claim(6, "Missing data no longer reads as a child doing nothing.",
-    "Mid-week reports were putting working students in the RED tier at 0.0 XP/day. On one campus "
-    "report, seven of the nine children listed under <em>little to no engagement</em> had earned "
-    "XP every single day — one read 0.0 against 118 XP actually earned. The tell was that their "
-    "time was right to the minute while only the XP had gone: the two are fetched from different "
-    "places, so the loss was in the cache build, not in the report. Underneath it, a paged fetch "
-    "ended on any non-200 and returned whatever it already had. The API answers 503 under load, "
-    "and that is as likely on the first page as any other, so what came back was usually nothing "
-    "at all — with no exception and no flag, and a student with no XP days is tiered RED "
-    "automatically. An outage read as a child doing no work, and a DRI acting on that report "
-    "spends the week on a child who never needed it while the ones who did go unseen.",
-    f"Fixed as a class rather than as an incident: a page that cannot be fetched now raises "
-    f"instead of truncating, the failure is recorded per student, and the report holds those "
-    f"children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child "
-    f"whose data would not load is not evidence that they did nothing. It took three commits in "
-    f"four days, since the first covered only the deep dive's path and the guard in the second "
-    f"stopped firing exactly when it was needed most, once a fallback began supplying the name it "
-    f"keyed on. The pulls behind this page refuse to write a short file for the same reason, and "
-    f"every figure on it is re-derived by a second route: <b>{A['passed']} checks</b>, "
-    f"{A['failed']} failing.")}
+  {point(6, "Missing data no longer reads as a child doing nothing",
+    "Reports tiered working children RED at 0.0 XP/day. On one campus report <b>seven of the "
+    "nine</b> under <em>little to no engagement</em> had earned XP every day — one read 0.0 "
+    "against 118 earned.",
+    "Traced past the symptom: a paged fetch ended on any non-200 and returned what it had, and "
+    "the API answers 503 under load. It now raises, records the failure per student, and holds "
+    "those children out of the tiers under <code>DATA UNAVAILABLE</code>.",
+    f"7 of 9 wrongly tiered on one report · worst case <b>0.0 against 118 XP</b> · "
+    f"every pull behind this page now refuses to write a short file",
+    "Method")}
 </div>
+
+</section>
+
+<section class="panel" id="case">
+<div class="print-title">The plan</div>
 
 <div class="card">
   <h2>What I would do with the job</h2>
