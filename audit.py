@@ -523,6 +523,37 @@ check("every theme numbers itself in order",
       [t["n"] for t in themes], list(range(1, len(themes) + 1)))
 
 
+# ── the significance tests the page quotes ─────────────────────────────────
+# stats.py has no dependencies and is therefore easy to get quietly wrong, and
+# the page now prints p values next to claims about children. Checked against
+# values that can be worked out by hand rather than against itself.
+import stats as _ST
+
+# Ten coin flips all landing heads: 2 / 2^10.
+check("sign test matches the exact binomial on an extreme",
+      round(_ST.sign_test(10, 0)["p"], 9), round(2 / 2 ** 10, 9))
+# An even split cannot be evidence of anything.
+check("sign test on an even split returns ~1", round(_ST.sign_test(7, 7)["p"], 6), 1.0)
+check("sign test drops ties by counting only the pair", _ST.sign_test(135, 154)["n"], 289)
+# 50/100 against 70/100 is a textbook z of 2.887.
+check("two-proportion z matches the textbook value",
+      round(_ST.two_prop(50, 100, 70, 100)["z"], 3), 2.887)
+# Wilson on 17/30 is centred below the naive 0.567 and stays inside [0, 1].
+_w = _ST.wilson(17, 30)
+check("Wilson interval brackets the estimate",
+      _w["lo"] < _w["p"] < _w["hi"], True)
+check("Wilson interval stays inside zero and one",
+      0 <= _ST.wilson(0, 5)["lo"] and _ST.wilson(5, 5)["hi"] <= 1, True)
+# The guard that stops a trivial move being dressed as a finding.
+check("a 0.1-point move over millions is flagged as too precise to matter",
+      _ST.too_precise_to_matter(9_000_000, 0.1), True)
+check("a real move is not flagged", _ST.too_precise_to_matter(9_000_000, 3.0), False)
+check("a small sample is never flagged", _ST.too_precise_to_matter(80, 0.1), False)
+# The claim the page actually makes about last year against this one.
+_sg = _ST.sign_test(Y["improved"], Y["declined"])
+check("the year-on-year split is not significant", _sg["p"] >= 0.05, True)
+
+
 # Written after every check, never mid-file: a dump placed above a later
 # section records a stale tally and the page then states it as fact.
 json.dump({"passed": len(PASS), "failed": len(FAIL),

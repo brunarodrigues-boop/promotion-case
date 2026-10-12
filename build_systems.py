@@ -26,6 +26,7 @@ import re
 import subprocess
 
 import charts as C
+import stats as ST
 import feedback as FB
 
 HERE = pathlib.Path(__file__).parent
@@ -220,15 +221,26 @@ def yoy_card():
     flat = abs(delta) < 0.5
     verdict = ("held flat" if flat else
                ("rose" if delta > 0 else "fell"))
+    # Each subject rests on hundreds of thousands of answers, where a z test
+    # calls a tenth of a point significant. That is a true statement about
+    # sampling error and a false one about children, so a move too small to
+    # mean anything is labelled rather than starred.
+    def _verdict(b):
+        n = b["last_answered"] + b["this_answered"]
+        diff = b["this_acc"] - b["last_acc"]
+        if ST.too_precise_to_matter(n, diff):
+            return '<span class="flat">flat</span>'
+        return f'<span class="{"yoy-up" if diff >= 0 else "yoy-down"}">{diff:+.1f}</span>'
+
     rows = "".join(
         f'<tr><td>{C.esc(b["subject"])}</td>'
         f'<td class="n">{b["last_acc"]}%</td>'
         f'<td class="n">{b["this_acc"]}%</td>'
-        f'<td class="n {"yoy-up" if b["this_acc"] >= b["last_acc"] else "yoy-down"}">'
-        f'{b["this_acc"] - b["last_acc"]:+.1f}</td>'
+        f'<td class="n">{_verdict(b)}</td>'
         f'<td class="n">{b["last_answered"]:,}</td>'
         f'<td class="n">{b["this_answered"]:,}</td></tr>'
         for b in d["by_subject"])
+    sign = ST.sign_test(d["improved"], d["declined"])
     return f"""
 <div class="card">
   <h3>Last year against this year — the same children</h3>
@@ -239,7 +251,11 @@ def yoy_card():
     {d['last_answered'] + d['this_answered']:,} answered questions.
     {"That is not an improvement and is not presented as one" if flat else "The move is real"} —
     and the split underneath it is closer still: <b>{d['improved']:,} improved,
-    {d['declined']:,} did not</b>.
+    {d['declined']:,} did not</b>. Tested as pairs, because these are the same
+    children measured twice, that split is what chance looks like:
+    <b>{ST.fmt_p(sign['p'])}</b> on a sign test over the {sign['n']} who moved either way.
+    If this work had lifted accuracy in the window, this is the test that would
+    have shown it, and it does not.
   </p>
   <p class="lead">
     The honest reading is that accuracy <b>held</b> while the estate grew around it. What moved is
@@ -547,10 +563,56 @@ chart_grp_speed = C.hbars(
      for g in sorted(GRP, key=lambda x: GRP[x]["median_h"])],
     unit="d", vmin=0, label_w=178, colour=C.AMBER)
 
-TABS = [("impact", "What changed"), ("case", "The case"), ("fb", "Guide feedback"), ("measure", "Dashboard"),
-        ("answer", "Deep dive bot"),
-        ("act", "Interventions"), ("reuse", "Resources"), ("accuracy", "Accuracy"),
-        ("support", "Support load"), ("method", "Method")]
+# ── the unsolved problem, stated at the top ────────────────────────────────
+# Computed here rather than written, so the sentence that opens the case
+# cannot drift from the card that argues it further down. If the sign test
+# ever comes back significant this paragraph has to be rewritten by hand --
+# which is the point of deriving it rather than typing it.
+if YOY:
+    _sg = ST.sign_test(YOY["improved"], YOY["declined"])
+    _down = [b for b in YOY["by_subject"]
+             if b["this_acc"] - b["last_acc"] <= -1.0]
+    # "Language is down 2.8. Math is down 2.8." is two sentences saying one
+    # thing; when the falls are equal they get one clause.
+    _ds = sorted(_down, key=lambda b: b["this_acc"] - b["last_acc"])[:2]
+    if not _ds:
+        _down_txt = ""
+    elif len(_ds) == 2 and abs((_ds[0]["last_acc"] - _ds[0]["this_acc"])
+                               - (_ds[1]["last_acc"] - _ds[1]["this_acc"])) < 0.05:
+        _down_txt = (f"{_ds[0]['subject']} and {_ds[1]['subject']} are each down "
+                     f"{_ds[0]['last_acc'] - _ds[0]['this_acc']:.1f}.")
+    else:
+        _down_txt = " and ".join(
+            f"{b['subject']} is down {b['last_acc'] - b['this_acc']:.1f}"
+            for b in _ds) + "."
+    UNSOLVED = (
+        f"<b>What none of it has yet moved is the number it exists to move.</b> "
+        f"Accuracy for the same <b>{YOY['matched']:,} children</b> held flat across "
+        f"the year — {YOY['last_acc']}% to {YOY['this_acc']}% — and more of them "
+        f"declined than improved ({YOY['declined']} against {YOY['improved']}, "
+        f"{ST.fmt_p(_sg['p'])} on a sign test). {_down_txt} "
+        f"This is work done and work made visible, not yet a child who learned "
+        f"more because of it: the log is {iv['window']['days']} days old, so there "
+        f"is no before to compare against. The measure I would accept being held "
+        f"to, and the date it can first be read, are on The evidence.")
+else:
+    UNSOLVED = ("<b>What none of it has yet moved is the number it exists to "
+                "move.</b> The outcome pull has not run, so no claim is made here.")
+
+# Four tabs, folded from the ten sections below by merge_panels().
+#
+# The first one has to stand on its own. A reviewer with forty of these to read
+# opens the page, reads one screen and forms a view; everything behind a click
+# is, in practice, unread. So "The case" carries the summary, the ask, the
+# argument and the caveats, and the other three are there to be checked rather
+# than to be read in order.
+GROUPS = [
+    ("case",     "The case",    ["impact", "case"]),
+    ("systems",  "The systems", ["measure", "answer", "act", "reuse"]),
+    ("evidence", "The evidence", ["accuracy", "fb", "support"]),
+    ("method",   "Method",      ["method"]),
+]
+TABS = [(k, label) for k, label, _ in GROUPS]
 
 nav = "".join(f'<button class="tab-btn" data-tab="{k}">{v}</button>' for k, v in TABS)
 
@@ -662,6 +724,12 @@ HTML = f"""<!DOCTYPE html>
     .shift {{ break-inside: avoid; page-break-inside: avoid; }}
   }}
   .yoy-up {{ color: #2f6b47; font-weight: 700; }}
+  .flat {{ color: #8a8597; font-style: italic; }}
+  .sub-rule {{ display: flex; align-items: center; gap: 14px; margin: 54px 0 26px;
+    color: #8b7dc8; font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; }}
+  .sub-rule::before, .sub-rule::after {{ content: ""; flex: 1; height: 1px; background: #e3def2; }}
+  .sub-rule span {{ flex: 0 0 auto; }}
   .yoy-down {{ color: #b4524f; font-weight: 700; }}
   .claim {{ display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #f2eefb; }}
   .claim:last-child {{ border-bottom: none; padding-bottom: 2px; }}
@@ -690,7 +758,8 @@ HTML = f"""<!DOCTYPE html>
     border-radius: 20px; margin-bottom: 10px; }}
   .ask h2 {{ font-size: 1.85rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px;
     color: #fff; }}
-  .ask p {{ font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px; }}
+  .ask p {{ font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px;  }}
+  .ask p + p {{ margin-top: 13px; }}
   .ask code {{ background: rgba(255,255,255,.22); color: #fff; }}
   .fb {{ background: #fff; border: 1px solid #e0daf0; border-radius: 14px; padding: 18px 22px 16px;
     margin-bottom: 12px; }}
@@ -779,11 +848,21 @@ HTML = f"""<!DOCTYPE html>
 
 <div class="ask">
   <span class="ask-tag">In one page</span>
-  <h2>What it was like, what I did, what moved</h2>
-  <p>Six changes to how the DRI function runs, each one a problem that was
-     visible in the data before I touched it and measurable after. Every figure here is
-     produced by a pull and re-derived by a second route — <b>{A['passed']} checks,
-     {A['failed']} failing</b> — and each one is argued in full on a later tab.</p>
+  <h2>What it was like, what I did, and what it has not fixed</h2>
+  <p><b>In August the academic conversation was not written down anywhere.</b> Of
+     {TK_TOTAL:,} helpdesk cases, {STUCK['n']} were a child not progressing, and what
+     was tried, by whom and whether it worked lived in heads and DMs. A guide asking
+     why a student was stuck waited on a hand-built deep dive: {dd['requests']} were
+     requested in {iv['window']['days']} days, {dd['open']} are still open, the oldest
+     {dd['oldest_open_days']:.0f} days.</p>
+  <p><b>Ninety days on, the function runs on a record and the record is public.</b>
+     {CA['touches']:,} interventions logged across {tm['campuses_covered']} campuses,
+     {tm['dri_filers']} of {tm['n_dris']} DRIs filing, half closed inside {iv_med_h:g}
+     hours. Other teams read this function through a data contract I wrote. Every
+     figure on this page is produced by a pull and re-derived by a second route —
+     <b>{A['passed']} checks, {A['failed']} failing</b> — and the build refuses to run
+     against a failing audit.</p>
+  <p>{UNSOLVED}</p>
 </div>
 
 <div class="stats">
@@ -894,7 +973,7 @@ HTML = f"""<!DOCTYPE html>
 </section>
 
 <section class="panel" id="case">
-<div class="print-title">The case</div>
+<div class="print-title">The ask</div>
 
 <div class="ask">
   <span class="ask-tag">The ask</span>
@@ -1787,6 +1866,58 @@ HTML = f"""<!DOCTYPE html>
 </html>
 """
 
+def merge_panels(html: str, groups: list) -> str:
+    """Fold the separate panels into fewer tabs, in the given order.
+
+    The ten sections stay ten sections in this file, because each is a
+    self-contained argument and editing them is easier that way. They are
+    joined here instead, so the reader gets four tabs rather than ten and
+    the first one carries the whole case.
+
+    Why fewer tabs at all: a reader opening this sees one tab. Ten tabs put
+    93% of the writing behind a click that a reviewer with forty of these to
+    read is not going to make.
+
+    Each group is (new id, new label, [old ids...]). The first old id keeps
+    its section element; the rest are demoted to sub-sections under a rule,
+    so the page still reads as one argument rather than four pages stapled
+    together.
+    """
+    import re as _re
+    # Split the body into {id: inner html} by panel.
+    blocks = {}
+    for m in _re.finditer(
+            r'<section class="panel" id="([a-z]+)">(.*?)\n</section>', html, _re.S):
+        blocks[m.group(1)] = m.group(2)
+    missing = [i for _, _, ids in groups for i in ids if i not in blocks]
+    if missing:
+        raise SystemExit(f"merge_panels: no such panel {missing}")
+    used = [i for _, _, ids in groups for i in ids]
+    orphan = [i for i in blocks if i not in used]
+    if orphan:
+        raise SystemExit(f"merge_panels: {orphan} would vanish from the page")
+
+    merged = []
+    for new_id, label, ids in groups:
+        parts = []
+        for n, old in enumerate(ids):
+            inner = blocks[old]
+            if n:
+                # A heading the reader can see, since the tab that used to
+                # name this content is gone.
+                title = _re.search(r'<div class="print-title">(.*?)</div>', inner)
+                parts.append(f'<div class="sub-rule"><span>{title.group(1) if title else old}</span></div>')
+            parts.append(inner)
+        merged.append(f'<section class="panel" id="{new_id}">\n'
+                      f'<div class="print-title">{label}</div>\n'
+                      + "\n".join(parts) + "\n</section>")
+
+    # Everything from the first panel to the last is replaced in one go.
+    start = html.index('<section class="panel"')
+    end = html.rindex('</section>') + len('</section>')
+    return html[:start] + "\n".join(merged) + html[end:]
+
+HTML = merge_panels(HTML, GROUPS)
 OUT.write_text(HTML, encoding="utf-8")
 print(f"wrote {OUT}  ({len(HTML):,} bytes, {len(TABS)} tabs)")
 print(f"  accuracy   {O['answered']:,} questions, {O['pooled_acc']}% pooled, {O['n_apps']} apps")

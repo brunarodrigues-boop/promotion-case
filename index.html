@@ -106,6 +106,12 @@
     .shift { break-inside: avoid; page-break-inside: avoid; }
   }
   .yoy-up { color: #2f6b47; font-weight: 700; }
+  .flat { color: #8a8597; font-style: italic; }
+  .sub-rule { display: flex; align-items: center; gap: 14px; margin: 54px 0 26px;
+    color: #8b7dc8; font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; }
+  .sub-rule::before, .sub-rule::after { content: ""; flex: 1; height: 1px; background: #e3def2; }
+  .sub-rule span { flex: 0 0 auto; }
   .yoy-down { color: #b4524f; font-weight: 700; }
   .claim { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #f2eefb; }
   .claim:last-child { border-bottom: none; padding-bottom: 2px; }
@@ -134,7 +140,8 @@
     border-radius: 20px; margin-bottom: 10px; }
   .ask h2 { font-size: 1.85rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 8px;
     color: #fff; }
-  .ask p { font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px; }
+  .ask p { font-size: .95rem; color: rgba(255,255,255,.93); max-width: 760px;  }
+  .ask p + p { margin-top: 13px; }
   .ask code { background: rgba(255,255,255,.22); color: #fff; }
   .fb { background: #fff; border: 1px solid #e0daf0; border-radius: 14px; padding: 18px 22px 16px;
     margin-bottom: 12px; }
@@ -212,22 +219,34 @@
     helpdesk pulled 2026-09-22</div>
 </header>
 
-<div class="tabs"><div class="tabs-inner"><button class="tab-btn" data-tab="impact">What changed</button><button class="tab-btn" data-tab="case">The case</button><button class="tab-btn" data-tab="fb">Guide feedback</button><button class="tab-btn" data-tab="measure">Dashboard</button><button class="tab-btn" data-tab="answer">Deep dive bot</button><button class="tab-btn" data-tab="act">Interventions</button><button class="tab-btn" data-tab="reuse">Resources</button><button class="tab-btn" data-tab="accuracy">Accuracy</button><button class="tab-btn" data-tab="support">Support load</button><button class="tab-btn" data-tab="method">Method</button></div></div>
+<div class="tabs"><div class="tabs-inner"><button class="tab-btn" data-tab="case">The case</button><button class="tab-btn" data-tab="systems">The systems</button><button class="tab-btn" data-tab="evidence">The evidence</button><button class="tab-btn" data-tab="method">Method</button></div></div>
 
 <main>
 
 <!-- ══ 1 · THE CASE ══ -->
 <!-- ══ 0 · WHAT CHANGED ══ -->
-<section class="panel" id="impact">
+<section class="panel" id="case">
+<div class="print-title">The case</div>
+
 <div class="print-title">What changed</div>
 
 <div class="ask">
   <span class="ask-tag">In one page</span>
-  <h2>What it was like, what I did, what moved</h2>
-  <p>Six changes to how the DRI function runs, each one a problem that was
-     visible in the data before I touched it and measurable after. Every figure here is
-     produced by a pull and re-derived by a second route — <b>128 checks,
-     0 failing</b> — and each one is argued in full on a later tab.</p>
+  <h2>What it was like, what I did, and what it has not fixed</h2>
+  <p><b>In August the academic conversation was not written down anywhere.</b> Of
+     14,403 helpdesk cases, 45 were a child not progressing, and what
+     was tried, by whom and whether it worked lived in heads and DMs. A guide asking
+     why a student was stuck waited on a hand-built deep dive: 77 were
+     requested in 37 days, 70 are still open, the oldest
+     30 days.</p>
+  <p><b>Ninety days on, the function runs on a record and the record is public.</b>
+     1,666 interventions logged across 86 campuses,
+     15 of 16 DRIs filing, half closed inside 14.6
+     hours. Other teams read this function through a data contract I wrote. Every
+     figure on this page is produced by a pull and re-derived by a second route —
+     <b>138 checks, 0 failing</b> — and the build refuses to run
+     against a failing audit.</p>
+  <p><b>What none of it has yet moved is the number it exists to move.</b> Accuracy for the same <b>289 children</b> held flat across the year — 86.1% to 86.2% — and more of them declined than improved (154 against 135, p = 0.29, not significant on a sign test). Language and Math are each down 2.8. This is work done and work made visible, not yet a child who learned more because of it: the log is 37 days old, so there is no before to compare against. The measure I would accept being held to, and the date it can first be read, are on The evidence.</p>
 </div>
 
 <div class="stats">
@@ -235,7 +254,7 @@
   <div class="stat"><div class="val">14.6h</div><div class="label">median time to close one</div></div>
   <div class="stat"><div class="val">15/16</div><div class="label">DRIs using what I built</div></div>
   <div class="stat"><div class="val">370h</div><div class="label">of work now attributable to a person</div></div>
-  <div class="stat"><div class="val">128</div><div class="label">checks behind these numbers</div></div>
+  <div class="stat"><div class="val">138</div><div class="label">checks behind these numbers</div></div>
 </div>
 
 
@@ -273,7 +292,7 @@
         <div class="sh-col sh-impact">
           <span class="sh-tag">The impact</span>
           <p>A child whose data would not load is no longer evidence they did nothing. Every pull behind this page now refuses to write a short file.</p>
-          <div class="sh-figs"><div class="sh-fig"><b>7 of 9</b><span>wrongly tiered, one report</span></div><div class="sh-fig"><b>0.0 vs 118 XP</b><span>worst case</span></div><div class="sh-fig"><b>128</b><span>checks on this page</span></div><div class="sh-fig"><b>0</b><span>failing</span></div></div>
+          <div class="sh-figs"><div class="sh-fig"><b>7 of 9</b><span>wrongly tiered, one report</span></div><div class="sh-fig"><b>0.0 vs 118 XP</b><span>worst case</span></div><div class="sh-fig"><b>138</b><span>checks on this page</span></div><div class="sh-fig"><b>0</b><span>failing</span></div></div>
         </div>
       </div>
     </div>
@@ -366,10 +385,9 @@
     the HTML — each is produced by a pull and checked by
     <code>audit.py</code>, which this page refuses to build without.</p>
 </div>
-</section>
+<div class="sub-rule"><span>The ask</span></div>
 
-<section class="panel" id="case">
-<div class="print-title">The case</div>
+<div class="print-title">The ask</div>
 
 <div class="ask">
   <span class="ask-tag">The ask</span>
@@ -422,7 +440,7 @@
       <div>
         <h4>I already carry near-top scope, while building for everyone else.</h4>
         <p>The caseload is not evenly shared, and I am at the heavy end of it — while also being the person maintaining the platform the other fifteen monitor through. Doing both is the closest thing to a trial run for the role.</p>
-        <p class="claim-ev"><b>Evidence:</b> 1,249 students across 8 campuses, 3rd of 16 — 13% of the network. On the platform itself, 1,282 of 2,629 commits (49%).</p>
+        <p class="claim-ev"><b>Evidence:</b> 1,249 students across 8 campuses, 3rd of 16 — 13% of the network. On the platform itself, 1,291 of 2,657 commits (49%).</p>
       </div>
     </div>
 
@@ -452,7 +470,7 @@
       <div>
         <h4>Missing data no longer reads as a child doing nothing.</h4>
         <p>Mid-week reports were putting working students in the RED tier at 0.0 XP/day. On one campus report, seven of the nine children listed under <em>little to no engagement</em> had earned XP every single day — one read 0.0 against 118 XP actually earned. The tell was that their time was right to the minute while only the XP had gone: the two are fetched from different places, so the loss was in the cache build, not in the report. Underneath it, a paged fetch ended on any non-200 and returned whatever it already had. The API answers 503 under load, and that is as likely on the first page as any other, so what came back was usually nothing at all — with no exception and no flag, and a student with no XP days is tiered RED automatically. An outage read as a child doing no work, and a DRI acting on that report spends the week on a child who never needed it while the ones who did go unseen.</p>
-        <p class="claim-ev"><b>Evidence:</b> Fixed as a class rather than as an incident: a page that cannot be fetched now raises instead of truncating, the failure is recorded per student, and the report holds those children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child whose data would not load is not evidence that they did nothing. It took three commits in four days, since the first covered only the deep dive's path and the guard in the second stopped firing exactly when it was needed most, once a fallback began supplying the name it keyed on. The pulls behind this page refuse to write a short file for the same reason, and every figure on it is re-derived by a second route: <b>128 checks</b>, 0 failing.</p>
+        <p class="claim-ev"><b>Evidence:</b> Fixed as a class rather than as an incident: a page that cannot be fetched now raises instead of truncating, the failure is recorded per student, and the report holds those children out of the tiers entirely under <code>DATA UNAVAILABLE</code> — because a child whose data would not load is not evidence that they did nothing. It took three commits in four days, since the first covered only the deep dive's path and the guard in the second stopped firing exactly when it was needed most, once a fallback began supplying the name it keyed on. The pulls behind this page refuse to write a short file for the same reason, and every figure on it is re-derived by a second route: <b>138 checks</b>, 0 failing.</p>
       </div>
     </div>
 </div>
@@ -546,215 +564,9 @@
   </table>
 </div>
 </section>
+<section class="panel" id="systems">
+<div class="print-title">The systems</div>
 
-<!-- ══ 1b · GUIDE FEEDBACK ══ -->
-<section class="panel" id="fb">
-<div class="print-title">Guide feedback, and what was done</div>
-
-<div class="card">
-  <h2>We asked the guides, and then we changed things</h2>
-  <p class="lead">
-    Before the school year I surveyed the people the DRI role exists to serve —
-    <b>60 responses from 41 campuses</b>, collected
-    2026-07-31 to 2026-08-06. Two open questions carried the criticism: what a Campus
-    DRI could do to make your job easier (60 answers), and what you wish your
-    DRI had done more or less of (34 answers).
-  </p>
-  <p class="lead">
-    Below is every theme of criticism in that survey — in the guides' own words — and what was
-    actually done about it in the 9
-    weeks since. Praise is not listed. A page of compliments proves nothing; the test of whether
-    feedback was heard is what changed after it.
-  </p>
-  <div class="minis"><div class="mini"><b>10</b><span>themes of criticism</span></div><div class="mini"><b>7</b><span>done</span></div><div class="mini"><b>2</b><span>partly done</span></div><div class="mini"><b>1</b><span>in progress</span></div><div class="mini"><b>60</b><span>responses</span></div><div class="mini"><b>41</b><span>campuses</span></div></div>
-  <p class="foot">
-    Three of the ten were answered by tooling, three by a personnel decision, and four by changing
-    how the role is practised and coached. That split matters: a Head of DRIs who can only
-    fix things by building something can only fix a third of this list.
-  </p>
-</div>
-
-
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">1</span>
-            <h4>Escalations vanished — the loop was never closed</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">Tooling</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>It’s been escalated to the appropriate team — with no follow up.</p><cite>Chicago</cite></blockquote><blockquote><p>Guides have to escalate 10+ times before anything is done, and there is a general feeling that their feedback isn’t really being heard or acted on.</p><cite>Austin</cite></blockquote><blockquote><p>Close the loop on feedback.</p><cite>Spyglass</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>The Slack bot lets a guide query interventions directly and see what is happening to the thing they raised — without waiting for a DRI to report back. The status is now something a guide can pull, rather than something they have to chase.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">2</span>
-            <h4>Too many messages, the same information repeated</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">People</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>Less re-alerting to known issues.</p><cite>San Francisco</cite></blockquote><blockquote><p>Less daily updates of the same information regurgitated.</p><cite>Austin</cite></blockquote><blockquote><p>Updates too long with important info hidden.</p><cite>Chicago</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>This was one campus and one person, not a systemic pattern. That Campus DRI was moved off the campus, the feedback was handed to their replacement, and the original DRI was coached on communication practice. They are doing the job well now.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">3</span>
-            <h4>Not proactive — guides were finding the problems first</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">Practice</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>Be proactive! Don’t wait for me to figure something out and reach out.</p><cite>Alpha Southlake</cite></blockquote><blockquote><p>Identify students that are in doom loops earlier so that we can address the issue sooner.</p><cite>Palm Beach</cite></blockquote><blockquote><p>Make us aware when students have taken and failed a mastery test twice.</p><cite>Denver</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>Campus DRIs now work proactively and find issues before a guide raises them. This is coached continuously rather than announced once — it is a habit, and habits need maintaining.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">4</span>
-            <h4>Blaming the guide instead of fixing the content</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">People</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>The feedback frequently sounded like ‘please help motivate them’ when significant instructional and content gaps were the real issue.</p><cite>Chicago</cite></blockquote><blockquote><p>Less blaming, and more adjusting content to keep data moving.</p><cite>Austin</cite></blockquote><blockquote><p>I wish our DRI had been less quick to jump to ‘blaming the guide’.</p><cite>Austin Spyglass</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>The same person as the message-volume complaint above. Removed from the campus, the feedback passed to the incoming DRI, and the original DRI coached. Their work has improved since. Two of the ten themes traced to one individual, which is why the answer was a personnel decision rather than a process change.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">5</span>
-            <h4>No regular cadence — guides wanted scheduled reports</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">Tooling</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>Regular weekly reports would have been helpful!</p><cite>Austin</cite></blockquote><blockquote><p>Send out weekly academic health reports, highlight any flags they’re seeing on the academic side and recommendations.</p><cite>Scottsdale</cite></blockquote><blockquote><p>Send weekly updated reports for student progress — where they are currently and where they need to go.</p><cite>East Bay / Orlando</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>Weekly reports now go to every campus, highlighting student performance and the areas of concern. Not a subset of campuses and not on request: all of them, every week.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">6</span>
-            <h4>Vague advice instead of specific strategies</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">Practice</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>Less vague suggestions such as ‘they need to work faster’ — we need specific strategies from student examples.</p><cite>Chantilly</cite></blockquote><blockquote><p>More data and specifics; less ‘so how are things?’</p><cite>Texas Sports Academy</cite></blockquote><blockquote><p>Being detailed on what exact skills our students are struggling with.</p><cite>Brownsville</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>The advice is now specific and names the thing: this student is rushing, this student is struggling with lesson A or B, this student needs coaching on lesson A. The difference between that and ‘work faster’ is whether a guide can act on it in the next session.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">7</span>
-            <h4>No advance warning on tests</h4>
-            <span class="pill st-done">Done</span>
-            <span class="fb-kind">Tooling</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>Give a one week heads up when a test is approaching, so we can schedule a pre-test coaching call prior to the test appearing on the student’s dashboard.</p><cite>Austin</cite></blockquote><blockquote><p>Flag newly assigned tests and flag kids who need pretest conversations.</p><cite>Austin</cite></blockquote><blockquote><p>Let us know when there are tests.</p><cite>Scottsdale</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>Guides receive the currently assigned tests every morning, including the attempt number for that grade and test — so a second or third attempt is visible before the conversation rather than after it.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">8</span>
-            <h4>Slow turnaround on deep dives and skill plans</h4>
-            <span class="pill st-partly">Partly</span>
-            <span class="fb-kind">Tooling</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>Facilitate data and deep dive requests QUICKLY.</p><cite>Santa Barbara</cite></blockquote><blockquote><p>Quicker to update students’ skill plans.</p><cite>Austin</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>Two different problems that guides experienced as one. The deep dive delay is real and is what the Slack bot exists to remove. The skill-plan delay is not a DRI queue at all — it comes from the automation that generates the plans, so no amount of DRI responsiveness would have fixed it. Saying so is part of the answer: guides were chasing the wrong team.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">9</span>
-            <h4>No formal route to request things, and every DRI worked differently</h4>
-            <span class="pill st-wip">In progress</span>
-            <span class="fb-kind">Practice</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>More formalized systems for requesting deep dives, or better understanding what DRIs can provide versus what they cannot do at scale.</p><cite>Austin</cite></blockquote><blockquote><p>Have clear, documented decision-making criteria for things like when tests are given, how to accelerate levels.</p><cite>NYC</cite></blockquote><blockquote><p>A standardized format across all DRIs would be lovely — lots of variation.</p><cite>Austin</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>Standardising DRI work is underway and not finished. Most DRIs already use the same format for deep dives and reports, which is the majority of the variation guides were seeing, but it is convention rather than standard until it is written down and enforced.</p>
-            </div>
-          </div>
-        </div>
-        <div class="fb">
-          <div class="fb-head">
-            <span class="fb-n">10</span>
-            <h4>Availability, and the timezone gap on the West Coast</h4>
-            <span class="pill st-partly">Partly</span>
-            <span class="fb-kind">People</span>
-          </div>
-          <div class="fb-body">
-            <div class="fb-quotes"><blockquote><p>I just wish they were in a closer time zone for the West Coast. The communication was sometimes inconsistent due to time constraints.</p><cite>Santa Barbara</cite></blockquote><blockquote><p>Be available during the school hours when I have an urgent question.</p><cite>Spyglass</cite></blockquote></div>
-            <div class="fb-action">
-              <span class="fb-action-tag">What was done</span>
-              <p>Every Campus DRI is now required to be available during core hours. The timezone half is not solved by a rule — a hiring request is in, asking that core hours be allowed to run to 2pm CT depending on the DRI’s timezone, so West Coast campuses get covered by someone whose day overlaps theirs.</p>
-            </div>
-          </div>
-        </div>
-
-<div class="card">
-  <h3>What this cost, and what it did not fix</h3>
-  <table>
-    <tr><td style="width:32%"><b>Two themes were one person</b></td>
-      <td>The message-volume complaint and the blaming-the-guide complaint traced to the same
-        DRI. The answer was to move them off the campus, hand the feedback to their
-        replacement, and coach them — not to write a process. They are doing the job well now,
-        which is the outcome worth having; the alternative was a policy that punished fifteen
-        people for one person's habit.</td></tr>
-    <tr><td><b>One theme was a misattribution</b></td>
-      <td>Guides experienced slow deep dives and slow skill plans as the same problem. Only the
-        first is a DRI queue. The skill plans come from an automation, so no amount of DRI
-        responsiveness would have moved them — and telling guides that is more useful than
-        absorbing a complaint we cannot act on.</td></tr>
-    <tr><td><b>Two are not finished</b></td>
-      <td>Standardising how every DRI writes deep dives and reports is convention, not yet
-        standard. And the timezone gap needs a hire, not a rule — the request is in, asking that
-        core hours be allowed to run to 2pm CT so West Coast campuses are covered by someone
-        whose day overlaps theirs.</td></tr>
-    <tr><td><b>The coaching programme is separate</b></td>
-      <td>The same survey carried 54 responses about the coaching programme — consistency between
-        coaches, availability, and reporting back to guides after a call. That is a different
-        function and is not claimed here.</td></tr>
-  </table>
-</div>
-</section>
-
-<!-- ══ 2 · DASHBOARD ══ -->
-<section class="panel" id="measure">
 <div class="print-title">TimeBack Dashboard</div>
 
 <div class="card">
@@ -765,7 +577,7 @@
     tests and grade-level progress, per student per subject, with role-scoped guide and admin views,
     daily alerts, doom-loop detection and generated reports.</p>
   <div class="minis"><div class="mini"><b>106</b><span>campuses served</span></div><div class="mini"><b>8,514</b><span>students rostered</span></div><div class="mini"><b>155</b><span>API endpoints</span></div><div class="mini"><b>53</b><span>report endpoints</span></div><div class="mini"><b>25</b><span>PDF generators</span></div><div class="mini"><b>7</b><span>scheduled jobs</span></div></div>
-  <p class="foot">Repository since 2026-03-04; 1,282 of 2,629 commits
+  <p class="foot">Repository since 2026-03-04; 1,291 of 2,657 commits
     are mine (49%), counted with <code>git shortlog</code> over all branches.
     Every figure on this tab is read out of the running configuration at build time, not recalled.</p>
 </div>
@@ -972,10 +784,8 @@
     each message in the Messaging tab before it goes out, so the automation stops one step short of
     the person.</p>
 </div>
-</section>
+<div class="sub-rule"><span>The Slack Bot</span></div>
 
-<!-- ══ 3 · DEEP DIVE BOT ══ -->
-<section class="panel" id="answer">
 <div class="print-title">The Slack Bot</div>
 
 <div class="card">
@@ -1333,10 +1143,8 @@
         remember, because it kept re-asking for what it had already been told.</td></tr>
   </table>
 </div>
-</section>
+<div class="sub-rule"><span>The Intervention Log</span></div>
 
-<!-- ══ 4 · INTERVENTIONS ══ -->
-<section class="panel" id="act">
 <div class="print-title">The Intervention Log</div>
 <div class="card">
   <span class="pill">Close the loop</span>
@@ -1478,10 +1286,8 @@
       every row found <b>zero</b> violations.</p>
   </div>
 </div>
-</section>
+<div class="sub-rule"><span>Resources</span></div>
 
-<!-- ══ 5 · RESOURCES ══ -->
-<section class="panel" id="reuse">
 <div class="print-title">Resources</div>
 
 <div class="card">
@@ -1653,9 +1459,9 @@
   </p>
 </div>
 </section>
+<section class="panel" id="evidence">
+<div class="print-title">The evidence</div>
 
-<!-- ══ 6 · ACCURACY ══ -->
-<section class="panel" id="accuracy">
 <div class="print-title">Accuracy</div>
 
 
@@ -1668,7 +1474,11 @@
     9,203,048 answered questions.
     That is not an improvement and is not presented as one —
     and the split underneath it is closer still: <b>135 improved,
-    154 did not</b>.
+    154 did not</b>. Tested as pairs, because these are the same
+    children measured twice, that split is what chance looks like:
+    <b>p = 0.29, not significant</b> on a sign test over the 289 who moved either way.
+    If this work had lifted accuracy in the window, this is the test that would
+    have shown it, and it does not.
   </p>
   <p class="lead">
     The honest reading is that accuracy <b>held</b> while the estate grew around it. What moved is
@@ -1682,7 +1492,7 @@
   <table>
     <tr><th style="width:22%">Subject</th><th class="n">Last year</th><th class="n">This year</th>
       <th class="n">Change</th><th class="n">Answered last</th><th class="n">Answered this</th></tr>
-    <tr><td>Vocabulary</td><td class="n">87.2%</td><td class="n">86.0%</td><td class="n yoy-down">-1.2</td><td class="n">1,888,185</td><td class="n">1,016,958</td></tr><tr><td>FastMath</td><td class="n">90.7%</td><td class="n">91.3%</td><td class="n yoy-up">+0.6</td><td class="n">1,391,552</td><td class="n">938,398</td></tr><tr><td>Reading</td><td class="n">84.0%</td><td class="n">86.0%</td><td class="n yoy-up">+2.0</td><td class="n">982,384</td><td class="n">341,925</td></tr><tr><td>Language</td><td class="n">78.5%</td><td class="n">75.7%</td><td class="n yoy-down">-2.8</td><td class="n">385,737</td><td class="n">151,735</td></tr><tr><td>Math</td><td class="n">80.1%</td><td class="n">77.3%</td><td class="n yoy-down">-2.8</td><td class="n">170,899</td><td class="n">112,504</td></tr><tr><td>Science</td><td class="n">73.3%</td><td class="n">83.9%</td><td class="n yoy-up">+10.6</td><td class="n">107,215</td><td class="n">45,905</td></tr><tr><td>Writing</td><td class="n">85.4%</td><td class="n">85.0%</td><td class="n yoy-down">-0.4</td><td class="n">10,321</td><td class="n">5,676</td></tr>
+    <tr><td>Vocabulary</td><td class="n">87.2%</td><td class="n">86.0%</td><td class="n"><span class="yoy-down">-1.2</span></td><td class="n">1,888,185</td><td class="n">1,016,958</td></tr><tr><td>FastMath</td><td class="n">90.7%</td><td class="n">91.3%</td><td class="n"><span class="yoy-up">+0.6</span></td><td class="n">1,391,552</td><td class="n">938,398</td></tr><tr><td>Reading</td><td class="n">84.0%</td><td class="n">86.0%</td><td class="n"><span class="yoy-up">+2.0</span></td><td class="n">982,384</td><td class="n">341,925</td></tr><tr><td>Language</td><td class="n">78.5%</td><td class="n">75.7%</td><td class="n"><span class="yoy-down">-2.8</span></td><td class="n">385,737</td><td class="n">151,735</td></tr><tr><td>Math</td><td class="n">80.1%</td><td class="n">77.3%</td><td class="n"><span class="yoy-down">-2.8</span></td><td class="n">170,899</td><td class="n">112,504</td></tr><tr><td>Science</td><td class="n">73.3%</td><td class="n">83.9%</td><td class="n"><span class="yoy-up">+10.6</span></td><td class="n">107,215</td><td class="n">45,905</td></tr><tr><td>Writing</td><td class="n">85.4%</td><td class="n">85.0%</td><td class="n"><span class="yoy-down">-0.4</span></td><td class="n">10,321</td><td class="n">5,676</td></tr>
   </table>
   <p class="foot">
     <b>Read the windows before the number.</b> Last year is 2026-03-01 to 2026-06-04, this year is
@@ -1907,10 +1717,212 @@
   <p class="sub">And where it is strongest</p>
   <table><tr><th>Subject · app</th><th class="n">Accuracy</th><th class="n">Questions</th><th class="n">Students</th></tr><tr><td>FastMath  ·  Alpha Test</td><td class="n">94.2%</td><td class="n">492,230</td><td class="n">884</td></tr><tr><td>FastMath  ·  Math Raiders</td><td class="n">92.1%</td><td class="n">4,833,577</td><td class="n">1228</td></tr><tr><td>Reading  ·  Alpha Phonics</td><td class="n">91.9%</td><td class="n">700,478</td><td class="n">376</td></tr><tr><td>Vocabulary  ·  Alpha Test</td><td class="n">91.1%</td><td class="n">243,952</td><td class="n">550</td></tr></table>
 </div>
-</section>
+<div class="sub-rule"><span>Guide feedback, and what was done</span></div>
 
-<!-- ══ 7 · SUPPORT LOAD ══ -->
-<section class="panel" id="support">
+<div class="print-title">Guide feedback, and what was done</div>
+
+<div class="card">
+  <h2>We asked the guides, and then we changed things</h2>
+  <p class="lead">
+    Before the school year I surveyed the people the DRI role exists to serve —
+    <b>60 responses from 41 campuses</b>, collected
+    2026-07-31 to 2026-08-06. Two open questions carried the criticism: what a Campus
+    DRI could do to make your job easier (60 answers), and what you wish your
+    DRI had done more or less of (34 answers).
+  </p>
+  <p class="lead">
+    Below is every theme of criticism in that survey — in the guides' own words — and what was
+    actually done about it in the 9
+    weeks since. Praise is not listed. A page of compliments proves nothing; the test of whether
+    feedback was heard is what changed after it.
+  </p>
+  <div class="minis"><div class="mini"><b>10</b><span>themes of criticism</span></div><div class="mini"><b>7</b><span>done</span></div><div class="mini"><b>2</b><span>partly done</span></div><div class="mini"><b>1</b><span>in progress</span></div><div class="mini"><b>60</b><span>responses</span></div><div class="mini"><b>41</b><span>campuses</span></div></div>
+  <p class="foot">
+    Three of the ten were answered by tooling, three by a personnel decision, and four by changing
+    how the role is practised and coached. That split matters: a Head of DRIs who can only
+    fix things by building something can only fix a third of this list.
+  </p>
+</div>
+
+
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">1</span>
+            <h4>Escalations vanished — the loop was never closed</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">Tooling</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>It’s been escalated to the appropriate team — with no follow up.</p><cite>Chicago</cite></blockquote><blockquote><p>Guides have to escalate 10+ times before anything is done, and there is a general feeling that their feedback isn’t really being heard or acted on.</p><cite>Austin</cite></blockquote><blockquote><p>Close the loop on feedback.</p><cite>Spyglass</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>The Slack bot lets a guide query interventions directly and see what is happening to the thing they raised — without waiting for a DRI to report back. The status is now something a guide can pull, rather than something they have to chase.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">2</span>
+            <h4>Too many messages, the same information repeated</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">People</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>Less re-alerting to known issues.</p><cite>San Francisco</cite></blockquote><blockquote><p>Less daily updates of the same information regurgitated.</p><cite>Austin</cite></blockquote><blockquote><p>Updates too long with important info hidden.</p><cite>Chicago</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>This was one campus and one person, not a systemic pattern. That Campus DRI was moved off the campus, the feedback was handed to their replacement, and the original DRI was coached on communication practice. They are doing the job well now.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">3</span>
+            <h4>Not proactive — guides were finding the problems first</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">Practice</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>Be proactive! Don’t wait for me to figure something out and reach out.</p><cite>Alpha Southlake</cite></blockquote><blockquote><p>Identify students that are in doom loops earlier so that we can address the issue sooner.</p><cite>Palm Beach</cite></blockquote><blockquote><p>Make us aware when students have taken and failed a mastery test twice.</p><cite>Denver</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>Campus DRIs now work proactively and find issues before a guide raises them. This is coached continuously rather than announced once — it is a habit, and habits need maintaining.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">4</span>
+            <h4>Blaming the guide instead of fixing the content</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">People</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>The feedback frequently sounded like ‘please help motivate them’ when significant instructional and content gaps were the real issue.</p><cite>Chicago</cite></blockquote><blockquote><p>Less blaming, and more adjusting content to keep data moving.</p><cite>Austin</cite></blockquote><blockquote><p>I wish our DRI had been less quick to jump to ‘blaming the guide’.</p><cite>Austin Spyglass</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>The same person as the message-volume complaint above. Removed from the campus, the feedback passed to the incoming DRI, and the original DRI coached. Their work has improved since. Two of the ten themes traced to one individual, which is why the answer was a personnel decision rather than a process change.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">5</span>
+            <h4>No regular cadence — guides wanted scheduled reports</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">Tooling</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>Regular weekly reports would have been helpful!</p><cite>Austin</cite></blockquote><blockquote><p>Send out weekly academic health reports, highlight any flags they’re seeing on the academic side and recommendations.</p><cite>Scottsdale</cite></blockquote><blockquote><p>Send weekly updated reports for student progress — where they are currently and where they need to go.</p><cite>East Bay / Orlando</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>Weekly reports now go to every campus, highlighting student performance and the areas of concern. Not a subset of campuses and not on request: all of them, every week.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">6</span>
+            <h4>Vague advice instead of specific strategies</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">Practice</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>Less vague suggestions such as ‘they need to work faster’ — we need specific strategies from student examples.</p><cite>Chantilly</cite></blockquote><blockquote><p>More data and specifics; less ‘so how are things?’</p><cite>Texas Sports Academy</cite></blockquote><blockquote><p>Being detailed on what exact skills our students are struggling with.</p><cite>Brownsville</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>The advice is now specific and names the thing: this student is rushing, this student is struggling with lesson A or B, this student needs coaching on lesson A. The difference between that and ‘work faster’ is whether a guide can act on it in the next session.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">7</span>
+            <h4>No advance warning on tests</h4>
+            <span class="pill st-done">Done</span>
+            <span class="fb-kind">Tooling</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>Give a one week heads up when a test is approaching, so we can schedule a pre-test coaching call prior to the test appearing on the student’s dashboard.</p><cite>Austin</cite></blockquote><blockquote><p>Flag newly assigned tests and flag kids who need pretest conversations.</p><cite>Austin</cite></blockquote><blockquote><p>Let us know when there are tests.</p><cite>Scottsdale</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>Guides receive the currently assigned tests every morning, including the attempt number for that grade and test — so a second or third attempt is visible before the conversation rather than after it.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">8</span>
+            <h4>Slow turnaround on deep dives and skill plans</h4>
+            <span class="pill st-partly">Partly</span>
+            <span class="fb-kind">Tooling</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>Facilitate data and deep dive requests QUICKLY.</p><cite>Santa Barbara</cite></blockquote><blockquote><p>Quicker to update students’ skill plans.</p><cite>Austin</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>Two different problems that guides experienced as one. The deep dive delay is real and is what the Slack bot exists to remove. The skill-plan delay is not a DRI queue at all — it comes from the automation that generates the plans, so no amount of DRI responsiveness would have fixed it. Saying so is part of the answer: guides were chasing the wrong team.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">9</span>
+            <h4>No formal route to request things, and every DRI worked differently</h4>
+            <span class="pill st-wip">In progress</span>
+            <span class="fb-kind">Practice</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>More formalized systems for requesting deep dives, or better understanding what DRIs can provide versus what they cannot do at scale.</p><cite>Austin</cite></blockquote><blockquote><p>Have clear, documented decision-making criteria for things like when tests are given, how to accelerate levels.</p><cite>NYC</cite></blockquote><blockquote><p>A standardized format across all DRIs would be lovely — lots of variation.</p><cite>Austin</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>Standardising DRI work is underway and not finished. Most DRIs already use the same format for deep dives and reports, which is the majority of the variation guides were seeing, but it is convention rather than standard until it is written down and enforced.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fb">
+          <div class="fb-head">
+            <span class="fb-n">10</span>
+            <h4>Availability, and the timezone gap on the West Coast</h4>
+            <span class="pill st-partly">Partly</span>
+            <span class="fb-kind">People</span>
+          </div>
+          <div class="fb-body">
+            <div class="fb-quotes"><blockquote><p>I just wish they were in a closer time zone for the West Coast. The communication was sometimes inconsistent due to time constraints.</p><cite>Santa Barbara</cite></blockquote><blockquote><p>Be available during the school hours when I have an urgent question.</p><cite>Spyglass</cite></blockquote></div>
+            <div class="fb-action">
+              <span class="fb-action-tag">What was done</span>
+              <p>Every Campus DRI is now required to be available during core hours. The timezone half is not solved by a rule — a hiring request is in, asking that core hours be allowed to run to 2pm CT depending on the DRI’s timezone, so West Coast campuses get covered by someone whose day overlaps theirs.</p>
+            </div>
+          </div>
+        </div>
+
+<div class="card">
+  <h3>What this cost, and what it did not fix</h3>
+  <table>
+    <tr><td style="width:32%"><b>Two themes were one person</b></td>
+      <td>The message-volume complaint and the blaming-the-guide complaint traced to the same
+        DRI. The answer was to move them off the campus, hand the feedback to their
+        replacement, and coach them — not to write a process. They are doing the job well now,
+        which is the outcome worth having; the alternative was a policy that punished fifteen
+        people for one person's habit.</td></tr>
+    <tr><td><b>One theme was a misattribution</b></td>
+      <td>Guides experienced slow deep dives and slow skill plans as the same problem. Only the
+        first is a DRI queue. The skill plans come from an automation, so no amount of DRI
+        responsiveness would have moved them — and telling guides that is more useful than
+        absorbing a complaint we cannot act on.</td></tr>
+    <tr><td><b>Two are not finished</b></td>
+      <td>Standardising how every DRI writes deep dives and reports is convention, not yet
+        standard. And the timezone gap needs a hire, not a rule — the request is in, asking that
+        core hours be allowed to run to 2pm CT so West Coast campuses are covered by someone
+        whose day overlaps theirs.</td></tr>
+    <tr><td><b>The coaching programme is separate</b></td>
+      <td>The same survey carried 54 responses about the coaching programme — consistency between
+        coaches, availability, and reporting back to guides after a call. That is a different
+        function and is not claimed here.</td></tr>
+  </table>
+</div>
+<div class="sub-rule"><span>Support load</span></div>
+
 <div class="print-title">Support load</div>
 
 <div class="card">
@@ -2120,9 +2132,9 @@
   </p>
 </div>
 </section>
-
-<!-- ══ 8 · METHOD ══ -->
 <section class="panel" id="method">
+<div class="print-title">Method</div>
+
 <div class="print-title">Method &amp; provenance</div>
 <div class="card method">
   <h3>Method &amp; provenance</h3>
